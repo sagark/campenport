@@ -1,0 +1,74 @@
+<html>
+<!-- DO NOT declare a DOCTYPE until HTML5 is final, it will break the zoomable map -->
+<head>
+<title>Berkeley Campus Energy Portal</title>
+<!-- old jquery css/js includes, moved to local
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>-->
+<link href="/site-media/jquery/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="/site-media/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/site-media/jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/site-media/jquery-zoomable/jquery.zoomable.js"></script>
+</head>
+<body style="text-align:center;width:99%;background:#efefef;font-family:sans-serif;">
+<div style="margin:0 auto;text-align:left;width:960px;">
+<div style="float:left;font-size:30px">
+Berkeley Campus Energy Portal 
+</div>
+<div style="text-align:right;float:right;">
+	<input type="button" value="Zoom in" onclick="$('#image').zoomable('zoomIn')" title="Zoom in" />
+	<input type="button" value="Zoom out" onclick="$('#image').zoomable('zoomOut')" title="Zoom out" />
+	<input type="button" value="Reset" onclick="$('#image').zoomable('reset')" />
+	<input type="button" value="Building List" id="list">
+</div> 
+<br style="clear:both;">
+<div style="overflow:hidden;width:960px;height:680px;position:relative;">
+<img src="campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
+<map id="map" name="map">
+<!-- #$-:Image map file created by GIMP Image Map plug-in -->
+<!-- #$-:GIMP Image Map plug-in by Maurits Rijk -->
+<!-- #$-:Please do not edit lines starting with "#$" -->
+<!-- #$VERSION:2.3 -->
+<!-- #$AUTHOR:sagar  -->
+<area shape="rect" coords="692,118,717,155" href="/buildings/soda" alt="soda"/>
+<area shape="poly" coords="752,181,804,181,807,219,756,224" href="/buildings/cory" alt="cory"/>
+<area shape="poly" coords="702,212,725,210,724,185,741,184,744,225,703,229" href="/buildings/sutardjadai" alt="sutardjadai"/>
+</map>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('input:button').button();
+		$('#image').zoomable();
+		$('#image').zoomable('zoomOut');
+		$("#dialog").dialog({ autoOpen: true, minWidth: 150, minHeight: 500, position: ['right', 'top'] });
+	});
+	$("#list").click(function(){
+		$("#dialog").dialog("open");
+	});
+
+</script>
+
+
+
+<div style="font-size:11px;text-align:center;">
+Built With: <a href="http://jquery.com">jQuery</a> | <a href="http://code.google.com/p/flot/">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php">zoomable</a> | <a href="http://www.ama3.com/anytime/">Any+Time</a> | 
+Building Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu">dashboard.berkeley.edu</a> | 
+Energy Data: <a href="http://new.openbms.org">new.openbms.org</a>
+</div>
+</div>
+
+<div id="dialog" title="Building List" style="text-align:left;">
+
+<ul>
+
+{% for building in buildings|dictsort:"longname" %}
+	<li><a href="/buildings/{{building.shortname}}">{{ building }}</a></li>
+{% endfor %}
+
+
+</ul>
+
+</div>
+</body>
+</html>

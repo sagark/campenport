@@ -1,0 +1,5 @@
+this folder contains 2 files:
+buildinginfo.db              ----- Actually a symlink to the real database, it is not shared in this repo because it contains hashes of administrator passwords
+SAMPLE_buildinginfo.db       ----- This is an actual SQLite3 database. If you are a non-Berkeley user, delete the existing buildinginfo.db and rename 
+				   SAMPLE_buildinginfo.db as buildinginfo.db, then follow the instructions in <projectroot>/README_BEFORE_DEPLOYMENT. 
+				   If you are a Berkeley user, get in touch for the real db file.
