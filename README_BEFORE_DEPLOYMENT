@@ -3,7 +3,9 @@ Installation:
 0) Install python/django
 1) Install everything in the <projectroot>/bin folder
 2) Set your ARD_URL in settings.py - the default is set for Berkeley
-3) Read the deployment instructions below
+3) put your campusmap in <projectroot>/site-media/ as campusmap.png
+4) add imagemap coords to <projectroot>/templates/campusmap.html
+5) Read the deployment instructions below
 
 
 Before deploying campenport in a publicly-accessible way, please do the following: 
