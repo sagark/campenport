@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Berkeley Campus Energy Portal</title>
+		<link href="/site-media/bootstrap/bootstrap.min.css" rel="stylesheet">
+		<link href="/site-media/jquery/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script type="text/javascript" src="/site-media/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="/site-media/jquery/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="/site-media/jquery-zoomable/jquery.zoomable.js"></script>
+
+		<!-- HTML5 shim, for IE6-8 support of HTML elements -->
+   		<!--[if lt IE 9]>
+      		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    	<![endif]-->
+
+		<style type="text/css">
+      		html, body {
+        		background-color: #eee;
+      		}
+      		body {
+        		padding-top: 40px; /* adjust body for topbar */
+      		}
+      		/* The white background content wrapper */
+      		.content {
+        		background-color: #fff;
+        		padding: 20px;
+        		margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+        		-webkit-border-radius: 0 0 6px 6px;
+           			-moz-border-radius: 0 0 6px 6px;
+                		border-radius: 0 0 6px 6px;
+        		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+           			-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+                		box-shadow: 0 1px 2px rgba(0,0,0,.15);
+      		}
+
+      		/* Page header tweaks */
+      		.page-header {
+        		background-color: #f5f5f5;
+        		padding: 20px 20px 10px;
+        		margin: -20px -20px 20px;
+      		}
+
+			footer {
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+	
+	<div class="topbar">
+    	<div class="fill">
+    		<div class="container">
+    			<a class="brand" href="/">Berkeley Campus Energy Portal</a>
+				<ul class="nav">
+					<li class="active"><a href="/">Map</a></li>
+					<li><a href="#jquerypopup_stuff">Building List</a></li>
+				</ul>
+				<form action="#" class="pull-right">
+					<input class="input-medium" type="text" placeholder="Search Buildings" name="inputstr">
+					<button class="btn" type="button" onclick="urlSearch(this.form.inputstr);">Go</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="container">
+		<div class="content">
+			<div class="page-header">
+				<h1>Campus Map<small> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Click a building to view energy usage information.</small></h1>
+			</div>
+			<div class="row">
+				<div class="span16">
+					<div style="text-align:right;position:right;">
+						<input class="btn" type="button" value="Zoom in" onclick="$('#image').zoomable('zoomIn')" title="Zoom in" />
+						<input class="btn" type="button" value="Zoom out" onclick="$('#image').zoomable('zoomOut')" title="Zoom out" />
+						<input class="btn" type="button" value="Reset" id="reset" />
+						<input class="btn" type="button" value="Building List" id="list" />
+					</div> 
+					<div style="overflow:hidden;width:940px;height:680px;position:relative;">
+						<img src="/site-media/campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
+						<map id="map" name="map">
+						<!-- #$-:Image map file created by GIMP Image Map plug-in -->
+						<!-- #$-:GIMP Image Map plug-in by Maurits Rijk -->
+						<!-- #$-:Please do not edit lines starting with "#$" -->
+						<!-- #$VERSION:2.3 -->
+						<!-- #$AUTHOR:sagark  -->
+						<area shape="rect" coords="692,118,717,155" href="/buildings/soda" alt="soda"/>
+						<area shape="poly" coords="752,181,804,181,807,219,756,224" href="/buildings/cory" alt="cory"/>
+						<area shape="poly" coords="702,212,725,210,724,185,741,184,744,225,703,229" href="/buildings/sutardjadai" alt="sutardjadai"/>
+						</map>
+					</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('input:button').button();
+		$('#image').zoomable();
+		$('#image').zoomable('zoomOut');
+		$("#dialog").dialog({ autoOpen: true, minWidth: 150, minHeight: 500, position: 'right' });
+	});
+	$("#list").click(function(){
+		$("#dialog").dialog("open");
+	});
+	$("#reset").click(function(){
+		$('#image').zoomable('reset');
+		$('#image').zoomable('zoomOut');
+	});
+
+function urlSearch(inp) {
+	window.open("/search/" + inp.value);
+}
+
+</script>
+
+
+
+
+
+				</div>
+			</div>
+		</div>
+
+		<footer>
+        	<p><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}">Valid HTML5</a> | Energy Data: <a href="http://new.openbms.org">new.openbms.org</a> | Building Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu">dashboard.berkeley.edu</a>
+			<br>
+			Built With: <a href="http://jquery.com">jQuery</a> | <a href="http://twitter.github.com/bootstrap">bootstrap</a> | <a href="http://code.google.com/p/flot/">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php">zoomable</a> | <a href="http://www.ama3.com/anytime/">Any+Time</a> 
+			</p>
+		</footer>
+	</div>
+
+
+<div id="dialog" title="Building List" style="text-align:left;">
+
+<ul>
+
+{% for building in buildings|dictsort:"longname" %}
+	<li><a href="/buildings/{{building.shortname}}">{{ building }}</a></li>
+{% endfor %}
+
+
+</ul>
+
+</div>
+
+
+
+	</body>
+</html>

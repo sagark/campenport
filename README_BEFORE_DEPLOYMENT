@@ -1,0 +1,21 @@
+Installation:
+
+0) Install python/django
+1) Install everything in the <projectroot>/bin folder
+2) Set your ARD_URL in settings.py - the default is set for Berkeley
+3) Read the deployment instructions below
+
+
+Before deploying campenport in a publicly-accessible way, please do the following: 
+
+1) set the SECRET_KEY in settings.py in root
+
+2.0) Read the instructions in <projectroot>/database/README_ABOUT_DBs
+
+
+
+Continue after 2.0:
+2.1) login to the admin interface (http://<rooturl>/admin) with username: defaultadmin and password: default
+3) create a new user for yourself and delete the default account
+
+If you do not do this, your database will essentially be PUBLICLY EDITABLE.
