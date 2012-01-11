@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>{% block title %}basepage{% endblock %}</title>
+		<link href="/site-media/bootstrap/bootstrap.min.css" rel="stylesheet">
+		<link href="/site-media/jquery/jquery-ui.css" rel="stylesheet" type="text/css"/>
+		<script type="text/javascript" src="/site-media/jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="/site-media/jquery/jquery-ui.min.js"></script>
+		{% block extra_scriptsCSS_imports %} {% endblock %}
+
+		<!-- HTML5 shim, for IE6-8 support of HTML elements -->
+   		<!--[if lt IE 9]>
+      		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    	<![endif]-->
+
+		<style type="text/css">
+      		html, body {
+        		background-color: #eee;
+      		}
+      		body {
+        		padding-top: 40px; /* adjust body for topbar */
+      		}
+
+			{% block extra_css_inline %} {% endblock %}
+
+   			footer {
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+	
+<script type="text/javascript">
+
+	{% block extra_scripts_inline %}
+	{% endblock %}
+
+function urlSearch(inp) {
+	window.open("/search/" + inp.value);
+}
+
+</script>
+	<div class="topbar">
+    	<div class="fill">
+    		<div class="container">
+    			<a class="brand" href="/">Berkeley Campus Energy Portal</a>
+				<ul class="nav">
+					<li {% block menu_1 %}{% endblock %}><a href="/">Map</a></li>
+					<li {% block menu_2 %}{% endblock %}><a href="#jquerypopup_stuff">Building List</a></li>
+				</ul>
+				<form action="#" class="pull-right">
+					<input class="input-medium" type="text" placeholder="Search Buildings" name="inputstr">
+					<button class="btn" type="submit" onclick="urlSearch(this.form.inputstr);">Go</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="container">
+		{% block container_inside %}
+		{% endblock %}
+
+		<footer>
+        	<p><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}">Valid HTML5</a> | Energy Data: <a href="http://new.openbms.org">new.openbms.org</a> | Building Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu">dashboard.berkeley.edu</a>
+			<br>
+			Built With: <a href="http://jquery.com">jQuery</a> | <a href="http://twitter.github.com/bootstrap">bootstrap</a> | <a href="http://code.google.com/p/flot/">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php">zoomable</a> | <a href="http://www.ama3.com/anytime/">Any+Time</a> 
+			</p>
+		</footer>
+	</div>
+
+{% block random_extras %}
+{% endblock %}
+
+	</body>
+</html>
+
