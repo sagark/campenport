@@ -1,20 +1,17 @@
 {% extends "sitebase.html" %}
 
 {% block title %}
-Building List
+{{ NEW_TITLE }}
 {% endblock %}
 
-{% block menu_2 %}
+{% block menu_3 %}
 class="active"
 {% endblock %}
 
 {% block header_title %}
-Buildings List
+{{ NEW_TITLE }}
 {% endblock %}
 
-{% block header_subtitle %}
-Click a building for detailed info.
-{% endblock %}
 
 {% block content_inside %}
 <div class="row">
@@ -29,8 +26,8 @@ Click a building for detailed info.
           </tr>
         </thead>
         <tbody>
-
-{% for building in buildings|dictsort:"longname" %}
+{% if results %}
+{% for building in results|dictsort:"longname" %}
 
           <tr>
             <td>{{ building.longname }}</td>
@@ -40,8 +37,12 @@ Click a building for detailed info.
           </tr>
 
 {% endfor %}
+{% endif %}
         </tbody>
       </table>
+
+
+
 	</div>
 </div>
 {% endblock %}

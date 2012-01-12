@@ -70,10 +70,11 @@ function urlSearch(inp) {
 				<ul class="nav">
 					<li {% block menu_1 %}{% endblock %}><a href="/map/">Map</a></li>
 					<li {% block menu_2 %}{% endblock %}><a href="/buildlist/">Building List</a></li>
+					<li {% block menu_3 %}{% endblock %}><a href="/search/">Advanced Search</a></li>
 				</ul>
-				<form action="#" class="pull-right">
-					<input class="input-medium" type="text" placeholder="Search Buildings" name="inputstr">
-					<button class="btn" type="submit" onclick="urlSearch(this.form.inputstr);">Go</button>
+				<form action="/search/" method="get" class="pull-right">
+					<input class="input-medium" type="text" placeholder="Search Buildings" name="name">
+					<button class="btn" type="submit">Go</button>
 				</form>
 			</div>
 		</div>
