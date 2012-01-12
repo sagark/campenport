@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from campenport.views import homemap
+from campenport.views import homemap, buildinglist
 import campenport.settings as settings
 
 # Uncomment the next two lines to enable the admin:
@@ -9,6 +9,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 	(r'^$', 'campenport.views.passhome'),
 	(r'^map/$', homemap),
+	(r'^buildlist/$', buildinglist),
 	(r'^buildings/(?P<buildname>[a-zA-Z0-9_.-]+)/$', 'campenport.buildings.views.buildings'),
 	(r'^ARDgetData/', include('campenport.ARDgetData.urls')),
 	(r'^site-media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA + '/site-media/'}),
