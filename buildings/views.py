@@ -38,6 +38,7 @@ def buildings(request, buildname):
 
 	INFO = thisbuilding.info
 	PIC = thisbuilding.pic
+	PIC_SRC = thisbuilding.pic_src
 	STATS_SQFT = thisbuilding.stats_sqft
 	STATS_YEAR = thisbuilding.stats_yearBuilt
 	STATS_ALTINFO = thisbuilding.stats_altInfo
