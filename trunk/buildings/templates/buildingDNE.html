@@ -1,5 +1,20 @@
 {% extends "sitebase.html" %}
-{% block container_inside %}
-Sorry, a building named {{ ERR_BUILD }} does not exist in the database <br>
-Return <a href="/">Home</a>
+{% block title %}
+Oops, there was an error with your request.
+{% endblock %}
+
+
+{% block header_title %}
+Error.
+{% endblock %}
+{% block header_subtitle %}
+Oops, there seems to have been a problem with your request.
+{% endblock %}
+{% block content_inside %}
+<div class="row">
+<div class="span16">
+<h3>Sorry, a building named {{ ERR_BUILD }} does not exist in the database. <br>
+Return <a href="/">Home</a></h3>
+</div>
+</div>
 {% endblock %}

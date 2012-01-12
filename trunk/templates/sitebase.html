@@ -22,11 +22,32 @@
         		padding-top: 40px; /* adjust body for topbar */
       		}
 
+			/* The white background content wrapper */
+      		.content {
+        		background-color: #fff;
+        		padding: 20px;
+        		margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+        		-webkit-border-radius: 0 0 6px 6px;
+           			-moz-border-radius: 0 0 6px 6px;
+                		border-radius: 0 0 6px 6px;
+        		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+           			-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+                		box-shadow: 0 1px 2px rgba(0,0,0,.15);
+      		}
+
+      		/* Page header tweaks */
+      		.page-header {
+        		background-color: #f5f5f5;
+        		padding: 20px 20px 10px;
+        		margin: -20px -20px 20px;
+      		}
+
 			{% block extra_css_inline %} {% endblock %}
 
    			footer {
 				text-align: center;
 			}
+
 		</style>
 	</head>
 
@@ -60,9 +81,15 @@ function urlSearch(inp) {
 
 
 	<div class="container">
-		{% block container_inside %}
-		{% endblock %}
+		<div class="content">
+			<div class="page-header">
+				<h1>{% block header_title %}{% endblock %}<small> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {% block header_subtitle %}{% endblock %}</small></h1>
+			</div>
 
+
+		{% block content_inside %}
+		{% endblock %}
+		</div>
 		<footer>
         	<p><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}">Valid HTML5</a> | Energy Data: <a href="http://new.openbms.org">new.openbms.org</a> | Building Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu">dashboard.berkeley.edu</a>
 			<br>
