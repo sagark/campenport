@@ -6,27 +6,8 @@
 {% endblock %}
 
 {% block extra_css_inline %}
-      		/* The white background content wrapper */
-      		.content {
-        		background-color: #fff;
-        		padding: 20px;
-        		margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
-        		-webkit-border-radius: 0 0 6px 6px;
-           			-moz-border-radius: 0 0 6px 6px;
-                		border-radius: 0 0 6px 6px;
-        		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-           			-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-                		box-shadow: 0 1px 2px rgba(0,0,0,.15);
-      		}
-
-      		/* Page header tweaks */
-      		.page-header {
-        		background-color: #f5f5f5;
-        		padding: 20px 20px 10px;
-        		margin: -20px -20px 20px;
-      		}
-			footer {
-				margin-top: -10px;
+   			footer {
+				margin-top: 0px;
 			}
 {% endblock %}
 
@@ -45,11 +26,16 @@
 
 {% block menu_1 %} class="active" {% endblock %}
 
-{% block container_inside %}
-		<div class="content">
-			<div class="page-header">
-				<h1>Campus Map<small> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Click a building to view energy usage information.</small></h1>
-			</div>
+{% block header_title %}
+Campus Map
+{% endblock %}
+
+{% block header_subtitle %}
+Click a building to view energy usage information.
+{% endblock %}
+
+
+{% block content_inside %}
 			<div class="row">
 				<div class="span16">
 					<div style="text-align:right;position:right;">
@@ -73,7 +59,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
 {% endblock %}
 
 {% block random_extras %}
