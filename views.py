@@ -8,3 +8,7 @@ def homemap(request):
 
 def passhome(request):
 	return HttpResponseRedirect('/map/')
+
+def buildinglist(request):
+	buildings = Building.objects.all()
+	return render_to_response('buildinglist.html', locals())

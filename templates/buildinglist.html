@@ -1,0 +1,44 @@
+{% extends "sitebase.html" %}
+
+{% block title %}
+Buildings List
+{% endblock %}
+
+{% block menu_2 %}
+class="active"
+{% endblock %}
+
+{% block header_title %}
+Buildings List
+{% endblock %}
+
+{% block header_subtitle %}
+Click a building for detailed info.
+{% endblock %}
+
+{% block content_inside %}
+      <table class="bordered-table zebra-striped">
+        <thead>
+          <tr>
+            <th>Building Name</th>
+            <th>Square Footage</th>
+            <th>Year Built</th>
+   			<th>Portal Page</th>
+          </tr>
+        </thead>
+        <tbody>
+
+{% for building in buildings|dictsort:"longname" %}
+
+          <tr>
+            <td>{{ building.longname }}</td>
+            <td>{{ building.stats_sqft }}</td>
+            <td>{{ building.stats_yearBuilt }}</td>
+            <td><a href="/buildings/{{ building.shortname }}">Click here</a></td>
+          </tr>
+
+{% endfor %}
+        </tbody>
+      </table>
+
+{% endblock %}
