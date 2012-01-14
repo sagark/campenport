@@ -1,0 +1,51 @@
+{% extends "sitebase.html" %}
+
+{% block title %}
+Compare Buildings
+{% endblock %}
+
+{% block menu_4 %}
+class="active"
+{% endblock %}
+
+{% block header_title %}
+Compare Buildings
+{% endblock %}
+
+{% block extra_css_inline %}
+
+			.comparisongraph {
+				margin-bottom: 5px;
+        		-webkit-border-radius: 10px 10px 10px 10px;
+           			-moz-border-radius: 10px 10px 10px 10px;
+                		border-radius: 10px 10px 10px 10px;
+        		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+           			-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+                		box-shadow: 0 1px 2px rgba(0,0,0,.15);
+				padding-top: 5px;
+				padding-left: 5px;
+      		}
+
+{% endblock %}
+
+{% block header_subtitle %}
+Bar height and width represent square footage and energy usage respectively.
+{% endblock %}
+
+{% block content_inside %}
+<div class="row">
+	<div class="span16">
+
+
+{% for building in buildings %}
+
+		<div class="comparisongraph" style="width:400px;height:{{ building.stats_sqft_fordisp }}px;background:{% if building.tempid %}#2c2c2c{% endif %}{% if not building.tempid %}#c7c8c9{% endif %};"><h2 ><a href="/buildings/{{ building.shortname }}" style="color:{% if building.tempid %}#FFFFFF{% endif %}{% if not building.tempid %}#000000{% endif %};">{{ building.longname }}</a><em><small> {{ building.stats_sqft }} sqft.</small></em></h2></div> 
+{% endfor %}
+
+
+
+
+	</div>
+</div>
+{% endblock %}
+
