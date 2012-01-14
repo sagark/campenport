@@ -12,10 +12,27 @@ class="active"
 {{ NEW_TITLE }}
 {% endblock %}
 
+{% block extra_css_inline %}
+	.hero-unit {
+			padding: 20px;
+	}
+{% endblock %}
 
 {% block content_inside %}
 <div class="row">
 	<div class="span16">
+{% if not results %}
+		<div class="hero-unit">
+			<form action="/search/" method="get">
+					<input class="input-medium" type="text" placeholder="Building Name" name="name">
+					<input class="input-medium" type="text" placeholder="Square Footage" name="sqft">
+					<input class="input-medium" type="text" placeholder="Year Built" name="year">
+					<button class="btn" type="submit">Go</button>
+			</form>
+		</div>
+{% endif %}
+{% if results %}
+	<h2>Results: </h2>
       <table class="bordered-table zebra-striped">
         <thead>
           <tr>
@@ -26,7 +43,6 @@ class="active"
           </tr>
         </thead>
         <tbody>
-{% if results %}
 {% for building in results|dictsort:"longname" %}
 
           <tr>
@@ -37,12 +53,20 @@ class="active"
           </tr>
 
 {% endfor %}
-{% endif %}
         </tbody>
       </table>
 
+		<div class="hero-unit">
+			<form action="/search/" method="get">
+					<input class="input-medium" type="text" placeholder="Building Name" value="{{ namequery }}" name="name">
+					<input class="input-medium" type="text" placeholder="Square Footage" value="{{ sqftquery }}" name="sqft">
+					<input class="input-medium" type="text" placeholder="Year Built" value="{{ yearquery }}" name="year">
+					<button class="btn" type="submit">Go</button>
+			</form>
+		</div>
 
 
+{% endif %}
 	</div>
 </div>
 {% endblock %}
