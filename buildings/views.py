@@ -11,6 +11,11 @@ def buildings(request, buildname):
 
 	BUILDING_NAME = thisbuilding.longname #required
 
+	if thisbuilding.queryid == None: #for smap query, use building id if not special
+		QUERY_ID = BUILDING_NAME
+	else:
+		QUERY_ID = thisbuilding.queryid
+
 	UUID_0 = thisbuilding.uuid_0
 	UUID_0s30 = thisbuilding.uuid_0_sub30
 	UUID_0s36 = thisbuilding.uuid_0_sub36

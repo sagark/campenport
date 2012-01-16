@@ -21,6 +21,7 @@ Later, replace hardcoded UUID storage with tags
 class Building(models.Model):
 	shortname = models.CharField(max_length=50)
 	longname = models.CharField(max_length=100)
+	queryid = models.CharField(max_length=100, blank=True)
 	uuid_0 = models.CharField(max_length=36)
 	uuid_0_sub30 = models.CharField(max_length=36, blank=True)
 	uuid_0_sub36 = models.CharField(max_length=36, blank=True)
