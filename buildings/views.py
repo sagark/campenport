@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from campenport.buildings.models import Building
+from campenport.settings import CMAPheight, CMAPwidth
 
 def buildings(request, buildname):
 	SHORT_NAME = buildname
@@ -11,35 +12,51 @@ def buildings(request, buildname):
 
 	BUILDING_NAME = thisbuilding.longname #required
 
-	if thisbuilding.queryid == None: #for smap query, use building id if not special
+	if thisbuilding.queryid == None or thisbuilding.queryid == '': #for smap query, use building id if not special
 		QUERY_ID = BUILDING_NAME
 	else:
 		QUERY_ID = thisbuilding.queryid
 
-	UUID_0 = thisbuilding.uuid_0
-	UUID_0s30 = thisbuilding.uuid_0_sub30
-	UUID_0s36 = thisbuilding.uuid_0_sub36
-	UUID_1 = thisbuilding.uuid_1
-	UUID_1s30 = thisbuilding.uuid_1_sub30
-	UUID_1s36 = thisbuilding.uuid_1_sub36
-	UUID_2 = thisbuilding.uuid_2
-	UUID_2s30 = thisbuilding.uuid_2_sub30
-	UUID_2s36 = thisbuilding.uuid_2_sub36
-	UUID_3 = thisbuilding.uuid_3
-	UUID_3s30 = thisbuilding.uuid_3_sub30
-	UUID_3s36 = thisbuilding.uuid_3_sub36
-	UUID_4 = thisbuilding.uuid_4
-	UUID_4s30 = thisbuilding.uuid_4_sub30
-	UUID_4s36 = thisbuilding.uuid_4_sub36
-	UUID_5 = thisbuilding.uuid_5
-	UUID_5s30 = thisbuilding.uuid_5_sub30
-	UUID_5s36 = thisbuilding.uuid_5_sub36
+	
+	#generate the box that allows viewing map location
+	coordfull = thisbuilding.map_coords
+	coordfull = coordfull.split(',')
+	outp_x = []
+	outp_y = []
+	for x in range(len(coordfull)):
+		if x%2 == 0:
+			outp_x.append(int(coordfull[x]))
+		else:
+			outp_y.append(int(coordfull[x]))
+	x_max = 0
+	x_min = 9999999999
+	y_max = 0
+	y_min = 9999999999
+	desired_width = 450
+	desired_height = 300
+	for x in outp_x:
+		if x > x_max:
+			x_max = x
+		elif x < x_min:
+			x_min = x
+	for y in outp_y:
+		if y > y_max:
+			y_max = y
+		elif y < y_min:
+			y_min = y
+	buildingwidth = x_max - x_min
+	buildingheight = y_max - y_min
+	subwidth = (desired_width - buildingwidth)/2
+	subheight = (desired_height - buildingheight)/2
+	x_min -= subwidth
+	y_min -= subheight
 
-
-	UUID_COUNT = 0
-	for x in [UUID_0, UUID_1, UUID_2, UUID_3, UUID_4, UUID_5]:
-		if x != '':
-			UUID_COUNT += 1
+	
+	#the following uuid count needs to now be implemented in js instead
+	#UUID_COUNT = 0
+	#for x in [UUID_0, UUID_1, UUID_2, UUID_3, UUID_4, UUID_5]:
+	#	if x != '':
+	#		UUID_COUNT += 1
 
 	INFO = thisbuilding.info
 	PIC = thisbuilding.pic
