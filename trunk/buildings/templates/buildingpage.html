@@ -67,45 +67,27 @@ Drag on the graph to zoom in.
 <h2>About {{ BUILDING_NAME }}:</h2> <p>{{ INFO }} </p><br> <br>
 <div style="text-align:right;"><a href="{{ STATS_ALTINFO }}" class="btn large primary">More Info >></a></div>
 
+
+</div>
+</div>
+
+<div class="row">
+<div class="span8">
 <h2>Building Stats:</h2> 
 <ul>
 <li>SqFT: {{ STATS_SQFT }} </li>
 <li>Year Built: {{ STATS_YEAR }} </li>
 <li>Available Data Sources: {{ UUID_COUNT }} </li>
 </ul>
+</div>
+<div class="span8">
+	<h2>Location:</h2>
+	<div class="mapboxdisp" style="padding-top:10px;overflow:hidden;height:{{ desired_height }}px;width:{{ desired_width }}px;"><div style="margin-left:-{{ x_min }}px;margin-top:-{{ y_min }}px;"><img src="/site-media/campusmap.png" /></div></div>
+</div>
+</div>
+<!-- make UUID display collapsable, needs to be implemented in JS now since db uuids were removed -->
 
-</div>
-</div>
-<div class="row">
-<div class="span16">
-<h2>Techie Stuff:</h2>
-</div>
-</div>
-<div class="row">
-<div class="span8">
-UUID_0: {{ UUID_0 }} <br>
-UUID_0s30: {{ UUID_0s30 }} <br>
-UUID_0s36: {{ UUID_0s36 }} <br>
-UUID_1: {{ UUID_1 }} <br>
-UUID_1s30: {{ UUID_1s30 }} <br>
-UUID_1s36: {{ UUID_1s36 }} <br>
-UUID_2: {{ UUID_2 }} <br>
-UUID_2s30: {{ UUID_2s30 }} <br>
-UUID_2s36: {{ UUID_2s36 }} <br>
-</div>
-<div class="span8">
-UUID_3: {{ UUID_3 }} <br>
-UUID_3s30: {{ UUID_3s30 }} <br>
-UUID_3s36: {{ UUID_3s36 }} <br>
-UUID_4: {{ UUID_4 }} <br>
-UUID_4s30: {{ UUID_4s30 }} <br>
-UUID_4s36: {{ UUID_4s36 }} <br>
-UUID_5: {{ UUID_5 }} <br>
-UUID_5s30: {{ UUID_5s30 }} <br>
-UUID_5s36: {{ UUID_5s36 }} <br>
-</div>
-</div>
-<br><br>
+
 {% endblock %}
 
 {% block random_extras %}

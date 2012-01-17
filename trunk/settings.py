@@ -32,6 +32,9 @@ ARD_URL = 'http://smote.cs.berkeley.edu:8079'
 #    new format to respect single-origin:
 # 	modified query: http://localhost:8000/ARDgetData/api/ ... etc
 
+### Please specify the size of your campus map in pixels
+CMAPheight = 1067
+CMAPwidth = 1232
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
