@@ -74,7 +74,7 @@ function urlSearch(inp) {
 					<li {% block menu_4 %}{% endblock %}><a href="/compare/">Compare</a></li>
 				</ul>
 				<form action="/search/" method="get" class="pull-right">
-					<input class="input-medium" type="text" placeholder="Search Buildings" name="name">
+					<input id="searchbox" class="input-medium" type="text" placeholder="Search Buildings" name="name">
 					<button class="btn" type="submit">Go</button>
 				</form>
 			</div>
@@ -103,6 +103,19 @@ function urlSearch(inp) {
 {% block random_extras %}
 {% endblock %}
 
+<script type="text/javascript">
+$(function() {
+		var availableTags = [
+			{% for building in buildings|dictsort:"longname" %}
+			"{{ building.longname }}",
+			{% endfor %}
+		];
+		$( "#searchbox" ).autocomplete({
+			source: availableTags
+		});
+	});
+
+</script>
 	</body>
 </html>
 

@@ -1,8 +1,11 @@
 from django.shortcuts import render_to_response
 from campenport.buildings.models import Building
 from campenport.settings import CMAPheight, CMAPwidth
+####NOTE: for searchbox autocomplete to work, each view MUST have buildings = Building.objects.all() (also, sorting is done in the django code embedded in html so no order_by necessary here)
+
 
 def buildings(request, buildname):
+	buildings = Building.objects.all()
 	SHORT_NAME = buildname
 	try:
 		thisbuilding = Building.objects.get(shortname = SHORT_NAME)
