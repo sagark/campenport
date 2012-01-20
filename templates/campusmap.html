@@ -2,7 +2,9 @@
 {% block title %}Berkeley Campus Energy Portal{% endblock %}
 
 {% block extra_scriptsCSS_imports %}
+		<script type="text/javascript" src="/site-media/jquery-mousewheel/jquery.mousewheel.js"></script>
 		<script type="text/javascript" src="/site-media/jquery-zoomable/jquery.zoomable.js"></script>
+
 {% endblock %}
 
 {% block extra_css_inline %}
@@ -45,7 +47,7 @@ Click a building to view energy usage information.
 						<input class="btn" type="button" value="Popup Building List" id="listb" />
 						<input class="btn" type="button" value="Close Building List" id="listb2" />
 					</div> 
-					<div style="overflow:hidden;width:940px;height:680px;position:relative;">
+					<div id="zoomablemap" style="overflow:hidden;width:940px;height:680px;position:relative;">
 						<img src="/site-media/campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
 						<map id="map" name="map">
 						<!-- coordinates stored in the db were obtained using the following: -->
@@ -88,6 +90,17 @@ Click a building to view energy usage information.
 		$('#image').zoomable('reset');
 		$('#image').zoomable('zoomOut');
 	});
+	if (!$.browser.mozilla) {
+		$('#zoomablemap').bind('mousewheel', function(e, delta){
+			if (delta < 0){
+				$('#image').zoomable('zoomOut');
+			}
+			if (delta > 0){
+				$('#image').zoomable('zoomIn');
+			} 
+		}); 
+	}
 </script>
+
 {% endblock %}
 
