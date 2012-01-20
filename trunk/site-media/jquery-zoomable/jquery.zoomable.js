@@ -49,19 +49,6 @@
   			}, false);
   		  }
   		}
-  		else {
-  		  $(value).bind('mousewheel', function (e) {
-  		    e.preventDefault();
-  			  zoomMouse(e.wheelDelta);
-  	    });
-  		  if (value.useMap != "") {
-  			  $(value.useMap).bind('mousewheel', function (e) {
-  			    e.preventDefault();
-  			    zoomMouse(e.wheelDelta);
-  			  });
-  		  }
-  		}
-
   		$(value).bind('mousemove', function (e) {
   		  zoomData.currentX = e.pageX;
   	      zoomData.currentY = e.pageY;
