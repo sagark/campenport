@@ -93,7 +93,7 @@ function urlSearch(inp) {
 		{% endblock %}
 		</div>
 		<footer>
-        	<p><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}">Valid HTML5</a> | Energy Data: <a href="http://new.openbms.org">new.openbms.org</a> | Building Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu">dashboard.berkeley.edu</a>
+        	<p><span id="validateHTML5"><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}">Valid HTML5</a></span> | Energy Data: <a href="http://new.openbms.org">new.openbms.org</a> | Building Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu">dashboard.berkeley.edu</a>
 			<br>
 			Source: <a href="http://code.google.com/p/campenport">campenport on googlecode</a> | License: New BSD | Built With: <a href="http://jquery.com">jQuery</a> | <a href="http://twitter.github.com/bootstrap">bootstrap</a> | <a href="http://code.google.com/p/flot/">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php">zoomable</a> | <a href="https://github.com/brandonaaron/jquery-mousewheel/">jquery-mousewheel</a> | <a href="http://www.ama3.com/anytime/">Any+Time</a> 
 			</p>
@@ -104,6 +104,10 @@ function urlSearch(inp) {
 {% endblock %}
 
 <script type="text/javascript">
+
+val = document.getElementById('validateHTML5');
+val.innerHTML = "<a href=\"http://validator.w3.org/check?uri=" + document.location.href + "\">Valid HTML5</a>";
+
 $(function() {
 		var availableTags = [
 			{% for building in buildings|dictsort:"longname" %}
