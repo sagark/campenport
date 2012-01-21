@@ -105,51 +105,66 @@ AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
 //end time setup
 
 $(document).ready(function() {
-	getData();
+	runReqOne();
 });
 
 $("#refresh").click(function() {
-	getData();
+	runReqOne();
 });
 
-function getData(){
+
+function ajaxReqOne(callback) {
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select * where Metadata/Location/Campus = 'UCB' and (has Metadata/Location/Campus and (not Metadata/SourceName = 'Campus Historical Meter Data')) and Metadata/Location/Building = '{{ QUERY_ID }}' and (has Properties/UnitofMeasure) and (Metadata/Extra/Phase = 'ABC' and Properties/UnitofMeasure = 'kW' and Metadata/Extra/System = 'total' and not (Path like '%_demand'))",
+		success: function(response) {
+			callback(response);
+		}
+	});
+}
+
+function runReqOne() {
+	
+	ajaxReqOne(function(respo){
+		output = [];
+		for (ind = 0; ind < respo.length; ind++) {
+				output.push(respo[ind]["uuid"]);
+			}
+		runReqTwo(output);
+	});
+}
+
+function ajaxReqTwo(callback, latest, inputUUID, starttime, endtime, output) {
+	$.ajax({ 
+			async: true,
+			type: 'GET',
+			url: "/ARDgetData/api/data/uuid/" + escape(inputUUID) + "?starttime=" + escape(starttime) + "&endtime=" + escape(endtime),
+			success: function(resp) {
+				callback(resp);
+			}
+	});
+}
+
+function runReqTwo(output) {
+	latest = [];
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
 	var starttime = converter.parse($("#date2").val()).getTime();
 
-	$.ajax({
-		async: false,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "select * where Metadata/Location/Campus = 'UCB' and (has Metadata/Location/Campus and (not Metadata/SourceName = 'Campus Historical Meter Data')) and Metadata/Location/Building = '{{ QUERY_ID }}' and (has Properties/UnitofMeasure) and (Metadata/Extra/Phase = 'ABC' and Properties/UnitofMeasure = 'kW' and Metadata/Extra/System = 'total' and not (Path like '%_demand'))",
-		success: function(respo) {
-			output = [];
-			for (ind = 0; ind < respo.length; ind++) {
-				output.push(respo[ind]["uuid"]);
-			}
-			
-			latest = [];
-			for (ind2 = 0; ind2 < output.length; ind2++) {	
-				$.ajax({ //async needs to be off
-					async: false,
-					type: 'GET',
-					url: "/ARDgetData/api/data/uuid/" + escape(output[ind2]) + "?starttime=" + escape(starttime) + "&endtime=" + escape(endtime),
-					success: function(resp) {
-					
-						latest.push(eval(resp));
-					
-						if (ind2+1 == output.length) {
-							drawGraph(latest);
-						}
-					}
-				});
-			}
-
+	for(x=0; x<output.length; x++){
+	ajaxReqTwo(function(resp){
+			//this should add stuff to the latest[]
+		latest.push(eval(resp));
+		//console.log(latest);
+		if (output.length==latest.length){
+			drawGraph(latest);
 		}
-	});
-
-
+	}, latest, output[x], starttime, endtime, output);
 	}
+}
+
 
 function drawGraph(inputData){
 	
