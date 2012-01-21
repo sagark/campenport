@@ -1,6 +1,6 @@
 from django.db.models import Q
-from django.shortcuts import render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response, redirect
+from django.http import HttpResponse
 from campenport.buildings.models import Building
 
 ####NOTE: for searchbox autocomplete to work, each view MUST have buildings = Building.objects.all() (also, sorting is done in the django code embedded in html so no order_by necessary here)
@@ -10,7 +10,7 @@ def homemap(request):
 	return render_to_response('campusmap.html', locals())
 
 def passhome(request):
-	return HttpResponseRedirect('/map/')
+	return redirect('/map/')
 
 def buildinglist(request):
 	buildings = Building.objects.all()
