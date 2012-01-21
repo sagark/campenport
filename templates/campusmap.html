@@ -5,6 +5,8 @@
 		<script type="text/javascript" src="/site-media/jquery-mousewheel/jquery.mousewheel.js"></script>
 		<script type="text/javascript" src="/site-media/jquery-zoomable/jquery.zoomable.js"></script>
 
+
+
 {% endblock %}
 
 {% block extra_css_inline %}
@@ -40,12 +42,13 @@ Click a building to view energy usage information.
 {% block content_inside %}
 			<div class="row">
 				<div class="span16">
-					<div style="text-align:right;position:right;margin-bottom:5px;">
+					<div style="text-align:right;position:right;margin-bottom:5px;margin-top:-15px;"><span id="buildingName" style="margin-top:5px;float:left;text-align:left;position:left;"><h3>Available Buildings Appear Here</h3></span><span class="btn" style="width:61%;position:right;">
 						<input class="btn" type="button" value="Zoom in" onclick="$('#image').zoomable('zoomIn')" title="Zoom in" />
 						<input class="btn" type="button" value="Zoom out" onclick="$('#image').zoomable('zoomOut')" title="Zoom out" />
 						<input class="btn" type="button" value="Reset" id="reset" />
 						<input class="btn" type="button" value="Popup Building List" id="listb" />
 						<input class="btn" type="button" value="Close Building List" id="listb2" />
+					</span>
 					</div> 
 					<div id="zoomablemap" style="overflow:hidden;width:940px;height:680px;position:relative;">
 						<img src="/site-media/campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
@@ -61,7 +64,7 @@ Click a building to view energy usage information.
 						<!-- generates imagemap from coordinates stored in database -->
 						
 						{% for building in buildings|dictsort:"longname" %}
-							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}" alt="{{ building.shortname }}" />
+							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}" alt="{{ building.shortname }}" onmouseover="dispName('{{ building.longname }}')" onmouseout="hideName()" />
 						{% endfor %}
 
 						</map>
@@ -78,8 +81,23 @@ Click a building to view energy usage information.
 			{% endfor %}
 		</ul>
 	</div>
+	
 
 <script type="text/javascript">
+
+function dispName(buildingname) {
+	$('#buildingName').hide();
+	mod = document.getElementById('buildingName');
+	mod.innerHTML = "<h3>" + buildingname + "</h3>";
+	$('#buildingName').fadeIn('fast');
+}
+
+function hideName() {
+	$('#buildingName').hide();
+	mod = document.getElementById('buildingName');
+	mod.innerHTML = ""
+}
+
 	$("#listb").click(function(){
 		$("#dialog").dialog("open");
 	});

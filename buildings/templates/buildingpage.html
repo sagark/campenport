@@ -81,11 +81,13 @@ Drag on the graph to zoom in.
 <div class="row">
 <div class="span8">
 <h2>Building Stats:</h2> 
+<h4>
 <ul>
-<li>SqFT: {{ STATS_SQFT }} </li>
+<li>Square Footage: {{ STATS_SQFT }} </li>
 <li>Year Built: {{ STATS_YEAR }} </li>
-<li>Available Data Sources: {{ UUID_COUNT }} </li>
+<li>Available Data Sources: <span id="UUIDcount"></span> </li>
 </ul>
+</h4>
 </div>
 <div class="span8">
 	<h2>Location:</h2>
@@ -103,7 +105,7 @@ Drag on the graph to zoom in.
 		<p>Although we hope the link to be useful, sites change. Thus, we cannot necessarily endorse the link to which you are being directed: {{ STATS_ALTINFO }}</p>
     </div>
     <div class="modal-footer">
-    	<a href="{{ STATS_ALTINFO }}" class="btn primary">Continue to External Site</a>
+    	<a href="{{ STATS_ALTINFO }}" target="_blank" onClick="$('#modal-from-dom').modal('hide')" class="btn primary">Continue to External Site</a>
         <a onClick="$('#modal-from-dom').modal('hide')" class="btn secondary">Go Back</a>
 	</div>
 </div>
@@ -153,6 +155,8 @@ function runReqOne() {
 	
 	ajaxReqOne(function(respo){
 		output = [];
+		sendUUIDcount = document.getElementById('UUIDcount');
+		sendUUIDcount.innerHTML = respo.length;
 		for (ind = 0; ind < respo.length; ind++) {
 				output.push(respo[ind]["uuid"]);
 			}
