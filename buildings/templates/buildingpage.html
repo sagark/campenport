@@ -91,7 +91,34 @@ Drag on the graph to zoom in.
 </div>
 <div class="span8">
 	<h2>Location:</h2>
-	<div class="mapboxdisp" style="padding-top:10px;overflow:hidden;height:{{ desired_height }}px;width:{{ desired_width }}px;"><div style="margin-left:-{{ x_min }}px;margin-top:-{{ y_min }}px;"><img src="/site-media/campusmap.png" /></div></div>
+	<div class="mapboxdisp" style="padding-top:10px;overflow:hidden;height:{{ desired_height }}px;width:{{ desired_width }}px;"><div style="margin-left:-{{ x_min }}px;margin-top:-{{ y_min }}px;">
+
+<img src="/site-media/campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
+						<map id="map" name="map">
+						<!-- coordinates stored in the db were obtained using the following: -->
+							<!-- #$-:Image map file created by GIMP Image Map plug-in -->
+							<!-- #$-:GIMP Image Map plug-in by Maurits Rijk -->
+							<!-- #$-:Please do not edit lines starting with "#$" -->
+							<!-- #$VERSION:2.3 -->
+							<!-- #$AUTHOR:sagark  -->
+						<!-- end cooordinates were obtained -->
+
+						<!-- generates imagemap from coordinates stored in database -->
+						
+						{% for building in buildings|dictsort:"longname" %}
+							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}/" alt="{{ building.shortname }}" onmouseover="dispName('{{ building.longname }}')" onmouseout="hideName()" />
+						{% endfor %}
+
+						</map>
+
+
+<!--<img src="/site-media/campusmap.png" /> -->
+
+
+</div>
+
+
+</div>
 </div>
 </div>
 <!-- make UUID display collapsable, needs to be implemented in JS now since db uuids were removed -->

@@ -64,7 +64,7 @@ Click a building to view energy usage information.
 						<!-- generates imagemap from coordinates stored in database -->
 						
 						{% for building in buildings|dictsort:"longname" %}
-							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}" alt="{{ building.shortname }}" onmouseover="dispName('{{ building.longname }}')" onmouseout="hideName()" />
+							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}/" alt="{{ building.shortname }}" onmouseover="dispName('{{ building.longname }}')" onmouseout="hideName()" />
 						{% endfor %}
 
 						</map>
