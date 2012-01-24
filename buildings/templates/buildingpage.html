@@ -9,6 +9,16 @@
 <script type="text/javascript" src="/site-media/flot/jquery.flot.selection.min.js"></script>
 <script type="text/javascript" src="/site-media/anytime/anytimec.js"></script>
 <script type="text/javascript" src="/site-media/bootstrap/bootstrap-modal.js"></script>
+
+
+
+<link rel="stylesheet" href="/site-media/jgauge/css/jgauge.css" type="text/css" /> <!-- CSS for jGauge styling. -->
+		<!--[if IE]><script type="text/javascript" language="javascript" src="js/excanvas.min.js"></script><![endif]--> <!-- Extends canvas support to IE. (Possibly buggy, need to look into this.) -->
+		
+		<script language="javascript" type="text/javascript" src="/site-media/jgauge/js/jQueryRotate.min.js"></script> <!-- jQueryRotate plugin used for needle movement. -->
+		<script language="javascript" type="text/javascript" src="/site-media/jgauge/js/jgauge-0.3.0.a3.js"></script> <!-- jGauge JavaScript. -->
+
+
 {% endblock %}
 
 {% block extra_css_inline %}
@@ -53,7 +63,21 @@ Drag on the graph to zoom in.
 </div>
 </div>
 
+<div class="row">
 
+<div class="span-one-third">
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>Actual kW vs. Baseline</h3><div style="width:180px;margin:0 auto;"><div id="kWvsBaseline" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+</div>
+
+<div class="span-one-third">
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>% of Total Campus (kW)</h3><div style="width:180px;margin:0 auto;"><div id="gaugeTwo" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+</div>
+<div class="span-one-third">
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>% of Total Campus (SqFt)</h3><div style="width:180px;margin:0 auto;"><div id="gaugeThree" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+</div>
+
+
+</div> <!-- endrow -->
 
 
 
@@ -154,9 +178,95 @@ $("#date2").val(converter.format(startDate));
 AnyTime.picker( "date", { format: datefmt, firstDOW: 0 } );
 AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
 //end time setup
+//gauge setup
+	var kWvsBaselineG = new jGauge(); // Create a new jGauge.
+				kWvsBaselineG.id = 'kWvsBaseline'; // Link the new jGauge to the placeholder DIV.
+				kWvsBaselineG.autoPrefix = autoPrefix.si; // Use SI prefixing (i.e. 1k = 1000).
+				kWvsBaselineG.imagePath = '/site-media/jgauge/img/jgauge_face_taco_transparentMod.png';
+				kWvsBaselineG.segmentStart = -225
+				kWvsBaselineG.segmentEnd = 45
+				kWvsBaselineG.width = 170;
+				kWvsBaselineG.height = 170;
+				kWvsBaselineG.needle.imagePath = '/site-media/jgauge/img/jgauge_needle_taco.png';
+				kWvsBaselineG.needle.xOffset = 0;
+				kWvsBaselineG.needle.yOffset = 0;
+                                kWvsBaselineG.label.yOffset = 55;
+                                kWvsBaselineG.label.color = '#FFFFFF';
+                                kWvsBaselineG.label.precision = 0; // 0 decimals (whole numbers).
+				kWvsBaselineG.label.suffix = '%'; // Make the value label watts.
+				kWvsBaselineG.ticks.labelRadius = 45;
+                                kWvsBaselineG.ticks.labelColor = '#0ce';
+                                kWvsBaselineG.ticks.start = 0;
+                                kWvsBaselineG.ticks.end = 200;
+                                kWvsBaselineG.ticks.count = 5;
+                                kWvsBaselineG.ticks.color = 'rgba(0, 0, 0, 0)';
+                                kWvsBaselineG.range.color = 'rgba(0, 0, 0, 0)';
+
+
+
+
+var gaugeTwo = new jGauge(); // Create a new jGauge.
+				gaugeTwo.id = 'gaugeTwo'; // Link the new jGauge to the placeholder DIV.
+				gaugeTwo.autoPrefix = autoPrefix.si; // Use SI prefixing (i.e. 1k = 1000).
+				gaugeTwo.imagePath = '/site-media/jgauge/img/jgauge_face_taco_transparentMod.png';
+				gaugeTwo.segmentStart = -225
+				gaugeTwo.segmentEnd = 45
+				gaugeTwo.width = 170;
+				gaugeTwo.height = 170;
+				gaugeTwo.needle.imagePath = '/site-media/jgauge/img/jgauge_needle_taco.png';
+				gaugeTwo.needle.xOffset = 0;
+				gaugeTwo.needle.yOffset = 0;
+                                gaugeTwo.label.yOffset = 55;
+                                gaugeTwo.label.color = '#FFFFFF';
+                                gaugeTwo.label.precision = 0; // 0 decimals (whole numbers).
+				gaugeTwo.label.suffix = '%'; // Make the value label watts.
+				gaugeTwo.ticks.labelRadius = 45;
+                                gaugeTwo.ticks.labelColor = '#0ce';
+                                gaugeTwo.ticks.start = 0;
+                                gaugeTwo.ticks.end = 200;
+                                gaugeTwo.ticks.count = 5;
+                                gaugeTwo.ticks.color = 'rgba(0, 0, 0, 0)';
+                                gaugeTwo.range.color = 'rgba(0, 0, 0, 0)';
+
+
+var gaugeThree = new jGauge(); // Create a new jGauge.
+				gaugeThree.id = 'gaugeThree'; // Link the new jGauge to the placeholder DIV.
+				gaugeThree.autoPrefix = autoPrefix.si; // Use SI prefixing (i.e. 1k = 1000).
+				gaugeThree.imagePath = '/site-media/jgauge/img/jgauge_face_taco_transparentMod.png';
+				gaugeThree.segmentStart = -225
+				gaugeThree.segmentEnd = 45
+				gaugeThree.width = 170;
+				gaugeThree.height = 170;
+				gaugeThree.needle.imagePath = '/site-media/jgauge/img/jgauge_needle_taco.png';
+				gaugeThree.needle.xOffset = 0;
+				gaugeThree.needle.yOffset = 0;
+                                gaugeThree.label.yOffset = 55;
+                                gaugeThree.label.color = '#FFFFFF';
+                                gaugeThree.label.precision = 0; // 0 decimals (whole numbers).
+				gaugeThree.label.suffix = '%'; // Make the value label watts.
+				gaugeThree.ticks.labelRadius = 45;
+                                gaugeThree.ticks.labelColor = '#0ce';
+                                gaugeThree.ticks.start = 0;
+                                gaugeThree.ticks.end = 200;
+                                gaugeThree.ticks.count = 5;
+                                gaugeThree.ticks.color = 'rgba(0, 0, 0, 0)';
+                                gaugeThree.range.color = 'rgba(0, 0, 0, 0)';
+
+
+
+//end gauge setup
+
+
 
 $(document).ready(function() {
 	runReqOne();
+//	baselineCompare();
+	kWvsBaselineG.init();
+	gaugeTwo.init();
+	gaugeThree.init();
+	kWvsBaselineG.setValue(000);
+	gaugeTwo.setValue(000);
+	gaugeThree.setValue(000);
 });
 
 $("#refresh").click(function() {
@@ -215,9 +325,63 @@ function runReqTwo(output) {
 		//console.log(latest);
 		if (output.length==latest.length){
 			drawGraph(latest);
+			baselineCompare(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1]);
 		}
 	}, latest, output[x], starttime, endtime, output);
 	}
+}
+
+
+
+//New set of functions for baseline data
+function getBaselineData(callback, lastActualkW) {
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and Metadata/Extra/Operator = 'baseline-01'",
+		success: function(response) {
+			callback(response, lastActualkW);
+		}
+	});
+
+
+}
+
+function baselineCompare(lastActualkW) {
+	getBaselineData(runWithBaselineData, lastActualkW);
+
+}
+
+function runWithBaselineData(inputdata, lastActualkW){
+	//console.log(inputdata[0]['uuid']);
+	getBaselinePoint(inputdata[0]['uuid'], lastActualkW);
+
+}
+
+function getBaselinePoint(uuidin, lastActualkW) {
+	getBaselineDataVals(consolelogData, uuidin, lastActualkW);
+}
+
+function getBaselineDataVals(callback, uuidin, lastActualkW) {
+
+		$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select data before now limit 1 where uuid =\'" + escape(uuidin) + "'and Metadata/Extra/Operator = 'baseline-01'",
+		success: function(response) {
+			callback(response, lastActualkW);
+		}
+	});
+}
+
+function consolelogData(response, lastActualkW) {
+	//console.log(response[0]['Readings'][0][1]);
+	percent = Math.round(lastActualkW[1]/response[0]['Readings'][0][1]*100);
+	console.log("{{ BUILDING_NAME }} is currently operating at " + percent + "% of the predicted baseline.");
+	kWvsBaselineG.setValue(percent);
+	gaugeThree.setValue({{ sqftPercent }});	
 }
 
 

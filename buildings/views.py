@@ -20,6 +20,12 @@ def buildings(request, buildname):
 	else:
 		QUERY_ID = thisbuilding.queryid
 
+
+	totalsqft = 0
+	for x in buildings:
+		totalsqft += int(x.stats_sqft)
+	
+	sqftPercent = int(thisbuilding.stats_sqft)*100/totalsqft
 	
 	#generate the box that allows viewing map location
 	coordfull = thisbuilding.map_coords
