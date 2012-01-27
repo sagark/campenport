@@ -130,7 +130,7 @@ Drag on the graph to zoom in.
 						<!-- generates imagemap from coordinates stored in database -->
 						
 						{% for building in buildings|dictsort:"longname" %}
-							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}/" alt="{{ building.shortname }}" onmouseover="dispName('{{ building.longname }}')" onmouseout="hideName()" />
+							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}/" alt="{{ building.shortname }}"   />
 						{% endfor %}
 
 						</map>
@@ -247,7 +247,7 @@ var gaugeThree = new jGauge(); // Create a new jGauge.
 				gaugeThree.ticks.labelRadius = 45;
                                 gaugeThree.ticks.labelColor = '#0ce';
                                 gaugeThree.ticks.start = 0;
-                                gaugeThree.ticks.end = 200;
+                                gaugeThree.ticks.end = 10;
                                 gaugeThree.ticks.count = 5;
                                 gaugeThree.ticks.color = 'rgba(0, 0, 0, 0)';
                                 gaugeThree.range.color = 'rgba(0, 0, 0, 0)';
@@ -281,7 +281,7 @@ function ajaxReqOne(callback) {
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "select * where Metadata/Location/Campus = 'UCB' and (has Metadata/Location/Campus and (not Metadata/SourceName = 'Campus Historical Meter Data')) and Metadata/Location/Building = '{{ QUERY_ID }}' and (has Properties/UnitofMeasure) and (Metadata/Extra/Phase = 'ABC' and Properties/UnitofMeasure = 'kW' and Metadata/Extra/System = 'total' and not (Path like '%_demand'))",
+		data: "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and (Metadata/Extra/Operator like 'baseline-%' or (Metadata/Extra/Operator = 'subsampled sum') or Metadata/PointName = 'SDH.STEAM_FLOW')",
 		success: function(response) {
 			callback(response);
 		}
@@ -394,8 +394,8 @@ function drawGraph(inputData){
     
 	var options = {
         	series: {
-				stack: true,
-            	lines: { show: true, fill: 1 }, //fill: 1 essentially "hides" the fact that there are multiple UUIDs
+				//stack: false,
+            	//lines: { show: true, fill: 1 }, //fill: 1 essentially "hides" the fact that there are multiple UUIDs
 				color: "blue",
         	},
         	legend: { noColumns: 2 },
