@@ -3,10 +3,15 @@
 	<head>
 		<meta charset="utf-8">
 		<title>{% block title %}basepage{% endblock %}</title>
+		<link REL="SHORTCUT ICON" HREF="/site-media/favicon/favicon.ico">  
+		<!-- the above favicon is property of the Regents of the University of California -->
 		<link href="/site-media/bootstrap/bootstrap.min.css" rel="stylesheet">
 		<link href="/site-media/jquery/jquery-ui.css" rel="stylesheet" type="text/css"/>
 		<script type="text/javascript" src="/site-media/jquery/jquery.min.js"></script>
 		<script type="text/javascript" src="/site-media/jquery/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-twipsy.js"></script>
+		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-popover.js"></script>
+
 		{% block extra_scriptsCSS_imports %} {% endblock %}
 
 		<!-- HTML5 shim, for IE6-8 support of HTML elements -->
@@ -48,6 +53,11 @@
 				text-align: center;
 			}
 
+
+
+.popover .content {
+margin: 0;
+}
 		</style>
 	</head>
 
@@ -95,19 +105,32 @@ function urlSearch(inp) {
 		<footer>
         	<p><span id="validateHTML5"><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}">Valid HTML5</a></span> | Energy Data: <a href="http://new.openbms.org">new.openbms.org</a> | Building Information and Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu">dashboard.berkeley.edu</a>
 			<br>
-			Source: <a href="http://code.google.com/p/campenport">campenport on googlecode</a> | License: <a href="http://www.opensource.org/licenses/bsd-license.php">New BSD</a> | Built With: <a href="http://jquery.com">jQuery</a> | <a href="http://twitter.github.com/bootstrap">bootstrap</a> | <a href="http://code.google.com/p/flot/">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php">zoomable</a> | <a href="https://github.com/brandonaaron/jquery-mousewheel/">jquery-mousewheel</a> | <a href="http://www.ama3.com/anytime/">Any+Time</a> 
-			</p>
+			Source: <a href="http://code.google.com/p/campenport">campenport on googlecode</a> | License: <a href="http://www.opensource.org/licenses/bsd-license.php">New BSD</a> | Built With: <a href="http://jquery.com">jQuery</a> | <a href="http://twitter.github.com/bootstrap">bootstrap</a> | <a href="http://code.google.com/p/flot/">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php">zoomable</a> | <a href="https://github.com/brandonaaron/jquery-mousewheel/">jquery-mousewheel</a> | <a href="http://www.ama3.com/anytime/">Any+Time</a> | jgauges</p>
 		</footer>
 	</div>
 
 {% block random_extras %}
 {% endblock %}
 
+
+
+
 <script type="text/javascript">
 
 val = document.getElementById('validateHTML5');
 val.innerHTML = "<a href=\"http://validator.w3.org/check?uri=" + document.location.href + "\" target=\"_blank\">Valid HTML5</a>";
-
+$(function () {
+              $("a[rel=popover]")
+                .popover({
+                  offset: 10,
+				  html: true,
+				  placement: 'above',
+				  delayOut: 2000,
+                })
+                .click(function(e) {
+                  e.preventDefault()
+                })
+            })
 $(function() {
 		var availableTags = [
 			{% for building in buildings|dictsort:"longname" %}
