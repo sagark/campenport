@@ -9,21 +9,13 @@
 <script type="text/javascript" src="/site-media/flot/jquery.flot.selection.min.js"></script>
 <script type="text/javascript" src="/site-media/anytime/anytimec.js"></script>
 <script type="text/javascript" src="/site-media/bootstrap/bootstrap-modal.js"></script>
-
-
-
 <link rel="stylesheet" href="/site-media/jgauge/css/jgauge.css" type="text/css" /> <!-- CSS for jGauge styling. -->
-		<!--[if IE]><script type="text/javascript" language="javascript" src="js/excanvas.min.js"></script><![endif]--> <!-- Extends canvas support to IE. (Possibly buggy, need to look into this.) -->
-		
-		<script language="javascript" type="text/javascript" src="/site-media/jgauge/js/jQueryRotate.min.js"></script> <!-- jQueryRotate plugin used for needle movement. -->
-		<script language="javascript" type="text/javascript" src="/site-media/jgauge/js/jgauge-0.3.0.a3.js"></script> <!-- jGauge JavaScript. -->
-
-
+<!--[if IE]><script type="text/javascript" language="javascript" src="js/excanvas.min.js"></script><![endif]--> <!-- Extends canvas support to IE. (Possibly buggy, need to look into this.) -->
+<script language="javascript" type="text/javascript" src="/site-media/jgauge/js/jQueryRotate.min.js"></script> <!-- jQueryRotate plugin used for needle movement. -->
+<script language="javascript" type="text/javascript" src="/site-media/jgauge/js/jgauge-0.3.0.a3.js"></script> <!-- jGauge JavaScript. -->
 {% endblock %}
 
 {% block extra_css_inline %}
-
-
 	.hero-unit {
 		padding-top: 20px;
 		padding-bottom: 20px;
@@ -47,9 +39,6 @@ Drag on the graph to zoom in.
 
 {% block content_inside %}
 <div class="hero-unit" style="min-height:610px;">
-
-			
-
 <p>Live Energy Usage Graph (Default 1 Day): </p> Start Time: <input class="span4" type = "text" id="date2" size=36>&nbsp; &nbsp; &nbsp; &nbsp;  End Time: <input class="span4" type="text" id="date" size=36>&nbsp; &nbsp; &nbsp; &nbsp; <input type = "button" class="btn primary" value = "Load/Refresh Data" id="refresh"> 
 <br><br>
 <div id="graph" ><div style="float:left;position:relative;top:220px;left:-50px;-moz-transform:rotate(270deg);-o-transform:rotate(270deg);-webkit-transform:rotate(270deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);-ms-filter:"progid:DXImageTransform.Microsoft.BasicImage(rotation=3);">Energy Usage (kW)</div> <!-- rotated-text code adapted from http://stackoverflow.com/a/4809513 -->
@@ -66,14 +55,14 @@ Drag on the graph to zoom in.
 <div class="row">
 
 <div class="span-one-third">
-	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>Deviation from Baseline</h3><div style="width:180px;margin:0 auto;"><div id="kWvsBaseline" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="Deviation from Baseline is calculated by taking the actual kW usage, subtracting the baseline, and finally dividing this result by the baseline. It is effectively a calculation of error; thus a negative percentage means that the building is using less energy than usual, while a positive percentage implies exactly the opposite." style="color:#000000;">Deviation from Baseline</a></h3><div style="width:180px;margin:0 auto;"><div id="kWvsBaseline" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
 </div>
 
 <div class="span-one-third">
-	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>% of Total Campus (kW)</h3><div style="width:180px;margin:0 auto;"><div id="gaugeTwo" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="% of Total Campus (kW) is calculated by taking a building's current energy usage and dividing it by the sum of the energy usage of all campus buildings for which data is available. It is designed to be compared to the gauge to the right, % of Total Campus (SqFt)." style="color:#000000;">% of Total Campus (kW)</a></h3><div style="width:180px;margin:0 auto;"><div id="gaugeTwo" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
 </div>
 <div class="span-one-third">
-	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>% of Total Campus (SqFt)</h3><div style="width:180px;margin:0 auto;"><div id="gaugeThree" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="% of Total Campus (SqFt) is calculated by taking a building's square footage and dividing it by the sum of the square footage of all campus buildings for which data is available. It is designed to be compared to the gauge to the left, % of Total Campus (kW)." style="color:#000000;">% of Total Campus (SqFt)</a></h3><div style="width:180px;margin:0 auto;"><div id="gaugeThree" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
 </div>
 
 
@@ -136,16 +125,12 @@ Drag on the graph to zoom in.
 						</map>
 
 
-<!--<img src="/site-media/campusmap.png" /> -->
-
-
 </div>
 
 
 </div>
 </div>
 </div>
-<!-- make UUID display collapsable, needs to be implemented in JS now since db uuids were removed -->
 
 <div id="modal-from-dom" class="modal hide fade">
 	<div class="modal-header">
@@ -183,8 +168,8 @@ AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
 				kWvsBaselineG.id = 'kWvsBaseline'; // Link the new jGauge to the placeholder DIV.
 				kWvsBaselineG.autoPrefix = autoPrefix.si; // Use SI prefixing (i.e. 1k = 1000).
 				kWvsBaselineG.imagePath = '/site-media/jgauge/img/jgauge_face_taco_transparentMod.png';
-				kWvsBaselineG.segmentStart = -225
-				kWvsBaselineG.segmentEnd = 45
+				kWvsBaselineG.segmentStart = -225;
+				kWvsBaselineG.segmentEnd = 45;
 				kWvsBaselineG.width = 170;
 				kWvsBaselineG.height = 170;
 				kWvsBaselineG.needle.imagePath = '/site-media/jgauge/img/jgauge_needle_taco.png';
@@ -201,16 +186,12 @@ AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
                                 kWvsBaselineG.ticks.count = 5;
                                 kWvsBaselineG.ticks.color = 'rgba(0, 0, 0, 0)';
                                 kWvsBaselineG.range.color = 'rgba(0, 0, 0, 0)';
-
-
-
-
 var gaugeTwo = new jGauge(); // Create a new jGauge.
 				gaugeTwo.id = 'gaugeTwo'; // Link the new jGauge to the placeholder DIV.
 				gaugeTwo.autoPrefix = autoPrefix.si; // Use SI prefixing (i.e. 1k = 1000).
 				gaugeTwo.imagePath = '/site-media/jgauge/img/jgauge_face_taco_transparentMod.png';
-				gaugeTwo.segmentStart = -225
-				gaugeTwo.segmentEnd = 45
+				gaugeTwo.segmentStart = -225;
+				gaugeTwo.segmentEnd = 45;
 				gaugeTwo.width = 170;
 				gaugeTwo.height = 170;
 				gaugeTwo.needle.imagePath = '/site-media/jgauge/img/jgauge_needle_taco.png';
@@ -227,14 +208,12 @@ var gaugeTwo = new jGauge(); // Create a new jGauge.
                                 gaugeTwo.ticks.count = 5;
                                 gaugeTwo.ticks.color = 'rgba(0, 0, 0, 0)';
                                 gaugeTwo.range.color = 'rgba(0, 0, 0, 0)';
-
-
 var gaugeThree = new jGauge(); // Create a new jGauge.
 				gaugeThree.id = 'gaugeThree'; // Link the new jGauge to the placeholder DIV.
 				gaugeThree.autoPrefix = autoPrefix.si; // Use SI prefixing (i.e. 1k = 1000).
 				gaugeThree.imagePath = '/site-media/jgauge/img/jgauge_face_taco_transparentMod.png';
-				gaugeThree.segmentStart = -225
-				gaugeThree.segmentEnd = 45
+				gaugeThree.segmentStart = -225;
+				gaugeThree.segmentEnd = 45;
 				gaugeThree.width = 170;
 				gaugeThree.height = 170;
 				gaugeThree.needle.imagePath = '/site-media/jgauge/img/jgauge_needle_taco.png';
@@ -251,16 +230,20 @@ var gaugeThree = new jGauge(); // Create a new jGauge.
                                 gaugeThree.ticks.count = 5;
                                 gaugeThree.ticks.color = 'rgba(0, 0, 0, 0)';
                                 gaugeThree.range.color = 'rgba(0, 0, 0, 0)';
-
-
-
 //end gauge setup
 
-
+$(function () {
+              $("a[rel=popover]")
+                .popover({
+                  offset: 10
+                })
+                .click(function(e) {
+                  e.preventDefault()
+                })
+            })
 
 $(document).ready(function() {
 	runReqOne();
-//	baselineCompare();
 	kWvsBaselineG.init();
 	gaugeTwo.init();
 	gaugeThree.init();
@@ -295,7 +278,6 @@ function runReqOne() {
 		sendUUIDcount = document.getElementById('UUIDcount');
 		sendUUIDcount.innerHTML = respo.length;
 		for (ind = 0; ind < respo.length; ind++) {
-				//console.log([respo[ind]["uuid"],respo[ind]["Metadata"]["Extra"]["Operator"]]);
 				output.push([respo[ind]["uuid"],respo[ind]["Metadata"]["Extra"]["Operator"]]);
 			}
 		runReqTwo(output);
@@ -322,82 +304,29 @@ function runReqTwo(output) {
 
 	for(x=0; x<output.length; x++){
 	ajaxReqTwo(function(resp, typeInput){
-			//this should add stuff to the latest[]
 		typeOrder.push(typeInput);
-		
 		latest.push(eval(resp));
-		//console.log(latest);
 		if (output.length==latest.length){
 			latest = drawGraph(latest, typeOrder);
-			
-			baselineCompare(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1]);
+			setAllTheGauges(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1], latest[1][0]['Readings'][latest[1][0]['Readings'].length-1]);
 		}
 	}, latest, output[x][0], starttime, endtime, output, output[x][1]);
 	}
 }
 
-
-
-//New set of functions for baseline data
-function getBaselineData(callback, lastActualkW) {
-	$.ajax({
-		async: true,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and Metadata/Extra/Operator = 'baseline-01'",
-		success: function(response) {
-			callback(response, lastActualkW);
-		}
-	});
-
-
-}
-
-function baselineCompare(lastActualkW) {
-	getBaselineData(runWithBaselineData, lastActualkW);
-
-}
-
-function runWithBaselineData(inputdata, lastActualkW){
-	//console.log(inputdata[0]['uuid']);
-	getBaselinePoint(inputdata[0]['uuid'], lastActualkW);
-
-}
-
-function getBaselinePoint(uuidin, lastActualkW) {
-	getBaselineDataVals(consolelogData, uuidin, lastActualkW);
-}
-
-function getBaselineDataVals(callback, uuidin, lastActualkW) {
-
-		$.ajax({
-		async: true,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "select data before now limit 1 where uuid =\'" + escape(uuidin) + "'and Metadata/Extra/Operator = 'baseline-01'",
-		success: function(response) {
-			callback(response, lastActualkW);
-		}
-	});
-}
-
-function consolelogData(response, lastActualkW) {
-	console.log(response[0]['Readings'][0][1]);
-	console.log(lastActualkW[1]);
-	percent = Math.round((lastActualkW[1]-response[0]['Readings'][0][1])/response[0]['Readings'][0][1]*100);
-	console.log("{{ BUILDING_NAME }} is currently operating at " + percent + "% of the predicted baseline.");
+function setAllTheGauges(lastActualkW, lastActualBaseline) {
+	percent = Math.round((lastActualkW[1]-lastActualBaseline[1])/lastActualBaseline[1]*100);
 	kWvsBaselineG.setValue(percent);
 	callgetLatestWholeCampus(lastActualkW);
 	gaugeThree.setValue({{ sqftPercent }});	
 }
 
 function callgetLatestWholeCampus(lastActualkW){
-		getLatestWholeCampus(setMiddleGauge, lastActualkW);
+	getLatestWholeCampus(setMiddleGauge, lastActualkW);
 }
 
 function getLatestWholeCampus(callback, lastActualkW) {
-
-$.ajax({
+	$.ajax({
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
@@ -416,15 +345,12 @@ function setMiddleGauge(response, lastActualkW){
 
 function drawGraph(inputData, typeData){
 	if (typeData[0] == "subsampled sum"){
-	//console.log("no repair done");
 	}
 	else {
-	//	console.log("repair complete");
 		inputData = [inputData[1], inputData[0]]; //fixes ordering for passing on 
 		typeData = [typeData[1], typeData[0]];
 	}
 	for (val in typeData){
-		//console.log(typeData[val]);
 		if (typeData[val]=="baseline-01"){
 			typeData[val] = "Predicted Usage";
 		}
@@ -436,13 +362,8 @@ function drawGraph(inputData, typeData){
 	for (ind3 = 0; ind3 < inputData.length; ind3++) {
 		data.push({label:typeData[ind3], "data":inputData[ind3][0]['Readings']});
 	}
-    //console.log(typeData);
 	var options = {
-        	//series: {
-				//stack: false,
-            	//lines: { show: true, fill: 1 }, //fill: 1 essentially "hides" the fact that there are multiple UUIDs
-				colors: ["blue", "black"],
-        	//},
+			colors: ["blue", "black"],
         	legend: { noColumns: 2 },
         	xaxis: { tickDecimals: 0, mode:"time" },
         	selection: { mode: "x" }
