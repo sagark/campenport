@@ -2195,7 +2195,7 @@
                 
                 fragments.push(
                     '<td class="legendColorBox"><div style="border:1px solid ' + options.legend.labelBoxBorderColor + ';padding:1px"><div style="width:4px;height:0;border:5px solid ' + s.color + ';overflow:hidden"></div></div></td>' +
-                    '<td class="legendLabel">' + label + '</td>');
+                    '<td class="legendLabel"><div style="margin-left:-15px;">' + label + '</div></td>');
             }
             if (rowStarted)
                 fragments.push('</tr>');
@@ -2220,7 +2220,7 @@
                     pos += 'right:' + (m[0] + plotOffset.right) + 'px;';
                 else if (p.charAt(1) == "w")
                     pos += 'left:' + (m[0] + plotOffset.left) + 'px;';
-                var legend = $('<div class="legend">' + table.replace('style="', 'style="position:absolute;' + pos +';') + '</div>').appendTo(placeholder);
+                var legend = $('<div class="legend">' + table.replace('style="', 'style="width:200px;margin-top:-8px;position:absolute;top:12px;left:28px;"') + '</div>').appendTo(placeholder);
                 if (options.legend.backgroundOpacity != 0.0) {
                     // put in the transparent background
                     // separately to avoid blended labels and
@@ -2235,8 +2235,9 @@
                         c.a = 1;
                         c = c.toString();
                     }
-                    var div = legend.children();
-                    $('<div style="position:absolute;width:' + div.width() + 'px;height:' + div.height() + 'px;' + pos +'background-color:' + c + ';"> </div>').prependTo(legend).css('opacity', options.legend.backgroundOpacity);
+                    var div = legend.children();  ///The old bg color  background-color:' + c + ';"
+					//there's no need for the box behind the series, it'll just get confused if there happen to be more series that need to be displayed
+                    //$('<div style="position:absolute;width:' + div.width() + 'px;height:' + div.height() + 'px;left:0px;top:12px;background-color:#000000;"> </div>').prependTo(legend).css('opacity', options.legend.backgroundOpacity);
                 }
             }
         }
