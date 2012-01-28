@@ -66,7 +66,7 @@ Drag on the graph to zoom in.
 <div class="row">
 
 <div class="span-one-third">
-	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>Actual kW vs. Baseline</h3><div style="width:180px;margin:0 auto;"><div id="kWvsBaseline" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3>Deviation from Baseline</h3><div style="width:180px;margin:0 auto;"><div id="kWvsBaseline" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
 </div>
 
 <div class="span-one-third">
@@ -196,8 +196,8 @@ AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
 				kWvsBaselineG.label.suffix = '%'; // Make the value label watts.
 				kWvsBaselineG.ticks.labelRadius = 45;
                                 kWvsBaselineG.ticks.labelColor = '#0ce';
-                                kWvsBaselineG.ticks.start = 0;
-                                kWvsBaselineG.ticks.end = 200;
+                                kWvsBaselineG.ticks.start = -45;
+                                kWvsBaselineG.ticks.end = 45;
                                 kWvsBaselineG.ticks.count = 5;
                                 kWvsBaselineG.ticks.color = 'rgba(0, 0, 0, 0)';
                                 kWvsBaselineG.range.color = 'rgba(0, 0, 0, 0)';
@@ -223,7 +223,7 @@ var gaugeTwo = new jGauge(); // Create a new jGauge.
 				gaugeTwo.ticks.labelRadius = 45;
                                 gaugeTwo.ticks.labelColor = '#0ce';
                                 gaugeTwo.ticks.start = 0;
-                                gaugeTwo.ticks.end = 200;
+                                gaugeTwo.ticks.end = 10;
                                 gaugeTwo.ticks.count = 5;
                                 gaugeTwo.ticks.color = 'rgba(0, 0, 0, 0)';
                                 gaugeTwo.range.color = 'rgba(0, 0, 0, 0)';
@@ -382,13 +382,37 @@ function getBaselineDataVals(callback, uuidin, lastActualkW) {
 }
 
 function consolelogData(response, lastActualkW) {
-	//console.log(response[0]['Readings'][0][1]);
-	percent = Math.round(lastActualkW[1]/response[0]['Readings'][0][1]*100);
-	//console.log("{{ BUILDING_NAME }} is currently operating at " + percent + "% of the predicted baseline.");
+	console.log(response[0]['Readings'][0][1]);
+	console.log(lastActualkW[1]);
+	percent = Math.round((lastActualkW[1]-response[0]['Readings'][0][1])/response[0]['Readings'][0][1]*100);
+	console.log("{{ BUILDING_NAME }} is currently operating at " + percent + "% of the predicted baseline.");
 	kWvsBaselineG.setValue(percent);
+	callgetLatestWholeCampus(lastActualkW);
 	gaugeThree.setValue({{ sqftPercent }});	
 }
 
+function callgetLatestWholeCampus(lastActualkW){
+		getLatestWholeCampus(setMiddleGauge, lastActualkW);
+}
+
+function getLatestWholeCampus(callback, lastActualkW) {
+
+$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select data before now limit 1 where uuid =\'" + escape("aa0463c1-478e-5a2d-8b0f-2f26c5c5f262") + "'",
+		success: function(response) {
+			callback(response, lastActualkW);
+		}
+	});
+}
+
+function setMiddleGauge(response, lastActualkW){
+	wholecamp = response[0]['Readings'][0][1];
+	thisbuildkW = lastActualkW[1];
+	gaugeTwo.setValue(thisbuildkW/wholecamp*100);
+}
 
 function drawGraph(inputData, typeData){
 	for (val in typeData){
