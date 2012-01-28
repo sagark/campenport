@@ -328,7 +328,7 @@ function runReqTwo(output) {
 		latest.push(eval(resp));
 		//console.log(latest);
 		if (output.length==latest.length){
-			drawGraph(latest, typeOrder);
+			latest = drawGraph(latest, typeOrder);
 			
 			baselineCompare(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1]);
 		}
@@ -415,6 +415,14 @@ function setMiddleGauge(response, lastActualkW){
 }
 
 function drawGraph(inputData, typeData){
+	if (typeData[0] == "subsampled sum"){
+	//console.log("no repair done");
+	}
+	else {
+	//	console.log("repair complete");
+		inputData = [inputData[1], inputData[0]]; //fixes ordering for passing on 
+		typeData = [typeData[1], typeData[0]];
+	}
 	for (val in typeData){
 		//console.log(typeData[val]);
 		if (typeData[val]=="baseline-01"){
@@ -452,6 +460,7 @@ function drawGraph(inputData, typeData){
 	});
 	$("#loading").hide()
 	var plot = $.plot(placeholder, data, options);
+	return inputData;
 }
 </script>
 {% endblock %}
