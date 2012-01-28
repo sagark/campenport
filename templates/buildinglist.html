@@ -4,6 +4,14 @@
 Building List
 {% endblock %}
 
+{% block extra_scriptsCSS_imports %}
+			<script src="/site-media/jquery-tablesorter/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block extra_scripts_inline %}
+$(function() {
+$("table#sortedbuildings").tablesorter({ sortList: [[0,0]] });
+});
+{% endblock %}
 {% block menu_2 %}
 class="active"
 {% endblock %}
@@ -13,19 +21,20 @@ Building List
 {% endblock %}
 
 {% block header_subtitle %}
-Click a building for detailed info.
+Click a Building Name for more detailed information.
 {% endblock %}
 
 {% block content_inside %}
 <div class="row">
 	<div class="span16">
-      <table class="bordered-table zebra-striped">
+      <table class="bordered-table zebra-striped" id="sortedbuildings">
         <thead>
           <tr>
             <th>Building Name</th>
             <th>Square Footage</th>
             <th>Year Built</th>
-   			<th>Portal Page</th>
+			<th>kWh/SqFt</th>
+			<th>Peak/Average</th>
           </tr>
         </thead>
         <tbody>
@@ -33,10 +42,11 @@ Click a building for detailed info.
 {% for building in buildings|dictsort:"longname" %}
 
           <tr>
-            <td>{{ building.longname }}</td>
+            <td><a href="/buildings/{{ building.shortname }}">{{ building.longname }}</a></td>
             <td>{{ building.stats_sqft }}</td>
             <td>{{ building.stats_yearBuilt }}</td>
-            <td><a href="/buildings/{{ building.shortname }}">Click here</a></td>
+			<td>Not Yet Avail.</td>
+			<td>Not Yet Avail.</td>
           </tr>
 
 {% endfor %}
