@@ -358,6 +358,17 @@ function drawGraph(inputData, typeData){
 			typeData[val] = "Actual Usage";
 		}
 	}
+	//Now fix timezone offset for flot
+
+	needTzOffset = new Date();
+	tzOffset = needTzOffset.getTimezoneOffset()*60000
+	for (x=0; x<inputData.length; x++){
+		for (y=0; y<inputData[x][0]['Readings'].length; y++){
+			inputData[x][0]['Readings'][y][0] = inputData[x][0]['Readings'][y][0]-tzOffset;
+		}
+	}
+
+	//end fix timezone offset for flot
 	var data = [];
 	for (ind3 = 0; ind3 < inputData.length; ind3++) {
 		data.push({label:typeData[ind3], "data":inputData[ind3][0]['Readings']});
