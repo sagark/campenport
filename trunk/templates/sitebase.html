@@ -137,8 +137,14 @@ $(function() {
 			"{{ building.longname }}",
 			{% endfor %}
 		];
+		var getURLbuild = {
+			{% for building in buildings|dictsort:"longname" %}
+			"{{ building.longname }}": '/buildings/{{ building.shortname }}/',
+			{% endfor %}
+		};
 		$( "#searchbox" ).autocomplete({
-			source: availableTags
+			source: availableTags,
+			select: function(event, ui) { location.href=getURLbuild[ui.item['label']]; }
 		});
 	});
 
