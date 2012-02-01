@@ -264,7 +264,7 @@ function ajaxReqOne(callback) {
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and (Metadata/Extra/Operator like 'baseline-%' or (Metadata/Extra/Operator = 'subsampled sum') or Metadata/PointName = 'SDH.STEAM_FLOW')",
+		data: "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and (Metadata/Extra/Operator like 'baseline-%' or (Metadata/Extra/Operator = 'subsampled sum') or Metadata/PointName = 'SDH.STEAM_FLOW') and not (Metadata/Path like '1-hr') and not (Metadata/Extra/Resample like 'subsample-mean-3600')",
 		success: function(response) {
 			callback(response);
 		}
