@@ -52,7 +52,7 @@ def comparebuildings(request):
 		else:
 			building.tempid = True
 		currid += 1
-		if building.kWhqueryid == None:
+		if building.kWhqueryid == None or building.kWhqueryid == "":
 			building.kWhqueryid = building.longname
 			
 	
