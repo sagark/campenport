@@ -35,8 +35,13 @@ Bar height and width represent square footage and kWh per sqft respectively.
 {% block content_inside %}
 <div class="row">
 	<div class="span16">
-<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh/SqFt) Scaling Factor (Default 3030)" />
-<input id="vscalingfactor" type="text" placeholder="Vertical (SqFt) Scaling Factor (Default 1000)" />
+<!--<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh/SqFt) Scaling Factor (Default 3030)" />
+<input id="vscalingfactor" type="text" placeholder="Vertical (SqFt) Scaling Factor (Default 1000)" /> -->
+<div style="text-align:center">
+<div style="display:inline-block;">
+<div style="float:left;">Compress Width &nbsp;</div><div id="slider" style="width:650px;float:left;"></div><div style="float:left;">&nbsp;Expand Width</div><br><br>
+<div style="float:left;">Expand Height &nbsp;&nbsp;&nbsp;&nbsp;</div><div id="slider2" style="width:650px;float:left;"></div><div style="float:left;">&nbsp;Compress Width</div><br></div></div>
+<div style="text-align:center">
 <select id="sortselect" class="select">
   <option value="kWhperSqFt">kWh/SqFt</option>
   <option value="Reading">kWh</option>
@@ -44,6 +49,7 @@ Bar height and width represent square footage and kWh per sqft respectively.
   <option value="FullName">Building Name</option>
   <option value="UUID">UUID</option>
 </select> 
+</div>
 <p><br></p>
 <div id="bargraph"></div>
 	</div>
@@ -60,23 +66,53 @@ var hscaleFactor = 3030;
 var vscaleFactor = 1000;
 var sorttype = 'kWhperSqFt';
 $(document).ready(function() {
-	runReqOne();
+	$('#bargraph').hide();
 
+//$(function() {
+	$( "#slider" ).slider({"value": 3030, "min": 2030, "max": 4030, "step": 250, change: function(event, ui) {
+	hscaleFactor = ui.value;
+	//console.log(hscaleFactor);
+	$("#bargraph").hide();
+	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
+}});
+
+	$( "#slider2" ).slider({"value": 1000, "min": 500, "max": 4200, "step": 100, change: function(event, ui) {
+	vscaleFactor = ui.value;
+	//console.log(vscaleFactor);
+	$("#bargraph").hide();
+	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
+}});
+
+
+
+//	});
+	runReqOne();
 });
+
 
 $("#hscalingfactor").change(function() {
 	hscaleFactor = $("#hscalingfactor").val();
+	$("#bargraph").hide();
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
 
+$("#slider").change(function() {
+	hscaleFactor = $("#slider").val();
+	console.log(hscaleFactor);
+	$("#bargraph").hide();
+	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
+});
+
+
 $("#vscalingfactor").change(function() {
 	vscaleFactor = $("#vscalingfactor").val();
-	//console.log(scaleFactor);
+	$("#bargraph").hide();
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
 
 $("#sortselect").change(function() {
 	sorttype = $("#sortselect").val();
+	$("#bargraph").hide();
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
 
@@ -181,18 +217,21 @@ function drawBars(djangoGenDsqfts, firstLoad) {
 	for (building in djangoGenDsqfts){
 		kwhPerSqft = djangoGenDsqfts[building]['kWhperSqFt'];
 		if (colorCounter%2==0){
-			background = 'lol.png';
-			gradcolor1 = '#000000';
-			gradcolor2 = '#000000';
+			background = 'blank.png'; //just in case the need to have a real bg arises
+			gradcolor1 = '#0065cd';
+			gradcolor2 = '#0398da';
 		}
 		else {
-			background = 'lol.png';
+			background = 'blank.png'; //same
+			gradcolor1 = '#1f1f1f';
+			gradcolor2 = '#515151';
 		}
-		innerHTMLstring += "<div class='comparisondiv' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 2px rgba(0,0,0,.15);padding-top: 5px;padding-left: 5px;background: #0000FF;background-image: url(\"/site-media/images/" + background + "\");background-image: url(\"/site-media/images/" + background + "\"), -webkit-gradient(linear, left top, left bottom, from(" + gradcolor1 + "), to(" + gradcolor2 + "));background-image: url(\"/site-media/images/" + background + "\"), -webkit-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image:    url(\"/site-media/images/" + background + "\"), -moz-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image:     url(\"/site-media/images/" + background + "\"), -ms-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image:      url(\"/site-media/images/" + background + "\"), -o-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image: url(\"/site-media/images/" + background + "\"), linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");height:" + djangoGenDsqfts[building]['SQFT']/vscaleFactor + "px;width:" + kwhPerSqft*hscaleFactor + "px;white-space:nowrap;overflow:show;'><h3 style='color:#FFFFFF;'><a href='" + djangoGenDsqfts[building]['url'] + "'>" +  djangoGenDsqfts[building]['FullName'] + "</a> " + Math.round(kwhPerSqft*10000)/10000 + " kWh/SqFt x " + djangoGenDsqfts[building]['SQFT'] + " SqFt = " + djangoGenDsqfts[building]['Reading'] + " kWh Usage. </h3></div>"
+		innerHTMLstring += "<div style='min-height:50px;'><div class='comparisondiv' id='" + building + "' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 20px rgba(0,0,0,.55);padding-top: 5px;padding-left: 5px;background: #0000FF;background-image: url(\"/site-media/images/" + background + "\");background-image: url(\"/site-media/images/" + background + "\"), -webkit-gradient(linear, left top, left bottom, from(" + gradcolor1 + "), to(" + gradcolor2 + "));background-image: url(\"/site-media/images/" + background + "\"), -webkit-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image:    url(\"/site-media/images/" + background + "\"), -moz-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image:     url(\"/site-media/images/" + background + "\"), -ms-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image:      url(\"/site-media/images/" + background + "\"), -o-linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");background-image: url(\"/site-media/images/" + background + "\"), linear-gradient(top, " + gradcolor1 + ", " + gradcolor2 + ");height:" + djangoGenDsqfts[building]['SQFT']/vscaleFactor + "px;width:" + kwhPerSqft*hscaleFactor + "px;white-space:nowrap;overflow:show;'><h3 style='display:inline-block;color:#000000;background-color:rgba(255,255,255,0.5);-webkit-border-radius: 5px 5px 5px 5px;-moz-border-radius: 5px 5px 5px 5px;border-radius: 5px 5px 5px 5px;-webkit-box-shadow: 0 5px 40px rgba(0,0,0,.3);-moz-box-shadow: 0 5px 40px rgba(0,0,0,.3);box-shadow: 0 5px 40px rgba(0,0,0,.7);'>&nbsp;<a href='" + djangoGenDsqfts[building]['url'] + "'>" +  djangoGenDsqfts[building]['FullName'] + "</a> " + Math.round(kwhPerSqft*10000)/10000 + " kWh/SqFt x " + djangoGenDsqfts[building]['SQFT'] + " SqFt = " + djangoGenDsqfts[building]['Reading'] + " kWh Usage. &nbsp;</h3></div></div>"
 	
 	colorCounter++;
 	}
 	$("#bargraph").html(innerHTMLstring);
+	$("#bargraph").fadeIn();
 }
 
 function sortNumber(a,b){
