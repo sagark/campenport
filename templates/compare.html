@@ -35,8 +35,15 @@ Bar height and width represent square footage and kWh per sqft respectively.
 {% block content_inside %}
 <div class="row">
 	<div class="span16">
-<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh/SqFt) Scaling Factor (Default 50)" />
+<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh/SqFt) Scaling Factor (Default 3030)" />
 <input id="vscalingfactor" type="text" placeholder="Vertical (SqFt) Scaling Factor (Default 1000)" />
+<select id="sortselect" class="select">
+  <option value="kWhperSqFt">kWh/SqFt</option>
+  <option value="Reading">kWh</option>
+  <option value="SQFT">SqFt</option>
+  <option value="FullName">Building Name</option>
+  <option value="UUID">UUID</option>
+</select> 
 <p><br></p>
 <div id="bargraph"></div>
 	</div>
@@ -49,9 +56,9 @@ Bar height and width represent square footage and kWh per sqft respectively.
 <script type="text/javascript">
 
 var get_these_queries = [];
-var hscaleFactor = 50;
+var hscaleFactor = 3030;
 var vscaleFactor = 1000;
-
+var sorttype = 'kWhperSqFt';
 $(document).ready(function() {
 	runReqOne();
 
@@ -59,19 +66,23 @@ $(document).ready(function() {
 
 $("#hscalingfactor").change(function() {
 	hscaleFactor = $("#hscalingfactor").val();
-	//console.log(scaleFactor);
-	drawBars(collectedData, 0);
+	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
 
 $("#vscalingfactor").change(function() {
 	vscaleFactor = $("#vscalingfactor").val();
 	//console.log(scaleFactor);
-	drawBars(collectedData, 0);
+	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
+});
+
+$("#sortselect").change(function() {
+	sorttype = $("#sortselect").val();
+	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
 
 
 var djangoGenDsqfts = {
-{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "", 'Reading': 0, 'FullName': "{{ building.longname }}", 'url': "/buildings/{{ building.shortname }}" }, 
+{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "", 'Reading': 0, 'FullName': "{{ building.longname }}", 'url': "/buildings/{{ building.shortname }}", "kWhperSqFt": 0 }, 
 {% endfor %}
 };
 
@@ -153,38 +164,49 @@ function runReqTwo(querystring) {
 function mapToDjangoData(kWhData) {
 	for (building in djangoGenDsqfts){
 		djangoGenDsqfts[building]['Reading'] = kWhData[djangoGenDsqfts[building]['UUID']];
+		djangoGenDsqfts[building]['kWhperSqFt'] = djangoGenDsqfts[building]['Reading']/djangoGenDsqfts[building]['SQFT'];
 	}
-		console.log(djangoGenDsqfts);
-	drawBars(kWhData, 1);
-	//console.log(sortTesting(djangoGenDsqfts));
+	drawBars(sortTesting(djangoGenDsqfts, sorttype), 1);
 }
 
-function drawBars(kWhData, firstLoad) {
+function drawBars(djangoGenDsqfts, firstLoad) {
 	var innerHTMLstring = "";
 	if (firstLoad==1){
-		hscaleFactor = 50;
+		hscaleFactor = 3030;
 	}
 	for (building in djangoGenDsqfts){
-		innerHTMLstring += "<div class='comparisondiv' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 2px rgba(0,0,0,.15);padding-top: 5px;padding-left: 5px;background-color:#000000;height:" + djangoGenDsqfts[building]['SQFT']/vscaleFactor + "px;width:" + djangoGenDsqfts[building]['Reading']/djangoGenDsqfts[building]['SQFT']/hscaleFactor + "px;white-space:nowrap;overflow:show;'><h3><a href='" + djangoGenDsqfts[building]['url'] + "'>" +  djangoGenDsqfts[building]['FullName'] + "</a> " + djangoGenDsqfts[building]['SQFT'] + " Square Feet, " + djangoGenDsqfts[building]['Reading'] + " kWh Usage, </h3></div>"
+		kwhPerSqft = djangoGenDsqfts[building]['Reading']/djangoGenDsqfts[building]['SQFT'];
+		innerHTMLstring += "<div class='comparisondiv' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 2px rgba(0,0,0,.15);padding-top: 5px;padding-left: 5px;background-color:#000000;height:" + djangoGenDsqfts[building]['SQFT']/vscaleFactor + "px;width:" + kwhPerSqft*hscaleFactor + "px;white-space:nowrap;overflow:show;'><h3><a href='" + djangoGenDsqfts[building]['url'] + "'>" +  djangoGenDsqfts[building]['FullName'] + "</a> " + Math.round(kwhPerSqft*10000)/10000 + " kWh/SqFt x " + djangoGenDsqfts[building]['SQFT'] + " SqFt = " + djangoGenDsqfts[building]['Reading'] + " kWh Usage. </h3></div>"
 	}
 	$("#bargraph").html(innerHTMLstring);
 }
 
-function sortTesting(arr){
+function sortNumber(a,b){
+	return b-a;
+}
+
+function sortTesting(arr, sortBy){
 	//adapted from http://www.latentmotion.com/how-to-sort-an-associative-array-object-in-javascript/
 	// Setup Arrays
 	var sortedKeys = new Array();
+	var associations = { };
 	var sortedObj = {};
 
 	// Separate keys and sort them
 	for (var i in arr){
-		sortedKeys.push(i);
+		sortedKeys.push(arr[i][sortBy]);
+		associations[arr[i][sortBy]] = i;
 	}
-	sortedKeys.sort();
+	if (sortBy == 'Reading' || sortBy == 'SQFT' || sortBy == 'kWhperSqFt'){
+		sortedKeys.sort(sortNumber);
+	}
+	else {
+		sortedKeys.sort();
+	}
 
 	// Reconstruct sorted obj based on keys
 	for (var i in sortedKeys){
-		sortedObj[sortedKeys[i]] = arr[sortedKeys[i]];
+		sortedObj[associations[sortedKeys[i]]] = arr[associations[sortedKeys[i]]];
 	}
 	return sortedObj;
 }
