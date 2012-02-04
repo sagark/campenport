@@ -29,28 +29,16 @@ Compare Buildings
 {% endblock %}
 
 {% block header_subtitle %}
-Bar height and width represent square footage and energy usage respectively.
+Bar height and width represent square footage and kWh per sqft respectively.
 {% endblock %}
 
 {% block content_inside %}
 <div class="row">
 	<div class="span16">
-<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh) Scaling Factor (Default 50)" />
+<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh/SqFt) Scaling Factor (Default 50)" />
 <input id="vscalingfactor" type="text" placeholder="Vertical (SqFt) Scaling Factor (Default 1000)" />
 <p><br></p>
 <div id="bargraph"></div>
-
-
-
-
-{% for building in buildings %}
-
-		<!--<div class="comparisongraph" style="width:400px;height:{{ building.stats_sqft_fordisp }}px;background:{% if building.tempid %}#2c2c2c{% endif %}{% if not building.tempid %}#c7c8c9{% endif %};"><h2 ><a href="/buildings/{{ building.shortname }}" style="color:{% if building.tempid %}#FFFFFF{% endif %}{% if not building.tempid %}#000000{% endif %};">{{ building.longname }}</a><em><small style="color:{% if building.tempid %}#FFFFFF{% endif %}{% if not building.tempid %}#000000{% endif %};"> {{ building.stats_sqft }} sqft.</small></em></h2></div>  -->
-{% endfor %}
-
-
-
-
 	</div>
 </div>
 
@@ -59,7 +47,7 @@ Bar height and width represent square footage and energy usage respectively.
 
 {% block random_extras %}
 <script type="text/javascript">
-//general idea:
+
 var get_these_queries = [];
 var hscaleFactor = 50;
 var vscaleFactor = 1000;
@@ -83,7 +71,7 @@ $("#vscalingfactor").change(function() {
 
 
 var djangoGenDsqfts = {
-{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "", 'Reading': 0 }, 
+{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "", 'Reading': 0, 'FullName': "{{ building.longname }}", 'url': "/buildings/{{ building.shortname }}" }, 
 {% endfor %}
 };
 
@@ -168,6 +156,7 @@ function mapToDjangoData(kWhData) {
 	}
 		console.log(djangoGenDsqfts);
 	drawBars(kWhData, 1);
+	//console.log(sortTesting(djangoGenDsqfts));
 }
 
 function drawBars(kWhData, firstLoad) {
@@ -176,11 +165,31 @@ function drawBars(kWhData, firstLoad) {
 		hscaleFactor = 50;
 	}
 	for (building in djangoGenDsqfts){
-		innerHTMLstring += "<div class='comparisondiv' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 2px rgba(0,0,0,.15);padding-top: 5px;padding-left: 5px;background-color:#000000;height:" + djangoGenDsqfts[building]['SQFT']/vscaleFactor + "px;width:" + djangoGenDsqfts[building]['Reading']/hscaleFactor + "px;'>" +  building + "</div>"
+		innerHTMLstring += "<div class='comparisondiv' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 2px rgba(0,0,0,.15);padding-top: 5px;padding-left: 5px;background-color:#000000;height:" + djangoGenDsqfts[building]['SQFT']/vscaleFactor + "px;width:" + djangoGenDsqfts[building]['Reading']/djangoGenDsqfts[building]['SQFT']/hscaleFactor + "px;white-space:nowrap;overflow:show;'><h3><a href='" + djangoGenDsqfts[building]['url'] + "'>" +  djangoGenDsqfts[building]['FullName'] + "</a> " + djangoGenDsqfts[building]['SQFT'] + " Square Feet, " + djangoGenDsqfts[building]['Reading'] + " kWh Usage, </h3></div>"
 	}
 	$("#bargraph").html(innerHTMLstring);
 }
 
-// now django generated code (push statements) to add queryIDs to get_these_queries
+function sortTesting(arr){
+	//adapted from http://www.latentmotion.com/how-to-sort-an-associative-array-object-in-javascript/
+	// Setup Arrays
+	var sortedKeys = new Array();
+	var sortedObj = {};
+
+	// Separate keys and sort them
+	for (var i in arr){
+		sortedKeys.push(i);
+	}
+	sortedKeys.sort();
+
+	// Reconstruct sorted obj based on keys
+	for (var i in sortedKeys){
+		sortedObj[sortedKeys[i]] = arr[sortedKeys[i]];
+	}
+	return sortedObj;
+}
+
+
+
 </script>
 {% endblock %}
