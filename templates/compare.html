@@ -54,6 +54,76 @@ Bar height and width represent square footage and energy usage respectively.
 <script type="text/javascript">
 //general idea:
 var get_these_queries = [];
+
+
+$(document).ready(function() {
+	runReqOne();
+
+});
+
+var djangoGenDsqfts = {
+{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "" }, 
+{% endfor %}
+};
+
+function ajaxReqOne(callback) {
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select * where Metadata/Extra/Operator = 'daily meter usage'",
+		success: function(response) {
+			callback(response);
+		}
+	});
+}
+
+function runReqOne() {
+	
+	ajaxReqOne(function(respo){
+		output = { };
+		for (ind = 0; ind < respo.length; ind++) {
+				console.log(respo[ind]["Metadata"]["Location"]["Building"]);
+				djangoGenDsqfts[respo[ind]["Metadata"]["Location"]["Building"]]['UUID'] = respo[ind]["uuid"];
+				//output.push([respo[ind]["uuid"],respo[ind]["Metadata"]["Location"]["Building"]]);
+			}
+		
+		console.log(djangoGenDsqfts);
+		//runReqTwo(output);
+	});
+}
+
+function ajaxReqTwo(callback, latest, inputUUID, starttime, endtime, output, typeInput) {
+	$.ajax({ 
+			async: true,
+			type: 'GET',
+			url: "/ARDgetData/api/data/uuid/" + escape(inputUUID) + "?starttime=" + escape(starttime) + "&endtime=" + escape(endtime),
+			success: function(resp) {
+				callback(resp, typeInput);
+			}
+	});
+}
+
+function runReqTwo(output) {
+	latest = [];
+	typeOrder = [];
+	var converter = new AnyTime.Converter( { format: datefmt });
+	var endtime = converter.parse($("#date").val()).getTime();
+	var starttime = converter.parse($("#date2").val()).getTime();
+
+	for(x=0; x<output.length; x++){
+	ajaxReqTwo(function(resp, typeInput){
+		typeOrder.push(typeInput);
+		latest.push(eval(resp));
+		if (output.length==latest.length){
+			latest = drawGraph(latest, typeOrder);
+			setAllTheGauges(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1], latest[1][0]['Readings'][latest[1][0]['Readings'].length-1]);
+		}
+	}, latest, output[x][0], starttime, endtime, output, output[x][1]);
+	}
+}
+
+
 // now django generated code (push statements) to add queryIDs to get_these_queries
 // need subsampled kWh
 </script>
