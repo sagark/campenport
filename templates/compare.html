@@ -81,13 +81,14 @@ function ajaxReqOne(callback) {
 function runReqOne() {
 	
 	ajaxReqOne(function(respo){
-		output = { };
 		for (ind = 0; ind < respo.length; ind++) {
-				console.log(respo[ind]["Metadata"]["Location"]["Building"]);
 				djangoGenDsqfts[respo[ind]["Metadata"]["Location"]["Building"]]['UUID'] = respo[ind]["uuid"];
-				//output.push([respo[ind]["uuid"],respo[ind]["Metadata"]["Location"]["Building"]]);
 			}
-		
+		for (building in djangoGenDsqfts){
+				if (djangoGenDsqfts[building]['UUID']==""){
+					delete djangoGenDsqfts[building]; //removes buildings that don't have kWh data
+				}
+		}
 		console.log(djangoGenDsqfts);
 		//runReqTwo(output);
 	});
@@ -125,6 +126,5 @@ function runReqTwo(output) {
 
 
 // now django generated code (push statements) to add queryIDs to get_these_queries
-// need subsampled kWh
 </script>
 {% endblock %}
