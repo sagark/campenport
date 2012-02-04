@@ -52,5 +52,8 @@ def comparebuildings(request):
 		else:
 			building.tempid = True
 		currid += 1
+		if building.kWhqueryid == None:
+			building.kWhqueryid = building.longname
+			
 	
 	return render_to_response('compare.html', locals())
