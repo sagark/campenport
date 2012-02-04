@@ -35,7 +35,9 @@ Bar height and width represent square footage and energy usage respectively.
 {% block content_inside %}
 <div class="row">
 	<div class="span16">
-<input id="scalingfactor" type="text" value="50"/>
+<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh) Scaling Factor (Default 50)" />
+<input id="vscalingfactor" type="text" placeholder="Vertical (SqFt) Scaling Factor (Default 1000)" />
+<p><br></p>
 <div id="bargraph"></div>
 
 
@@ -59,18 +61,26 @@ Bar height and width represent square footage and energy usage respectively.
 <script type="text/javascript">
 //general idea:
 var get_these_queries = [];
-var scaleFactor = 50;
+var hscaleFactor = 50;
+var vscaleFactor = 1000;
 
 $(document).ready(function() {
 	runReqOne();
 
 });
 
-$("#scalingfactor").change(function() {
-	scaleFactor = $("#scalingfactor").val();
-	console.log(scaleFactor);
-	runReqOne();
+$("#hscalingfactor").change(function() {
+	hscaleFactor = $("#hscalingfactor").val();
+	//console.log(scaleFactor);
+	drawBars(collectedData, 0);
 });
+
+$("#vscalingfactor").change(function() {
+	vscaleFactor = $("#vscalingfactor").val();
+	//console.log(scaleFactor);
+	drawBars(collectedData, 0);
+});
+
 
 var djangoGenDsqfts = {
 {% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "", 'Reading': 0 }, 
@@ -153,17 +163,23 @@ function runReqTwo(querystring) {
 }
 
 function mapToDjangoData(kWhData) {
-	var innerHTMLstring = "";
 	for (building in djangoGenDsqfts){
 		djangoGenDsqfts[building]['Reading'] = kWhData[djangoGenDsqfts[building]['UUID']];
 	}
-	for (building in djangoGenDsqfts){
-		innerHTMLstring += "<div class='comparisondiv' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 2px rgba(0,0,0,.15);padding-top: 5px;padding-left: 5px;background-color:#000000;height:" + djangoGenDsqfts[building]['SQFT']/1000 + "px;width:" + djangoGenDsqfts[building]['Reading']/scaleFactor + "px;'>" +  building + "</div>"
-	}
-	$("#bargraph").html(innerHTMLstring);
-	console.log(djangoGenDsqfts);
+		console.log(djangoGenDsqfts);
+	drawBars(kWhData, 1);
 }
 
+function drawBars(kWhData, firstLoad) {
+	var innerHTMLstring = "";
+	if (firstLoad==1){
+		hscaleFactor = 50;
+	}
+	for (building in djangoGenDsqfts){
+		innerHTMLstring += "<div class='comparisondiv' style='margin-bottom: 5px;-webkit-border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;border-radius: 10px 10px 10px 10px;-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);box-shadow: 0 1px 2px rgba(0,0,0,.15);padding-top: 5px;padding-left: 5px;background-color:#000000;height:" + djangoGenDsqfts[building]['SQFT']/vscaleFactor + "px;width:" + djangoGenDsqfts[building]['Reading']/hscaleFactor + "px;'>" +  building + "</div>"
+	}
+	$("#bargraph").html(innerHTMLstring);
+}
 
 // now django generated code (push statements) to add queryIDs to get_these_queries
 </script>
