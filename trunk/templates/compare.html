@@ -62,9 +62,14 @@ $(document).ready(function() {
 });
 
 var djangoGenDsqfts = {
-{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "" }, 
+{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "", 'Reading': 0 }, 
 {% endfor %}
 };
+
+var combinedUUIDqueryString = "";
+var counterTens = 0;
+var setsOfTen = [];
+var collectedData = [];
 
 function ajaxReqOne(callback) {
 	$.ajax({
@@ -88,40 +93,60 @@ function runReqOne() {
 				if (djangoGenDsqfts[building]['UUID']==""){
 					delete djangoGenDsqfts[building]; //removes buildings that don't have kWh data
 				}
+				else {
+					if (counterTens<10){  //this stuff handles ARDs limit of 10 UUIDs per query?
+						combinedUUIDqueryString += " uuid = '" + djangoGenDsqfts[building]['UUID'] + "' or ";
+						counterTens++;
+					}
+					else {
+						setsOfTen.push(combinedUUIDqueryString.slice(0, combinedUUIDqueryString.length-4));
+						combinedUUIDqueryString = "";
+						counterTens = 0;
+						combinedUUIDqueryString += " uuid = '" + djangoGenDsqfts[building]['UUID'] + "' or ";
+						counterTens++;
+						}
+				}
 		}
-		console.log(djangoGenDsqfts);
-		//runReqTwo(output);
+		if (counterTens != 10){
+			setsOfTen.push(combinedUUIDqueryString.slice(0, combinedUUIDqueryString.length-4));
+		}
+			
+		runReqTwo(setsOfTen);
 	});
 }
 
-function ajaxReqTwo(callback, latest, inputUUID, starttime, endtime, output, typeInput) {
+function ajaxReqTwo(callback, querystring, x, endat) {
 	$.ajax({ 
-			async: true,
-			type: 'GET',
-			url: "/ARDgetData/api/data/uuid/" + escape(inputUUID) + "?starttime=" + escape(starttime) + "&endtime=" + escape(endtime),
-			success: function(resp) {
-				callback(resp, typeInput);
-			}
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select data before now limit 1 where " + querystring,
+		success: function(response) {
+			callback(response, x, endat);
+		}
 	});
 }
 
-function runReqTwo(output) {
-	latest = [];
-	typeOrder = [];
-	var converter = new AnyTime.Converter( { format: datefmt });
-	var endtime = converter.parse($("#date").val()).getTime();
-	var starttime = converter.parse($("#date2").val()).getTime();
+function runReqTwo(querystring) {
+	for (x = 0; x < querystring.length; x++){
+	ajaxReqTwo(function(resp, x, endat){
+		for (z = 0; z< resp.length; z++){
+			collectedData[resp[z]['uuid']] = resp[z]['Readings'][0][1];
+			}
 
-	for(x=0; x<output.length; x++){
-	ajaxReqTwo(function(resp, typeInput){
-		typeOrder.push(typeInput);
-		latest.push(eval(resp));
-		if (output.length==latest.length){
-			latest = drawGraph(latest, typeOrder);
-			setAllTheGauges(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1], latest[1][0]['Readings'][latest[1][0]['Readings'].length-1]);
-		}
-	}, latest, output[x][0], starttime, endtime, output, output[x][1]);
+			if (x == (endat-1)){
+				mapToDjangoData(collectedData);
+			}
+		}, querystring[x], x, querystring.length);
 	}
+}
+
+function mapToDjangoData(kWhData) {
+	for (building in djangoGenDsqfts){
+		djangoGenDsqfts[building]['Reading'] = kWhData[djangoGenDsqfts[building]['UUID']];
+	}
+
+	console.log(djangoGenDsqfts);
 }
 
 
