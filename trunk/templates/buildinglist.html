@@ -11,6 +11,122 @@ Building List
 $(function() {
 $("table#sortedbuildings").tablesorter({ sortList: [[0,0]] });
 });
+
+
+
+var djangoGenDsqfts = {
+{% for building in buildings|dictsort:"longname" %} "{{ building.kWhqueryid }}": {'SQFT': {{ building.stats_sqft }}, 'UUID': "", 'Reading': 0, 'FullName': "{{ building.longname }}", 'url': "/buildings/{{ building.shortname }}", "kWhperSqFt": 0 }, 
+{% endfor %}
+};
+
+$(document).ready(function() {
+	runReqOne();
+
+});
+
+
+var combinedUUIDqueryString = "";
+var counterTens = 0;
+var setsOfTen = [];
+var collectedData = [];
+
+function ajaxReqOne(callback) {
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select * where Metadata/Extra/Operator = 'daily meter usage'",
+		success: function(response) {
+			callback(response);
+		}
+	});
+}
+
+function runReqOne() {
+	
+	ajaxReqOne(function(respo){
+		for (ind = 0; ind < respo.length; ind++) {
+				djangoGenDsqfts[respo[ind]["Metadata"]["Location"]["Building"]]['UUID'] = respo[ind]["uuid"];
+			}
+		for (building in djangoGenDsqfts){
+				if (djangoGenDsqfts[building]['UUID']==""){
+					delete djangoGenDsqfts[building]; //removes buildings that don't have kWh data
+				}
+				else {
+					if (counterTens<10){  //this stuff handles ARDs limit of 10 UUIDs per query?
+						combinedUUIDqueryString += " uuid = '" + djangoGenDsqfts[building]['UUID'] + "' or ";
+						counterTens++;
+					}
+					else {
+						setsOfTen.push(combinedUUIDqueryString.slice(0, combinedUUIDqueryString.length-4));
+						combinedUUIDqueryString = "";
+						counterTens = 0;
+						combinedUUIDqueryString += " uuid = '" + djangoGenDsqfts[building]['UUID'] + "' or ";
+						counterTens++;
+						}
+				}
+		}
+		if (counterTens != 10){
+			setsOfTen.push(combinedUUIDqueryString.slice(0, combinedUUIDqueryString.length-4));
+		}
+			
+		runReqTwo(setsOfTen);
+	});
+}
+
+function ajaxReqTwo(callback, querystring, x, endat) {
+	$.ajax({ 
+		async: false,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select data before now limit 1 where " + querystring,
+		success: function(response) {
+			callback(response, x, endat);
+		}
+	});
+}
+
+function runReqTwo(querystring) {
+	for (x = 0; x < querystring.length; x++){
+	ajaxReqTwo(function(resp, x, endat){
+		for (z = 0; z< resp.length; z++){
+			collectedData[resp[z]['uuid']] = resp[z]['Readings'][0][1];
+			}
+
+			if (x == (endat-1)){
+				mapToDjangoData(collectedData);
+			}
+		}, querystring[x], x, querystring.length);
+	}
+}
+
+function mapToDjangoData(kWhData) {
+	for (building in djangoGenDsqfts){
+		djangoGenDsqfts[building]['Reading'] = kWhData[djangoGenDsqfts[building]['UUID']];
+		djangoGenDsqfts[building]['kWhperSqFt'] = djangoGenDsqfts[building]['Reading']/djangoGenDsqfts[building]['SQFT'];
+	}
+	addToTable(djangoGenDsqfts);
+//	drawBars(sortTesting(djangoGenDsqfts, sorttype), 1);
+}
+
+function addToTable(dataAA){
+	console.log(dataAA);
+	for (building in dataAA){
+		console.log(building);
+		document.getElementById(building).innerHTML = Math.round(dataAA[building]['kWhperSqFt']*10000)/10000;
+		//$("#" + building).html(dataAA[building]['kWhperSqFt']);
+	}
+	$("table#sortedbuildings").trigger("update");
+
+
+}
+
+
+
+
+
+
+
 {% endblock %}
 {% block menu_2 %}
 class="active"
@@ -45,7 +161,7 @@ Click a Building Name for more detailed information.
             <td><a href="/buildings/{{ building.shortname }}">{{ building.longname }}</a></td>
             <td>{{ building.stats_sqft }}</td>
             <td>{{ building.stats_yearBuilt }}</td>
-			<td>Not Yet Avail.</td>
+			<td><div id="{{ building.kWhqueryid }}">Not Yet Avail.</div></td>
 			<td>Not Yet Avail.</td>
           </tr>
 
@@ -54,4 +170,13 @@ Click a Building Name for more detailed information.
       </table>
 	</div>
 </div>
+{% endblock %}
+
+{% block random_extras %}
+<script type="text/javascript">
+
+
+
+
+</script>
 {% endblock %}

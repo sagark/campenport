@@ -14,6 +14,10 @@ def passhome(request):
 
 def buildinglist(request):
 	buildings = Building.objects.all()
+	for building in buildings:
+		if building.kWhqueryid == None or building.kWhqueryid == "":
+			building.kWhqueryid = building.longname
+
 	return render_to_response('buildinglist.html', locals())
 
 def search(request):
@@ -41,17 +45,7 @@ def search(request):
 def comparebuildings(request):
 	buildings = Building.objects.order_by("longname")
 	currid = 1
-	for building in buildings: #normalizes square footage data for display
-		if building.stats_sqft == '':
-			building.stats_sqft_fordisp = '50'
-		else:
-			building.stats_sqft_fordisp = str(int(building.stats_sqft)/1000)
-
-		if currid%2 == 0: #for zebra-striping bars
-			building.tempid = False
-		else:
-			building.tempid = True
-		currid += 1
+	for building in buildings: #gets kWh queryids
 		if building.kWhqueryid == None or building.kWhqueryid == "":
 			building.kWhqueryid = building.longname
 			
