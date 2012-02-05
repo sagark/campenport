@@ -71,14 +71,12 @@ $(document).ready(function() {
 //$(function() {
 	$( "#slider" ).slider({"value": 3030, "min": 2030, "max": 4030, "step": 250, change: function(event, ui) {
 	hscaleFactor = ui.value;
-	//console.log(hscaleFactor);
 	$("#bargraph").hide();
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 }});
 
 	$( "#slider2" ).slider({"value": 1000, "min": 500, "max": 4200, "step": 100, change: function(event, ui) {
 	vscaleFactor = ui.value;
-	//console.log(vscaleFactor);
 	$("#bargraph").hide();
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 }});
@@ -98,7 +96,6 @@ $("#hscalingfactor").change(function() {
 
 $("#slider").change(function() {
 	hscaleFactor = $("#slider").val();
-	console.log(hscaleFactor);
 	$("#bargraph").hide();
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
@@ -199,7 +196,6 @@ function runReqTwo(querystring) {
 
 function mapToDjangoData(kWhData) {
 	for (building in djangoGenDsqfts){
-		console.log(kWhData[djangoGenDsqfts[building]['UUID']]);
 		djangoGenDsqfts[building]['Reading'] = kWhData[djangoGenDsqfts[building]['UUID']];
 		djangoGenDsqfts[building]['kWhperSqFt'] = djangoGenDsqfts[building]['Reading']/djangoGenDsqfts[building]['SQFT'];
 	}
