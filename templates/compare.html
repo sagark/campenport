@@ -199,6 +199,7 @@ function runReqTwo(querystring) {
 
 function mapToDjangoData(kWhData) {
 	for (building in djangoGenDsqfts){
+		console.log(kWhData[djangoGenDsqfts[building]['UUID']]);
 		djangoGenDsqfts[building]['Reading'] = kWhData[djangoGenDsqfts[building]['UUID']];
 		djangoGenDsqfts[building]['kWhperSqFt'] = djangoGenDsqfts[building]['Reading']/djangoGenDsqfts[building]['SQFT'];
 	}
