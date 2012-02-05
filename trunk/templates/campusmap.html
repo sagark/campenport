@@ -42,7 +42,7 @@ Click a building to view energy usage information.
 {% block content_inside %}
 			<div class="row">
 				<div class="span16">
-					<div style="text-align:right;position:right;margin-bottom:5px;margin-top:-10px;margin-bottom:7px;"><span id="buildingName" style="float:left;text-align:left;position:left;"><h3>Available Buildings Appear Here</h3></span><span style="width:64%;position:right;">
+					<div style="text-align:right;position:right;margin-bottom:5px;margin-top:-10px;margin-bottom:12px;"><span id="buildingName" style="float:left;text-align:left;position:left;"><h3>Available Buildings Appear Here</h3></span><span style="width:64%;position:right;">
 						<input class="btn small primary" type="button" value="Zoom in" onclick="$('#image').zoomable('zoomIn')" title="Zoom in" />
 						<input class="btn small primary" type="button" value="Zoom out" onclick="$('#image').zoomable('zoomOut')" title="Zoom out" />
 						<input class="btn small primary" type="button" value="Reset" id="reset" />
@@ -50,7 +50,7 @@ Click a building to view energy usage information.
 						<input class="btn small primary" type="button" style="width:150px;" value="Close Building List" id="listb2" />
 					</span>
 					</div> 
-					<div id="zoomablemap" style="overflow:hidden;width:938px;height:680px;position:relative;border-style:solid;border-width:2px;">
+					<div id="zoomablemap" style="overflow:hidden;width:938px;height:680px;position:relative;border-style:solid;border-width:2px;-webkit-border-radius: 4px 4px 4px 4px;-moz-border-radius: 4px 4px 4px 4px;border-radius: 4px 4px 4px 4px;-webkit-box-shadow: 0 1px 24px rgba(0,0,0,.55);-moz-box-shadow: 0 1px 24px rgba(0,0,0,.55);box-shadow: 0 1px 24px rgba(0,0,0,.55);">
 						<img src="/site-media/campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
 						<map id="map" name="map">
 						<!-- coordinates stored in the db were obtained using the following: -->
