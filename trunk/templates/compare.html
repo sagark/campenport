@@ -173,7 +173,7 @@ function runReqOne() {
 
 function ajaxReqTwo(callback, querystring, x, endat) {
 	$.ajax({ 
-		async: true,
+		async: false,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
 		data: "select data before now limit 1 where " + querystring,
