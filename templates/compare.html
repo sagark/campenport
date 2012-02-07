@@ -39,8 +39,8 @@ Bar height and width represent square footage and kWh per sqft respectively.
 <input id="vscalingfactor" type="text" placeholder="Vertical (SqFt) Scaling Factor (Default 1000)" /> -->
 <div style="text-align:center">
 <div style="display:inline-block;">
-<div style="float:left;">Compress Width &nbsp;</div><div id="slider" style="width:650px;float:left;"></div><div style="float:left;">&nbsp;Expand Width</div><br><br>
-<div style="float:left;">Expand Height &nbsp;&nbsp;&nbsp;&nbsp;</div><div id="slider2" style="width:650px;float:left;"></div><div style="float:left;">&nbsp;Compress Height</div><br></div></div>
+<div style="float:left;">Compress Width &nbsp;</div><div id="slider" style="width:650px;float:left;"></div><div style="float:left;">&nbsp;&nbsp;&nbsp;Expand Width</div><br><br>
+<div style="float:left;">&nbsp;&nbsp; Expand Height &nbsp;</div><div id="slider2" style="width:650px;float:left;"></div><div style="float:left;">&nbsp;&nbsp;&nbsp;Compress Height</div><br></div></div>
 <div style="text-align:center"><br>
 Sort By: <select id="sortselect" class="select">
   <option value="kWhperSqFt">kWh/SqFt</option>
@@ -48,7 +48,7 @@ Sort By: <select id="sortselect" class="select">
   <option value="SQFT">SqFt</option>
   <option value="FullName">Building Name</option>
   <option value="UUID">UUID</option>
-</select> 
+</select> <h3 style="display:inline;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" rel="popover" title="How is this data computed?" data-placement="below" data-content="kWh/SqFt is calculated by taking the kWh usage of a building in one day and dividing it by the square footage of the building. This standardizes comparisons in a way by negating the effect of building size in comparison of energy usage. In this graph format, comparing the widths of bars gives an idea of which buildings use the most energy." style="color:#000000;">How is this data computed?</a></h3>
 </div>
 <p><br></p>
 <div id="bargraph"></div>
