@@ -75,17 +75,15 @@ Drag on the graph to zoom in.
 <ul class="media-grid">
 
         <li>
-          <a href="{{ PIC_SRC }}">
+          <a href="{{ PIC_SRC }}"  data-controls-modal="modal-from-dom2" data-backdrop="true" data-keyboard="true">
             <img class="thumbnail" src="{{ PIC }}" alt="">
           </a>
         </li>
               </ul>
-
-<h6><a href="{{ PIC_SRC }}">Image Source</a></h6>
 </div>
 <div class="span8">
 <h2>About {{ BUILDING_NAME }}:</h2> <p>{{ INFO }} </p><br> <br>
-<div style="text-align:right;"><button data-controls-modal="modal-from-dom" data-backdrop="true" data-keyboard="true" class="btn large info">More Info >></button></div>
+<div style="text-align:right;"><button data-controls-modal="modal-from-dom" data-backdrop="true" data-keyboard="true" class="btn large primary">More Info >></button></div>
 
 
 </div>
@@ -146,6 +144,19 @@ Drag on the graph to zoom in.
 	</div>
 </div>
 
+<div id="modal-from-dom2" class="modal hide fade">
+	<div class="modal-header">
+    	<a href="#" class="close">&times;</a>
+        	<h3>You are being directed to an external link.</h3>
+    </div>
+    <div class="modal-body">
+		<p>Here's a link to the building picture source. Although we obtained the image from this link, sites change. Thus, we cannot necessarily endorse the link to which you are being directed: {{ PIC_SRC }}</p>
+    </div>
+    <div class="modal-footer">
+    	<a href="{{ PIC_SRC }}" target="_blank" onClick="$('#modal-from-dom').modal('hide')" class="btn primary">Continue to External Site</a>
+        <a onClick="$('#modal-from-dom2').modal('hide')" class="btn secondary">Go Back</a>
+	</div>
+</div>
 
 
 {% endblock %}
