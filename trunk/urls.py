@@ -9,6 +9,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 	(r'^$', 'campenport.views.passhome'),
 	(r'^map/$', homemap),
+	(r'^api/$', include('campenport.api.urls')),
 	(r'^buildlist/$', buildinglist),
 	(r'^compare/$', comparebuildings),
 	(r'^buildings/(?P<buildname>[a-zA-Z0-9_.-]+)/$', 'campenport.buildings.views.buildings'),
