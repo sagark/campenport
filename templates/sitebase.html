@@ -11,6 +11,7 @@
 		<script type="text/javascript" src="/site-media/jquery/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-twipsy.js"></script>
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-popover.js"></script>
+		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-alerts.js"></script>
 
 		{% block extra_scriptsCSS_imports %} {% endblock %}
 
@@ -170,12 +171,25 @@ function urlSearch(inp) {
 		{% endblock %}
 		</div>
 		<footer>
-		<span style="float:left;"><a href="http://local.cs.berkeley.edu" target="_new" ><img src="/site-media/images/LoCal.png" alt="LoCal" /></a></span>
+		
+		<span style="float:left"><a href="http://local.cs.berkeley.edu" target="_new" ><img src="/site-media/images/LoCal.png" alt="LoCal" /></a></span>
 
-        	<span><p> &nbsp; &nbsp;<span id="validateHTML5"><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}" style="color:#000000;">Valid HTML5</a></span> | Energy Data: <a href="http://new.openbms.org" style="color:#000000;">new.openbms.org</a> | Building Information and Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml" style="color:#000000;">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu" style="color:#000000;">dashboard.berkeley.edu</a>
-			<br>
-			 &nbsp;&nbsp; Source: <a href="http://code.google.com/p/campenport" style="color:#000000;">campenport on googlecode</a> | License: <a href="http://www.opensource.org/licenses/bsd-license.php" style="color:#000000;">New BSD</a> | Built With: <a href="http://jquery.com" style="color:#000000;">jQuery</a> | <a href="http://twitter.github.com/bootstrap" style="color:#000000;">bootstrap</a> | <a href="http://code.google.com/p/flot/" style="color:#000000;">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php" style="color:#000000;">zoomable</a> | <a href="https://github.com/brandonaaron/jquery-mousewheel/" style="color:#000000;">jquery-mousewheel</a> | <a href="http://www.ama3.com/anytime/" style="color:#000000;">Any+Time</a> | <a href="http://www.dariancabot.com/projects-2/jgauge/" style="color:#000000;">jGauge</a></p>
-		</span>
+        	<span><p> &nbsp; &nbsp;<span id="validateHTML5"><a href="http://validator.w3.org/check?uri={{ ROOT_URL }}" style="color:#000000;">Valid HTML5</a></span> | <a href="#" onclick="dispandscroll('#DataFrom');" style="color:#000000;">Energy and Building Data</a>
+			  | License: <a href="http://www.opensource.org/licenses/bsd-license.php" style="color:#000000;">New BSD</a> | <a href="#" onclick="dispandscroll('#BuiltWith');" style="color:#000000;">Built With</a><br>&nbsp;&nbsp;&nbsp;<a href="http://local.cs.berkeley.edu" style="color:#000000;">local.cs.berkeley.edu</a> |  Source: <a href="http://code.google.com/p/campenport" style="color:#000000;">The campenport Project on googlecode</a>
+</p>		</span>
+		  <div id="BuiltWith" class="alert-message info">
+            <a class="close" href="#" onclick="$('#BuiltWith').hide();">&times;</a>
+            <h4 class="alert-heading">Built With:</h4>
+            <p><a href="http://jquery.com" style="color:#000000;">jQuery</a> | <a href="http://twitter.github.com/bootstrap" style="color:#000000;">bootstrap</a> | <a href="http://code.google.com/p/flot/" style="color:#000000;">flot</a> | <a href="http://www.doogal.co.uk/zoomable.php" style="color:#000000;">zoomable</a> | <a href="https://github.com/brandonaaron/jquery-mousewheel/" style="color:#000000;">jquery-mousewheel</a> | <a href="http://www.ama3.com/anytime/" style="color:#000000;">Any+Time</a> | <a href="http://www.dariancabot.com/projects-2/jgauge/" style="color:#000000;">jGauge</a></p>
+          </div>
+		<div id="DataFrom" class="alert-message info">
+            <a class="close" href="#" onclick="$('#DataFrom').hide();">&times;</a>
+            <h4 class="alert-heading">Energy and Building Data Sources</h4>
+            <p>Energy Data: <a href="http://new.openbms.org" style="color:#000000;">new.openbms.org</a> | Building Data: <a href="http://berkeley.edu/map/3dmap/3dmap.shtml" style="color:#000000;">Berkeley Interactive Campus Map</a> | <a href="http://dashboard.berkeley.edu" style="color:#000000;">dashboard.berkeley.edu</a>
+</p>
+          </div>
+
+
 </footer>
 	</div>
 <!-- the following adapted from http://return-true.com/2010/04/jquery-pop-up-footer-version-2/ --> 
@@ -190,6 +204,9 @@ function urlSearch(inp) {
 	</div>
 </div>
 
+          
+
+
 {% block random_extras %}
 {% endblock %}
 
@@ -197,9 +214,16 @@ function urlSearch(inp) {
 
 
 <script type="text/javascript">
-
+$("#BuiltWith").hide();
+$("#DataFrom").hide();
 val = document.getElementById('validateHTML5');
 val.innerHTML = "<a href=\"http://validator.w3.org/check?uri=" + document.location.href + "\" target=\"_blank\" style=\"color:#000000;\">Valid HTML5</a>";
+
+function dispandscroll(element){
+	$(element).show();
+	$('html,body').animate({scrollTop: $(element).offset().top}, 2000);
+}
+
 $(function () {
               $("a[rel=popover]")
                 .popover({
