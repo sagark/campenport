@@ -12,6 +12,7 @@
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-twipsy.js"></script>
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-popover.js"></script>
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-alerts.js"></script>
+		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-dropdown.js"></script>
 
 		{% block extra_scriptsCSS_imports %} {% endblock %}
 
@@ -141,22 +142,34 @@ function urlSearch(inp) {
 }
 
 </script>
-	<div class="topbar">
+	<div class="topbar-wrapper" style="z-index: 5;">
+	<div class="topbar" data-dropdown="dropdown">
     	<div class="fill">
     		<div class="container">
     			<a class="brand" href="/" style="margin-top:2px;"><img src="/site-media/images/cal-logo.png" style="position:absolute;top:1px;" alt="cal logo" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Berkeley Campus Energy Portal</a>
 				<ul class="nav">
 					<li {% block menu_1 %}{% endblock %}><a href="/map/">Map</a></li>
 					<li {% block menu_2 %}{% endblock %}><a href="/buildlist/">Building List</a></li>
-					<li {% block menu_3 %}{% endblock %}><a href="/search/">Advanced Search</a></li>
+				<!--	<li ><a href="/search/">Advanced Search</a></li> -->
 					<li {% block menu_4 %}{% endblock %}><a href="/compare/">Compare</a></li>
 				</ul>
 				<form action="/search/" method="get" class="pull-right">
 					<input id="searchbox" class="input-medium" type="text" placeholder="Search Buildings" name="name">
-					<button class="btn" type="submit">Go</button>
+					<button class="btn" type="submit">Go</button>            
 				</form>
+				<ul class="nav secondary-nav">
+
+			<li class="dropdown">
+              <a href="#" class="dropdown-toggle"></a>
+              <ul class="dropdown-menu">
+                <li {% block menu_3 %}{% endblock %}><a href="/search/">Advanced Search</a></li>
+              </ul>
+            </li>
+
+				</ul>
 			</div>
 		</div>
+	</div>
 	</div>
 
 
