@@ -2183,7 +2183,7 @@
                 if (!label)
                     continue;
                 
-                if (i % options.legend.noColumns == 0) {
+                if (i % 9 == 0) {  //hardcoded to 9 to match site view
                     if (rowStarted)
                         fragments.push('</tr>');
                     fragments.push('<tr>');
