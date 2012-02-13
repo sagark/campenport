@@ -1,0 +1,2 @@
+NOTE from sagark:
+this copy of flot has a bunch of little mods for display, thus there may be some bugs if you try to use it in a page that /isn't/ a building page. In that case, get a new copy of flot and put it in site-media/pureFlot or something similar.

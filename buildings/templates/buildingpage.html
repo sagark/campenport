@@ -13,6 +13,7 @@
 <!--[if IE]><script type="text/javascript" language="javascript" src="js/excanvas.min.js"></script><![endif]--> <!-- Extends canvas support to IE. (Possibly buggy, need to look into this.) -->
 <script type="text/javascript" src="/site-media/jgauge/js/jQueryRotate.min.js"></script> <!-- jQueryRotate plugin used for needle movement. -->
 <script type="text/javascript" src="/site-media/jgauge/js/jgauge-0.3.0.a3.js"></script> <!-- jGauge JavaScript. -->
+<script type="text/javascript" src="/site-media/psMathStats/psMathStats.min.js"></script>
 {% endblock %}
 
 {% block extra_css_inline %}
@@ -309,6 +310,7 @@ function ajaxReqTwo(callback, latest, inputUUID, starttime, endtime, output, typ
 function runReqTwo(output) {
 	latest = [];
 	typeOrder = [];
+	needToavg = [];
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
 	var starttime = converter.parse($("#date2").val()).getTime();
@@ -318,7 +320,16 @@ function runReqTwo(output) {
 		typeOrder.push(typeInput);
 		latest.push(eval(resp));
 		if (output.length==latest.length){
-			latest = drawGraph(latest, typeOrder);
+			if (endtime-starttime<=1209600000){
+			for (x in latest[0][0]['Readings']){
+				needToavg.push(latest[0][0]['Readings'][x][1]);
+			}
+			var psArray = new ps.array(needToavg);
+			var avg = psArray.mean();
+			var avgArr = [[starttime, avg], [endtime, avg]];
+			}
+			else {var avgArr = 0; }
+			latest = drawGraph(latest, typeOrder, avgArr);
 			setAllTheGauges(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1], latest[1][0]['Readings'][latest[1][0]['Readings'].length-1]);
 		}
 	}, latest, output[x][0], starttime, endtime, output, output[x][1]);
@@ -354,7 +365,8 @@ function setMiddleGauge(response, lastActualkW){
 	gaugeTwo.setValue(thisbuildkW/wholecamp*100);
 }
 
-function drawGraph(inputData, typeData){
+function drawGraph(inputData, typeData, flatlineAvg){
+	//console.log(flatlineAvg);
 	if (typeData[0] == "subsampled sum"){
 	}
 	else {
@@ -378,11 +390,17 @@ function drawGraph(inputData, typeData){
 			inputData[x][0]['Readings'][y][0] = inputData[x][0]['Readings'][y][0]-tzOffset;
 		}
 	}
-
+	if (flatlineAvg != 0){
+	flatlineAvg[0][0] -= tzOffset;
+	flatlineAvg[1][0] -= tzOffset;
+	}
 	//end fix timezone offset for flot
 	var data = [];
 	for (ind3 = 0; ind3 < inputData.length; ind3++) {
 		data.push({label:typeData[ind3], "data":inputData[ind3][0]['Readings']});
+	}
+	if (flatlineAvg != 0 && flatlineAvg[0][1]!=0){
+	data.push({label:"Constant Average", "data":flatlineAvg});
 	}
 	var options = {
 			colors: ["blue", "black"],
