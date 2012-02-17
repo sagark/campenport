@@ -140,7 +140,12 @@ function runReqOne() {
 	
 	ajaxReqOne(function(respo){
 		for (ind = 0; ind < respo.length; ind++) {
+			try{
 				djangoGenDsqfts[respo[ind]["Metadata"]["Location"]["Building"]]['UUID'] = respo[ind]["uuid"];
+			}
+			catch(e){
+				//do nothing
+			}
 			}
 		for (building in djangoGenDsqfts){
 				if (djangoGenDsqfts[building]['UUID']==""){
