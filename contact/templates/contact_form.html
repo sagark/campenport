@@ -1,4 +1,6 @@
 {% extends "sitebase.html" %}
+{% block title %}Submit a Suggestion{% endblock %}
+{% block header_title %}Submit a Suggestion:{% endblock %}
 {% block content_inside %}
     {% if form.errors %}
         <p style="color: red;">
@@ -7,9 +9,17 @@
     {% endif %}
 
     <form action="" method="post">
-        <table>
-            {{ form.as_table }}
-        </table>
-        <input type="submit" value="Submit">
+		<div style="min-height:250px;">
+			<div id="leftbar" style="float:left;">
+				<div><legend><h3>Your Email Address (optional):</h3></legend><input id="id_emailID" type="text" name="emailID" maxlength="75" /></div><br>
+				<div><legend><h3>Relevant Building:</h3></legend><input id="id_rBuilding" type="text" name="rBuilding" maxlength="100" value="{{ building_name_in }}" /></div>
+			</div>
+			<div id="rightbar" style="float:right;">
+				<div><legend><h3>Your Suggestion: </h3></legend>&nbsp;&nbsp;<textarea class="xxlarge" id="id_suggestion" rows="5" cols="50" name="suggestion" style="float:right;"></textarea></div></div>
+			</div>
+
+			<div><br>
+				<input type="submit" class="btn primary" value="Submit Your Suggestion"> *We'll do our best to respond.
+			</div>
     </form>
 {% endblock %}

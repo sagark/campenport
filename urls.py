@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from campenport.views import homemap, buildinglist, search, comparebuildings
-from campenport.contact.views import contact, contactThanks
+from campenport.contact.views import contact, contactThanks, contact2
 import campenport.settings as settings
 
 # Uncomment the next two lines to enable the admin:
@@ -19,5 +19,6 @@ urlpatterns = patterns('',
 	(r'^site-media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA + '/site-media/'}),
 	(r'^admin/', include(admin.site.urls)),
 	(r'contact/thanks/', contactThanks),
-	(r'^contact/', contact),
+	(r'^contact/in/(?P<buildnameC>[a-zA-Z0-9_.-]+)/$', contact),
+	(r'^contact/in/', contact2),
 )

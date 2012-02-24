@@ -7,6 +7,7 @@ from campenport.settings import CMAPheight, CMAPwidth
 def buildings(request, buildname):
 	buildings = Building.objects.all()
 	SHORT_NAME = buildname
+	A_SHORT_NAME = SHORT_NAME + "/"
 	try:
 		thisbuilding = Building.objects.get(shortname = SHORT_NAME)
 	except:
