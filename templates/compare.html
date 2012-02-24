@@ -144,7 +144,7 @@ function runReqOne() {
 				djangoGenDsqfts[respo[ind]["Metadata"]["Location"]["Building"]]['UUID'] = respo[ind]["uuid"];
 			}
 			catch(e){
-				//do nothing
+				console.log(respo[ind]["uuid"]);
 			}
 			}
 		for (building in djangoGenDsqfts){

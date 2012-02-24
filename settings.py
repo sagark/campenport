@@ -99,6 +99,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(os.path.dirname(__file__), 'templates').replace('\\', '/'),
     os.path.join(os.path.dirname(__file__), 'buildings/templates').replace('\\', '/'),
+    os.path.join(os.path.dirname(__file__), 'contact/templates').replace('\\', '/'),
 )
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -115,5 +116,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     #'django.contrib.admindocs',
     'campenport.buildings',
+	'campenport.contact',
     'revproxy',
 )
