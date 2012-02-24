@@ -10,7 +10,10 @@ class BuildingAdmin(admin.ModelAdmin):
 	ordering = ('longname',)
 
 class ContactRespAdmin(admin.ModelAdmin):
-	pass
+	def get_readonly_fields(self, request, obj=None):
+		return ('time', 'rBuilding', 'emailID', 'suggestion')
+	list_display = ('time', 'rBuilding', 'emailID')
+	ordering = ('time',)
 
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(ContactResp, ContactRespAdmin)
