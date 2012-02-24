@@ -13,6 +13,7 @@
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-popover.js"></script>
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-alerts.js"></script>
 		<script type="text/javascript" src="/site-media/bootstrap/bootstrap-dropdown.js"></script>
+		<script type="text/javascript" src="/site-media/jquery-qrcode/jquery.qrcode.min.js"></script>
 
 		{% block extra_scriptsCSS_imports %} {% endblock %}
 
@@ -216,8 +217,9 @@ function urlSearch(inp) {
 		<div id="footerSlideText">
 			<h3>Have an Energy Conservation Idea? See Energy Waste Happening?</h3>
 			<p>We'd love to hear your ideas about saving energy!</p>
-			<p>Contact Us Anonymously by Clicking on the QR code or scanning it with your phone.</p>
+			<p>Contact Us Anonymously by <a href="http://berkeley.openbms.org/contact/in/{{ A_SHORT_NAME }}">Clicking here</a> or by scanning the QR code with your phone.</p>
 		</div>
+		<div id="qrcode" style="text-align:center;"></div>
 	</div>
 </div>
 
@@ -235,6 +237,8 @@ $("#BuiltWith").hide();
 $("#DataFrom").hide();
 val = document.getElementById('validateHTML5');
 val.innerHTML = "<a href=\"http://validator.w3.org/check?uri=" + document.location.href + "\" target=\"_blank\" style=\"color:#000000;\">Valid HTML5</a>";
+
+$('#qrcode').qrcode({width: 128,height: 128,text: "http://berkeley.openbms.org/contact/in/{% block extend_contact_url %}{% endblock %}"});
 
 function dispandscroll(element){
 	$(element).show();
