@@ -2220,7 +2220,7 @@
                     pos += 'right:' + (m[0] + plotOffset.right) + 'px;';
                 else if (p.charAt(1) == "w")
                     pos += 'left:' + (m[0] + plotOffset.left) + 'px;';
-                var legend = $('<div class="legend">' + table.replace('style="', 'style="width:200px;margin-top:-8px;position:absolute;top:12px;left:28px;"') + '</div>').appendTo(placeholder);
+                var legend = $('<div class="legend">' + table.replace('style="', 'style="width:200px;margin-top:-8px;position:absolute;top:12px;left:52px;background-color:rgba(0,0,0,0.7);color:#FFFFFF;-moz-border-radius: 6px;border-radius: 6px;"') + '</div>').appendTo(placeholder);
                 if (options.legend.backgroundOpacity != 0.0) {
                     // put in the transparent background
                     // separately to avoid blended labels and
