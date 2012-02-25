@@ -46,7 +46,16 @@ Drag on the graph to zoom in.
 {% endblock %}
 
 {% block content_inside %}
-<div class="hero-unit" style="min-height:610px;">
+<div class="hero-unit" style="margin-top:-10px;text-align:center;" ><div style="margin:0px auto; width:60%">
+    <ul class="pills">
+    <li class="active"><a href="#">Jump Down:</a></li>
+    <li><a href="#" onclick="scrollDownTo('graphMain')">Graph &#9660;</a></li>
+    <li><a href="#" onclick="scrollDownTo('enviro')">Environment &#9660;</a></li>
+    <li><a href="#" onclick="scrollDownTo('relatives')">Relative &#9660;</a></li>
+    <li><a href="#" onclick="scrollDownTo('props')">Properties &#9660;</a></li>
+    </ul></div>
+</div>
+<div class="hero-unit" style="min-height:610px;margin-top:-80px;" id="graphMain">
 <h2>Live Power Consumption Graph (Default 1 Day): </h2> Start Time: <input class="span4" type = "text" id="date2" size=36>&nbsp; &nbsp;  End Time: <input class="span4" type="text" id="date" size=36> &nbsp; &nbsp; <input type = "button" class="btn primary" value = "Load/Refresh Data" id="refresh"> &nbsp; &nbsp;<input type="checkbox" id="autoup" name="autoup" value="10" checked /> Autoupdate (15 min)
 <br><br>
 <div id="graph" >
@@ -59,7 +68,9 @@ Drag on the graph to zoom in.
     </div> 
 </div>
 </div>
-<div class="hero-unit" style="margin-top:-15px;"><h2>Environment:</h2></div>
+<div class="hero-unit" style="margin-top:-15px;min-height:40px;" id="enviro"><div style="float:left;"><h2>Environment:   </h2></div><div style="float:right;"><ul class="pills">
+    <li class="active"><a href="#" onclick="scrollToTop()">Jump Up &#9650;</a></li></ul></div>
+</div>
 <div class="row" style="margin-top:-50px;">
 	<div class="span-one-third">
 		<div class="hero-unit" style="text-align:center;">
@@ -77,7 +88,7 @@ Past 24 Hours: <br><span class="dynamicsparklineHum" style="background-color:rgb
 		</div>
 	</div>
 <div class="span-one-third">
-		<div class="hero-unit" style="text-align:center;">
+		<div class="hero-unit" style="text-align:center;margin-top:-17px;">
 
 <p>Outside <strong>Air Pressure</strong>: <br><span class="pressBox"></span>&nbsp; / &nbsp; 
 Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:rgba(0, 0, 0, 0.1);">Loading..</span></p>
@@ -87,7 +98,8 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 </div>
 
 
-<div class="hero-unit" style="margin-top: -15px;"><h2>Relative Statistics:</h2></div>
+<div class="hero-unit" style="margin-top: -15px;min-height:40px;" id="relatives"><div style="float:left;"><h2>Relative Statistics:</h2></div><div style="float:right;"><ul class="pills">
+    <li class="active"><a href="#" onclick="scrollToTop()">Jump Up &#9650;</a></li></ul></div></div>
 <div class="row" style="margin-top: -50px;">
 
 <div class="span-one-third">
@@ -98,7 +110,7 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="% of Total Campus (kW) is calculated by taking a building's current power usage and dividing it by the sum of the power usage of all campus buildings for which data is available. It is designed to be compared to the gauge to the right, % of Total Campus (SqFt)." style="color:#000000;">% of Total Campus (kW)</a></h3><div style="width:180px;margin:0 auto;"><div id="gaugeTwo" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
 </div>
 <div class="span-one-third">
-	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="% of Total Campus (SqFt) is calculated by taking a building's square footage and dividing it by the sum of the square footage of all campus buildings for which data is available. It is designed to be compared to the gauge to the left, % of Total Campus (kW)." style="color:#000000;">% of Total Campus (SqFt)</a></h3><div style="width:180px;margin:0 auto;"><div id="gaugeThree" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+	<div class="hero-unit" style="min-height:200px;text-align:center;margin-top:-17px;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="% of Total Campus (SqFt) is calculated by taking a building's square footage and dividing it by the sum of the square footage of all campus buildings for which data is available. It is designed to be compared to the gauge to the left, % of Total Campus (kW)." style="color:#000000;">% of Total Campus (SqFt)</a></h3><div style="width:180px;margin:0 auto;"><div id="gaugeThree" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
 </div>
 
 
@@ -106,7 +118,7 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 
 
 
-<div class="row">
+<div class="row" id="props">
 <div class="span8" style="text-align:center;">
 <ul class="media-grid">
 
@@ -165,6 +177,16 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 </div>
 </div>
 </div>
+<div class="hero-unit" style="height:40px;padding:0px;margin-top:15px;margin-bottom:0px;text-align:center;" ><div style="margin:0px auto; width:67%">
+    <ul class="pills">
+    <li class="active"><a href="#">Jump Up:</a></li>
+    <li><a href="#" onclick="scrollDownTo('graphMain')">Graph &#9650;</a></li>
+    <li><a href="#" onclick="scrollDownTo('enviro')">Environment &#9650;</a></li>
+    <li><a href="#" onclick="scrollDownTo('relatives')">Relative &#9650;</a></li>
+    <li><a href="#" onclick="scrollDownTo('props')">Properties &#9650;</a></li>
+	<li><a href="#" onclick="scrollToTop()">Top &#9650;</a></li>
+    </ul></div>
+</div>
 
 <div id="modal-from-dom" class="modal hide fade">
 	<div class="modal-header">
@@ -211,6 +233,12 @@ AnyTime.picker( "date", { format: datefmt, firstDOW: 0 } );
 AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
 //end time setup
 
+function scrollDownTo(itemID){
+     	$('html,body').animate({scrollTop: $("#"+itemID).offset().top-40},'slow');
+}
+function scrollToTop(){
+     	$('html,body').animate({scrollTop: 0},'slow');
+}
 
 
 $(function () {
