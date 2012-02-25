@@ -12,6 +12,11 @@ class="active"
 Compare Buildings
 {% endblock %}
 
+{% block extra_scriptsCSS_imports %}
+<script type="text/javascript" src="/site-media/campenportJS/smap/query.js"></script>
+{% endblock %}
+
+
 {% block extra_css_inline %}
 
 			.comparisongraph {
@@ -68,26 +73,21 @@ var sorttype = 'kWhperSqFt';
 $(document).ready(function() {
 	$('#bargraph').hide();
 
-//$(function() {
 	$( "#slider" ).slider({"value": 3030, "min": 2030, "max": 4030, "step": 250, change: function(event, ui) {
-	hscaleFactor = ui.value;
-	$("#bargraph").hide();
-	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
-}});
+		hscaleFactor = ui.value;
+		$("#bargraph").hide();
+		drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
+	}});
 
 	$( "#slider2" ).slider({"value": 1000, "min": 500, "max": 4200, "step": 100, change: function(event, ui) {
-	vscaleFactor = ui.value;
-	$("#bargraph").hide();
-	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
-}});
-
-
-
-//	});
+		vscaleFactor = ui.value;
+		$("#bargraph").hide();
+		drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
+	}});
 	runReqOne();
 });
 
-
+//ui control change handlers
 $("#hscalingfactor").change(function() {
 	hscaleFactor = $("#hscalingfactor").val();
 	$("#bargraph").hide();
@@ -100,7 +100,6 @@ $("#slider").change(function() {
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
 
-
 $("#vscalingfactor").change(function() {
 	vscaleFactor = $("#vscalingfactor").val();
 	$("#bargraph").hide();
@@ -112,6 +111,8 @@ $("#sortselect").change(function() {
 	$("#bargraph").hide();
 	drawBars(sortTesting(djangoGenDsqfts, sorttype), 0);
 });
+//end ui control change handlers
+
 
 
 var djangoGenDsqfts = {
@@ -124,21 +125,10 @@ var counterTens = 0;
 var setsOfTen = [];
 var collectedData = [];
 
-function ajaxReqOne(callback) {
-	$.ajax({
-		async: true,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "select * where Metadata/Extra/Operator = 'daily meter usage'",
-		success: function(response) {
-			callback(response);
-		}
-	});
-}
 
 function runReqOne() {
 	
-	ajaxReqOne(function(respo){
+	httpGetTags(function(respo){
 		for (ind = 0; ind < respo.length; ind++) {
 			try{
 				djangoGenDsqfts[respo[ind]["Metadata"]["Location"]["Building"]]['UUID'] = respo[ind]["uuid"];
@@ -146,7 +136,7 @@ function runReqOne() {
 			catch(e){
 				console.log(respo[ind]["uuid"]);
 			}
-			}
+		}
 		for (building in djangoGenDsqfts){
 				if (djangoGenDsqfts[building]['UUID']==""){
 					delete djangoGenDsqfts[building]; //removes buildings that don't have kWh data
@@ -170,7 +160,7 @@ function runReqOne() {
 		}
 			
 		runReqTwo(setsOfTen);
-	});
+	}, "select * where Metadata/Extra/Operator = 'daily meter usage'");
 }
 
 function ajaxReqTwo(callback, querystring, x, endat) {
