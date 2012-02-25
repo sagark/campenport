@@ -21,3 +21,16 @@ function httpGetData(callback, latest, inputUUID, starttime, endtime, output, ty
 	});
 }
 
+function httpGetLatestData(callback, querystring, x, endat) {
+    //IMPORTANT NOTE: you can only get 10 UUIDs of data in one call
+	$.ajax({ 
+		async: false,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select data before now limit 1 where " + querystring,
+		success: function(response) {
+			callback(response, x, endat);
+		}
+	});
+}
+

@@ -69,21 +69,10 @@ function runReqOne() {
 	}, "select * where Metadata/Extra/Operator = 'daily meter usage'");
 }
 
-function ajaxReqTwo(callback, querystring, x, endat) {
-	$.ajax({ 
-		async: false,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "select data before now limit 1 where " + querystring,
-		success: function(response) {
-			callback(response, x, endat);
-		}
-	});
-}
 
 function runReqTwo(querystring) {
 	for (x = 0; x < querystring.length; x++){
-	ajaxReqTwo(function(resp, x, endat){
+	httpGetLatestData(function(resp, x, endat){
 		for (z = 0; z< resp.length; z++){
 			collectedData[resp[z]['uuid']] = resp[z]['Readings'][0][1];
 			}
