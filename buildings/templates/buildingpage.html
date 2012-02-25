@@ -335,6 +335,7 @@ function drawGraph(inputData, typeData, flatlineAvg){
         	legend: { noColumns: 2 },
         	xaxis: { tickDecimals: 0, mode:"time" },
         	selection: { mode: "x" },
+			grid: {hoverable: true, clickable: true},
 			xaxes: [{
 				axisLabel: 'Time',
 			}],
@@ -354,9 +355,72 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	placeholder.bind("plotunselected", function (event) {
 		$("#selection").text("");
 	});
+
+
+var previousPoint = null;
+    $("#placeholder").bind("plothover", function (event, pos, item) {
+        $("#x").text(pos.x.toFixed(2));
+        $("#y").text(pos.y.toFixed(2));
+
+        if (true) {
+            if (item) {
+                if (previousPoint != item.dataIndex) {
+                    previousPoint = item.dataIndex;
+                    
+                    $("#tooltip").remove();
+                    var x = item.datapoint[0].toFixed(2),
+                        y = item.datapoint[1].toFixed(2);
+                    
+					var tempdate = new Date(x/1+tzOffset);
+                    showTooltip(item.pageX, item.pageY,
+                                item.series.label + " on " + converter.format(tempdate)  + " was " + y + " kW");
+                }
+            }
+            else {
+                $("#tooltip").remove();
+                previousPoint = null;            
+            }
+        }
+    });
+
+    $("#placeholder").bind("plotclick", function (event, pos, item) {
+        if (item) {
+            $("#clickdata").text("You clicked point " + item.dataIndex + " in " + item.series.label + ".");
+            plot.highlight(item.series, item.datapoint);
+        }
+    });
+
 	$("#loading").hide()
 	var plot = $.plot(placeholder, data, options);
 	return inputData;
 }
+
+function showTooltip(x, y, contents) {
+		if (x<800){
+			x = x;
+		}
+		else if (x<1100){
+			x = x-300;
+		}
+		else{
+			x = x-560;
+		}
+        $('<div id="tooltip">' + contents + '</div>').css( {
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #fdd',
+            padding: '5px',
+            'background-color': '#000',
+			'color': '#FFF',
+            opacity: 0.70,
+			'font-size': '140%',
+        }).appendTo("body").fadeIn(200);
+}
+
+
+
+
 </script>
 {% endblock %}
