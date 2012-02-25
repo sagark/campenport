@@ -40,8 +40,6 @@ Bar height and width represent square footage and kWh per sqft respectively.
 {% block content_inside %}
 <div class="row">
 	<div class="span16">
-<!--<input id="hscalingfactor" type="text" placeholder="Horizontal (kWh/SqFt) Scaling Factor (Default 3030)" />
-<input id="vscalingfactor" type="text" placeholder="Vertical (SqFt) Scaling Factor (Default 1000)" /> -->
 <div style="text-align:center">
 <div style="display:inline-block;">
 <div style="float:left;">Compress Width &nbsp;</div><div id="slider" style="width:650px;float:left;"></div><div style="float:left;">&nbsp;&nbsp;&nbsp;Expand Width</div><br><br>
@@ -163,21 +161,10 @@ function runReqOne() {
 	}, "select * where Metadata/Extra/Operator = 'daily meter usage'");
 }
 
-function ajaxReqTwo(callback, querystring, x, endat) {
-	$.ajax({ 
-		async: false,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "select data before now limit 1 where " + querystring,
-		success: function(response) {
-			callback(response, x, endat);
-		}
-	});
-}
 
 function runReqTwo(querystring) {
 	for (x = 0; x < querystring.length; x++){
-	ajaxReqTwo(function(resp, x, endat){
+	httpGetLatestData(function(resp, x, endat){
 		for (z = 0; z< resp.length; z++){
 			collectedData[resp[z]['uuid']] = resp[z]['Readings'][0][1];
 			}
