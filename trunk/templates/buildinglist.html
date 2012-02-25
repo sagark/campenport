@@ -6,6 +6,7 @@ Building List
 
 {% block extra_scriptsCSS_imports %}
 			<script src="/site-media/jquery-tablesorter/jquery.tablesorter.min.js"></script>
+			<script src="/site-media/campenportJS/smap/query.js"></script>
 {% endblock %}
 {% block extra_scripts_inline %}
 $(function() {
@@ -30,21 +31,10 @@ var counterTens = 0;
 var setsOfTen = [];
 var collectedData = [];
 
-function ajaxReqOne(callback) {
-	$.ajax({
-		async: true,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "select * where Metadata/Extra/Operator = 'daily meter usage'",
-		success: function(response) {
-			callback(response);
-		}
-	});
-}
 
 function runReqOne() {
 	
-	ajaxReqOne(function(respo){
+	httpGetTags(function(respo){
 		for (ind = 0; ind < respo.length; ind++) {
 				try {
 				djangoGenDsqfts[respo[ind]["Metadata"]["Location"]["Building"]]['UUID'] = respo[ind]["uuid"];
@@ -76,7 +66,7 @@ function runReqOne() {
 		}
 			
 		runReqTwo(setsOfTen);
-	});
+	}, "select * where Metadata/Extra/Operator = 'daily meter usage'");
 }
 
 function ajaxReqTwo(callback, querystring, x, endat) {
