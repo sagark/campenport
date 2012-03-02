@@ -35,14 +35,14 @@ Campus Map
 {% endblock %}
 
 {% block header_subtitle %}
-Click a building to view energy usage information.
+<span style="color:#808080;">Click a <span style="background-color:#e1dd6d;">highlighted</span> building to view energy usage information.</span>
 {% endblock %}
 
 
 {% block content_inside %}
 			<div class="row">
 				<div class="span16">
-					<div style="text-align:right;position:right;margin-bottom:5px;margin-top:-10px;margin-bottom:12px;"><span id="buildingName" style="float:left;text-align:left;position:left;"><h3>Available Buildings Appear Here</h3></span><span style="width:64%;position:right;">
+					<div style="text-align:right;position:right;margin-bottom:5px;margin-top:-10px;margin-bottom:12px;"><span id="buildingName" style="float:left;text-align:left;position:left;"><h3></h3></span><span style="width:64%;position:right;">
 						<input class="btn small primary" type="button" value="Zoom in" onclick="$('#image').zoomable('zoomIn')" title="Zoom in" />
 						<input class="btn small primary" type="button" value="Zoom out" onclick="$('#image').zoomable('zoomOut')" title="Zoom out" />
 						<input class="btn small primary" type="button" value="Reset" id="reset" />
