@@ -353,7 +353,27 @@ function appliedGetter(){
 	//console.log("appliedGetter ran!");
 	httpGetTags(function(resp){
 		//console.log(resp);
-		drawGraph([resp, [{"uuid": "LOL", "Readings": []}]], ["subsampled sum", "baseline-01"], 0);
+		passalong = [resp, [{"uuid": "BLANK", "Readings": []}]];
+		var needToavg = [];
+
+		
+		if (endtime-starttime<=1209600000){
+			for (x in passalong[0][0]['Readings']){
+				needToavg.push(passalong[0][0]['Readings'][x][1]);
+			}
+			var psArray = new ps.array(needToavg);
+			var avg = psArray.mean();
+			var avgArr = [[starttime, avg], [endtime, avg]];
+		}
+		else {
+				var avgArr = 0; 
+		}
+
+
+
+
+
+		drawGraph(passalong, ["subsampled sum", "baseline-01"], avgArr);
 		setAllTheGauges(resp[0]['Readings'][resp[0]['Readings'].length-1], resp[0]['Readings'][resp[0]['Readings'].length-1]);
 		
 
