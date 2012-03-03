@@ -356,7 +356,7 @@ function appliedGetter(){
 
 
 
-	}, "apply sum($1, 900, .1, .1) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and (Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') and Metadata/Location/Building like '{{ QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%'");
+	}, "apply sum($1, 900, .1, .1) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%'");
 }
 
 
