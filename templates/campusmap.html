@@ -20,7 +20,7 @@
 		$('input:button').button();
 		$('#image').zoomable();
 		$('#image').zoomable('zoomOut');
-		$("#dialog").dialog({ autoOpen: false, minWidth: 150, minHeight: 500, position: 'right' });
+		$("#dialog").dialog({ height: window.innerHeight-250, autoOpen: false, minWidth: 150, position: 'right' });
 	});
 	///FYI there are more scripts at the bottom in the random_extras block
 {% endblock %}
