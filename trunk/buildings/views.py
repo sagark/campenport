@@ -22,6 +22,13 @@ def buildings(request, buildname):
 		QUERY_ID = thisbuilding.queryid
 
 
+	if thisbuilding.sumQueryid == None or thisbuilding.sumQueryid == '':
+		NEW_QUERY_ID = QUERY_ID
+	else:
+		NEW_QUERY_ID = thisbuilding.sumQueryid
+
+
+
 	totalsqft = 0
 	for x in buildings:
 		totalsqft += int(x.stats_sqft)
