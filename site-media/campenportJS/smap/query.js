@@ -10,6 +10,21 @@ function httpGetTags(callback, querystring) {
 	});
 }
 
+function httpGetTagsWINP(callback, querystring, inp, inptype, numMod) {
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: querystring,
+		success: function(response) {
+			callback(response, inp, inptype, numMod);
+		}
+	});
+}
+
+
+
+
 function httpGetData(callback, latest, inputUUID, starttime, endtime, output, typeInput) {
 	$.ajax({ 
 			async: true,
