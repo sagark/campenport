@@ -337,6 +337,7 @@ function runHttpGetTags() {
 		else{ //buildings that get data the old way ------->keep going here
 			for (ind = 0; ind < respo.length; ind++) {
 					output.push([respo[ind]["uuid"],respo[ind]["Metadata"]["Extra"]["Operator"]]);
+					//console.log(output);
 					assocOutput[respo[ind]["Metadata"]["Extra"]["Operator"]] = respo[ind]["uuid"]; //for autoupdater use, at somepoint, rewrite the rest to make this replace output
 				}
 			runHttpGetData(output);
@@ -401,13 +402,15 @@ function runHttpGetData(output) {
 			}
 			else {var avgArr = 0; }
 ///FIX it up code here
-			if(typeOrder[0]=="subsampled sum" && latest[0][0]['Readings'].length == 0){
-				
+			if(typeOrder[0]=="subsampled sum" && latest[0][0]['Readings'].length == 0 ){
 				intermedAppliedGetter(latest, 0, typeOrder);
 				return;
 			}
-			else if(typeOrder[1]=="subsampled sum" && latest[1][0]['Readings'].length == 0){
+			else if((typeOrder[0] == "baseline-01" && typeOrder.length==1) || (typeOrder[1]=="subsampled sum" && latest[1][0]['Readings'].length == 0)){
 				
+				if(typeOrder.length==1){
+					typeOrder[1] = "subsampled sum";
+				}
 				intermedAppliedGetter(latest, 1, typeOrder);
 				return;
 			}
