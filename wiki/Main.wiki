@@ -1,7 +1,7 @@
 #summary Main Wiki Page
 #labels Main
 
-= Page Index =
+= Wiki Index =
 
 [AddingBuildings Adding Buildings in Admin]
 
