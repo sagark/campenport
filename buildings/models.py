@@ -22,6 +22,7 @@ class Building(models.Model):
 	shortname = models.CharField(max_length=50)
 	longname = models.CharField(max_length=100)
 	queryid = models.CharField(max_length=100, blank=True)
+	sumQueryid = models.CharField(max_length=100, blank=True)
 	kWhqueryid = models.CharField(max_length=100, blank=True)
 	map_coords = models.CharField(max_length=2000)
 	info = models.CharField(max_length=2000, blank=True)
