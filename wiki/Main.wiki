@@ -1,0 +1,8 @@
+#summary Main Wiki Page
+#labels Main
+
+= Page Index =
+
+[AddingBuildings Adding Buildings in Admin]
+
+[CheckoutInstallationSetup Checkout/Installation/Setup] (currently outdated, basically correct)
