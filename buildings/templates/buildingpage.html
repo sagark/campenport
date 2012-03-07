@@ -267,13 +267,14 @@ $("#refresh").click(function() {
 	$("#placeholder").empty();
 	$("#loading").show();
 	runHttpGetTags();
-	environmentData();
+	//environmentData(); //no need to refresh environment data
 });
 
 function environmentData(){
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
-	var starttime = converter.parse($("#date2").val()).getTime();
+	//var starttime = converter.parse($("#date2").val()).getTime();
+	var starttime = endtime - 86400000;
 	httpGetData(function(resp){
 	//callback
 		var passtoSpark = resp[0]['Readings'];
