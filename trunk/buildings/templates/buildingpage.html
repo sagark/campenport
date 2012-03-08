@@ -488,7 +488,7 @@ function setMiddleGauge(response, lastActualkW){
 	wholecamp = response[0]['Readings'][response[0]['Readings'].length-1][1];
 	//wholecamp = response[0]['Readings'][0][1];
 	thisbuildkW = lastActualkW[1];
-	console.log(thisbuildkW/wholecamp*100);
+	//console.log(thisbuildkW/wholecamp*100);
 	gaugeTwo.setValue(thisbuildkW/wholecamp*100);
 }
 
@@ -543,6 +543,7 @@ function drawGraph(inputData, typeData, flatlineAvg){
 				position: 'left',
 				axisLabel: 'Power Consumption (kW)',
 			}],
+			series: {shadowSize: 0},
     	};
 
 	var placeholder = $("#placeholder");
