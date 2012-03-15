@@ -1,4 +1,4 @@
-function runStats(data, tags){
+function runStats(data, tags, avgArr){
 	//do stuff
 	//console.log(data);
 //	console.log(tags);
@@ -21,8 +21,11 @@ function runStats(data, tags){
 	actBucketed = cleaned[1];
 	rms = Math.round(rmsDev(actBucketed, predBucketed)*100)/100;
 	$('.stats1').html("<strong>" + rms + " kW</strong>");
-
-	
+	if(avgArr!=0){
+		rmsPercent = Math.round((rms/avgArr[0][1])*10000)/100
+		$('.stats2').html("<strong>" + rmsPercent + "%</strong>");
+		//console.log(avgArr[0][1]);
+	}
 }
 
 function buildAverages(inputdata, endtime, starttime){
