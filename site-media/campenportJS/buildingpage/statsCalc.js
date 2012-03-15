@@ -4,12 +4,12 @@ function runStats(data, tags){
 //	console.log(tags);
 
 	if(tags[0]=="Actual Usage"){
-		actualData = data[0][0]['Readings'];
-		predData = data[1][0]['Readings'];
+		actualData = data[0][0]['Readings'].slice(0);
+		predData = data[1][0]['Readings'].slice(0);
 	}
 	else{
-		actualData = data[1][0]['Readings'];
-		predData = data[0][0]['Readings'];
+		actualData = data[1][0]['Readings'].slice(0);
+		predData = data[0][0]['Readings'].slice(0);
 	}
 	
 	bucketsize = 5*60*1000;
