@@ -20,7 +20,7 @@ function runStats(data, tags){
 	predBucketed = cleaned[0];
 	actBucketed = cleaned[1];
 	rms = Math.round(rmsDev(actBucketed, predBucketed)*100)/100;
-	$('.stats1').html("<strong>" + rms + "</strong>");
+	$('.stats1').html("<strong>" + rms + " kW</strong>");
 
 	
 }
