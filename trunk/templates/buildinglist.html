@@ -136,6 +136,7 @@ Click a Building Name for more detailed information.
 			<th>kWh/SqFt</th>
 			<th>Peak/Average</th>
 			<th>Baseline rms Deviation</th>
+			<th>rms Deviation Percent</th>
           </tr>
         </thead>
         <tbody>
@@ -149,6 +150,7 @@ Click a Building Name for more detailed information.
 			<td><div id="{{ building.kWhqueryid }}">Not Yet Avail.</div></td>
 			<td>Not Yet Avail.</td>
 			<td>{{ building.rmsDev }} kW</td>
+			<td>{{ building.rmsPercentErr }}%</td>
           </tr>
 
 {% endfor %}

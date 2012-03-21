@@ -1,7 +1,7 @@
 import urllib2
 import time
 import math
-#import numpy as np
+import numpy as np
 import sqlite3
 #change sagar to ubuntu upon deployment
 conn = sqlite3.connect('/home/sagar/dev/campenportdb/buildinginfo.db')
@@ -170,6 +170,14 @@ for building in buildings.keys():
 	rms = math.sqrt(rms)
 	buildings[building]['rms'] = int(rms*100)/100.0
 	print rms
+	try:
+		temp = np.array(actual)
+		mean = np.mean(temp[0:,1])
+		rmsPercentErr = int(rms/mean*10000)/100.00
+		buildings[building]['rmsPercentErr'] = rmsPercentErr
+		print rmsPercentErr
+	except:
+		buildings[building]['rmsPercentErr'] = 0
 	
 
 
@@ -179,7 +187,8 @@ for building in buildings.keys():
 #write to database
 for building in buildings.keys():
 	cursor = conn.cursor()
-	cursor.execute("UPDATE buildings_building SET rmsDEV=" + str(buildings[building]['rms']) + " WHERE longname='" + building + "'")
+	cursor.execute("UPDATE buildings_building SET rmsDev=" + str(buildings[building]['rms']) + " WHERE longname='" + building + "'")
+	cursor.execute("UPDATE buildings_building SET rmsPercentErr=" + str(buildings[building]['rmsPercentErr']) + " WHERE longname='" + building + "'")
 	conn.commit()
 	cursor.close()
 
