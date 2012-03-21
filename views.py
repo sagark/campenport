@@ -21,7 +21,6 @@ def buildinglist(request):
 			building.rmsDev = 'No Baseline'
 			building.rmsPercentErr = 'No Baseline'
 		else:
-			building.rmsDev = building.rmsDev + " kW"
 			building.rmsPercentErr = building.rmsPercentErr + "%"
 
 	return render_to_response('buildinglist.html', locals())
