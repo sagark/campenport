@@ -135,6 +135,7 @@ Click a Building Name for more detailed information.
             <th>Year Built</th>
 			<th>kWh/SqFt</th>
 			<th>Peak/Average</th>
+			<th>Baseline rms Deviation</th>
           </tr>
         </thead>
         <tbody>
@@ -147,6 +148,7 @@ Click a Building Name for more detailed information.
             <td>{{ building.stats_yearBuilt }}</td>
 			<td><div id="{{ building.kWhqueryid }}">Not Yet Avail.</div></td>
 			<td>Not Yet Avail.</td>
+			<td>{{ building.rmsDev }} kW</td>
           </tr>
 
 {% endfor %}
