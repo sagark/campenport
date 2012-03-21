@@ -17,6 +17,12 @@ def buildinglist(request):
 	for building in buildings:
 		if building.kWhqueryid == None or building.kWhqueryid == "":
 			building.kWhqueryid = building.longname
+		if building.rmsDev == '0' or building.rmsDev == '0.0':
+			building.rmsDev = 'No Baseline'
+			building.rmsPercentErr = 'No Baseline'
+		else:
+			building.rmsDev = building.rmsDev + " kW"
+			building.rmsPercentErr = building.rmsPercentErr + "%"
 
 	return render_to_response('buildinglist.html', locals())
 
