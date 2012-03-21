@@ -4,7 +4,7 @@ import math
 import numpy as np
 import sqlite3
 #change sagar to ubuntu upon deployment
-conn = sqlite3.connect('/home/sagar/dev/campenportdb/messwith.db')
+conn = sqlite3.connect('/home/sagar/dev/campenportdb/buildinginfo.db')
 
 #fetch building info with the api
 url = 'http://berkeley.openbms.org/api/'
@@ -18,6 +18,8 @@ profiles = eval(json)
 buildings = { }
 
 for testbuilding in profiles:
+	#if testbuilding['longname'] != 'Soda Hall':
+	#	continue
 	print "fetching: " + testbuilding['longname']
 
 	#assemble queryids - pre-subsampled ids are in FINALidA, apply-sum ids are in FINALidB
@@ -83,6 +85,53 @@ for building in buildings.keys():
 
 #now that all data is available:
 
+
+def bucketize(inputdata, starttime, endtime):
+	avgbucketsize = 15*60000
+	averaged = []
+	newendtime = endtime-endtime%avgbucketsize
+	newstarttime = starttime + (avgbucketsize-starttime%avgbucketsize)
+	thisUUIDoutput = []
+	thisUUIDdata = inputdata
+	upperbound = newendtime
+	lowerbound = newendtime - avgbucketsize
+	while len(thisUUIDdata) != 0:
+		avgtopTracker = 0
+		counter = 0
+		while len(thisUUIDdata) != 0 and thisUUIDdata[len(thisUUIDdata)-1][0]>lowerbound:
+			counter+=1
+			avgtopTracker += thisUUIDdata.pop()[1]
+		try:
+			theCalcdAvg = avgtopTracker/counter
+		except ZeroDivisionError:
+			theCalcdAvg = None
+		if (theCalcdAvg != None):
+			thisUUIDoutput.append([upperbound, theCalcdAvg])
+		upperbound = lowerbound
+		lowerbound = upperbound - avgbucketsize
+	averaged = thisUUIDoutput
+	return averaged
+
+
+def cleanEdges(averaged1, averaged2):
+	if(len(averaged1)>len(averaged2)):
+		flipped = False
+	else:
+		avgtemp = averaged1
+		averaged1 = averaged2
+		averaged2 = avgtemp
+		flipped = True
+	while averaged1[0][0]!=averaged2[0][0]:
+		averaged1.pop(0)
+	while averaged1[len(averaged1)-1][0]!=averaged2[len(averaged2)-1][0]:
+		averaged1.pop()
+	if flipped:
+		return [averaged2, averaged1]
+	else:
+		return [averaged1, averaged2]
+
+
+
 #bin data
 #compute means
 #trim edges
@@ -91,12 +140,37 @@ for building in buildings.keys():
 #store to DB
 for building in buildings.keys():
 	for datatype in buildings[building].keys():
-		buildings[building][datatype]
+		if datatype != 'origtag':
+			buildings[building][datatype] = bucketize(buildings[building][datatype], starttime, currenttime)
+	try:
+		buildings[building]['subsampled sum'], buildings[building]['baseline-01'] = cleanEdges(buildings[building]['subsampled sum'], buildings[building]['baseline-01'])
+	except:
+		pass
+	print len(buildings[building]['subsampled sum'])
+	print len(buildings[building]['baseline-01'])
 
-print buildings
+#print buildings
 
 
-
+#####now compute rms:
+for building in buildings.keys():
+	actual = buildings[building]['subsampled sum']
+	pred = buildings[building]['baseline-01']
+	total = 0
+	counter = 0
+	for x in range(len(actual)):
+		total += (actual[x][1]-pred[x][1])**2
+		counter += 1
+	try:
+		rms = total/counter
+	
+	except ZeroDivisionError:
+		rms = 0
+	
+	rms = math.sqrt(rms)
+	buildings[building]['rms'] = int(rms*100)/100.0
+	print rms
+	
 
 
 
@@ -105,7 +179,7 @@ print buildings
 #write to database
 for building in buildings.keys():
 	cursor = conn.cursor()
-	cursor.execute("UPDATE buildings_building SET rmsDEV=2340 WHERE longname='" + building + "'")
+	cursor.execute("UPDATE buildings_building SET rmsDEV=" + str(buildings[building]['rms']) + " WHERE longname='" + building + "'")
 	conn.commit()
 	cursor.close()
 
