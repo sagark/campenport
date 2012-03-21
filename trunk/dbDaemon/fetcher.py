@@ -1,7 +1,7 @@
 import urllib2
 import time
 import math
-import numpy as np
+#import numpy as np
 import sqlite3
 #change sagar to ubuntu upon deployment
 conn = sqlite3.connect('/home/sagar/dev/campenportdb/buildinginfo.db')
