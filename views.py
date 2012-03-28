@@ -25,6 +25,13 @@ def buildinglist(request):
 
 	return render_to_response('buildinglist.html', locals())
 
+def campus(request):
+	buildings = Building.objects.all()
+	BUILDING_COUNT = len(buildings)
+	ACTUAL_BUILDING_COUNT = 138
+	BUILD_PERCENT = round(BUILDING_COUNT/(ACTUAL_BUILDING_COUNT+0.0)*100)
+	return render_to_response('campus.html', locals())
+
 def search(request):
 	buildings = Building.objects.all()
 	namequery = request.GET.get('name', '')
