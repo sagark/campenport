@@ -150,7 +150,7 @@ function getLatestWholeCampus(callback) {
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply sum($1, 900, .1, .1) to  data in (" + (tempendtime-86400000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply sum($1, 900, 2, .1) to  data in (" + (tempendtime-86400000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response);
 		}
@@ -241,7 +241,7 @@ var previousPoint = null;
                     
 					var tempdate = new Date(x/1+tzOffset);
                     showTooltip(item.pageX, item.pageY,
-                                item.series.label + " on " + converter.format(tempdate)  + " was " + y + " kW");
+                                item.series.label + " on " + converter.format(tempdate)  + " was " + y + " MW");
                 }
             }
             else {
