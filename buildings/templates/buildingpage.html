@@ -8,6 +8,7 @@
 <script type="text/javascript" src="/site-media/flot/jquery.flot.navigate.min.js"></script>
 <script type="text/javascript" src="/site-media/flot/jquery.flot.selection.min.js"></script>
 <script type="text/javascript" src="/site-media/flot/jquery.flot.axislabels.js"></script>
+<script type="text/javascript" src="/site-media/flot/jquery.flot.resize.min.js"></script>
 <script type="text/javascript" src="/site-media/anytime/anytimec.js"></script>
 <script type="text/javascript" src="/site-media/bootstrap/bootstrap-modal.js"></script>
 <link rel="stylesheet" href="/site-media/jgauge/css/jgauge.css" type="text/css" /> <!-- CSS for jGauge styling. -->
@@ -100,7 +101,7 @@ Drag on the graph to zoom in.
 	</div>
 </div>
 
-
+<div class="hero-unit" id="dialogGoesHere" style="min-height:300px;">testing flot resize</div>
 
 
 
@@ -252,7 +253,9 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
         <a onClick="$('#modal-from-dom2').modal('hide')" class="btn secondary">Go Back</a>
 	</div>
 </div>
-
+<div id="pastdialog1" title="Basic dialog"><div id="wrap" style="position:absolute;width:75%;height:80%;">
+<div id="flotholder2" style="position:absolute;width:127%;height:120%;overflow:hidden;"></div></div>
+</div>
 
 {% endblock %}
 {% block extend_contact_url %}{{ A_SHORT_NAME }}{% endblock %}
@@ -287,9 +290,37 @@ $(function () {
                   e.preventDefault()
                 })
             })
+function pastDialog1(callback){
+	$( "#pastdialog1" ).dialog({dialogClass: 'transparent',});
+	$('#pastdialog1').dialog({ dialogClass:'transparent',   width:350, height:300/* insert your options */ }).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
+	callback();
+}
+function runGraph(){
+	$.plot($("#flotholder2"), [[[1,1], [2, 2], [3, 3]]], {
+			colors: ["blue", "black"],
+        	legend: { noColumns: 2 },
+        	xaxis: { tickDecimals: 0 },
+        	selection: { mode: "x" },
+			grid: {hoverable: true, clickable: true},
+			xaxes: [{
+				axisLabel: 'Time',
+			}],
+			yaxes: [{
+				position: 'left',
+				axisLabel: 'Power Consumption (kW)',
+			}],
+			series: {shadowSize: 0},
+    	});
+	$('.transparent').css('background-color','transparent');
+	$('.transparent').css('overflow', 'hidden');
+
+}
 
 $(document).ready(function() {
-	runHttpGetTags();
+	pastDialog1(runGraph);
+//	$( "#pastdialog1" ).dialog();
+//	$('#pastdialog1').dialog({ width: 350, height: 300 /* insert your options */ }).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
+		runHttpGetTags();
 	environmentData();
 	kWvsBaselineG.init();
 	gaugeTwo.init();
