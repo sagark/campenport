@@ -158,13 +158,16 @@ for building in buildings.keys():
 	pred = buildings[building]['baseline-01']
 	total = 0
 	counter = 0
-	for x in range(len(actual)):
-		total += (actual[x][1]-pred[x][1])**2
-		counter += 1
 	try:
+		for x in range(len(actual)):
+			total += (actual[x][1]-pred[x][1])**2
+			counter += 1
 		rms = total/counter
 	
 	except ZeroDivisionError:
+		rms = 0
+	except:
+		print("forloopissue")
 		rms = 0
 	
 	rms = math.sqrt(rms)
