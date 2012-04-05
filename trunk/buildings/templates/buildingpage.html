@@ -101,7 +101,7 @@ Drag on the graph to zoom in.
 	</div>
 </div>
 
-<div class="hero-unit" id="dialogGoesHere" style="min-height:300px;">testing flot resize</div>
+<!--UNCOMMENT TO KEEP WORKING ON TRANSPARENT GRAPH<div class="hero-unit" id="dialogGoesHere" style="min-height:300px;">testing flot resize</div> -->
 
 
 
@@ -253,11 +253,11 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
         <a onClick="$('#modal-from-dom2').modal('hide')" class="btn secondary">Go Back</a>
 	</div>
 </div>
-
+<!--
 <div id="pastdialog1" title="Basic dialog"><div id="wrap" style="position:absolute;width:75%;height:80%;">
 <div id="flotholder2" style="position:absolute;width:127%;height:120%;overflow:hidden;"></div></div> 
 </div>
-
+-->
 {% endblock %}
 {% block extend_contact_url %}{{ A_SHORT_NAME }}{% endblock %}
 {% block random_extras %}
@@ -328,7 +328,7 @@ function switchBG(){
 }
 
 $(document).ready(function() {
-	pastDialog1(runGraph);
+//UNCOMMENT THIS TO KEEP WORKING ON TRANSPARENT GRAPH	pastDialog1(runGraph);
 //	$( "#pastdialog1" ).dialog();
 //	$('#pastdialog1').dialog({ width: 350, height: 300 /* insert your options */ }).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
 		runHttpGetTags();
