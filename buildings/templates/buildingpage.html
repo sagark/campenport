@@ -253,8 +253,9 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
         <a onClick="$('#modal-from-dom2').modal('hide')" class="btn secondary">Go Back</a>
 	</div>
 </div>
+
 <div id="pastdialog1" title="Basic dialog"><div id="wrap" style="position:absolute;width:75%;height:80%;">
-<div id="flotholder2" style="position:absolute;width:127%;height:120%;overflow:hidden;"></div></div>
+<div id="flotholder2" style="position:absolute;width:127%;height:120%;overflow:hidden;"></div></div> 
 </div>
 
 {% endblock %}
@@ -292,7 +293,7 @@ $(function () {
             })
 function pastDialog1(callback){
 	$( "#pastdialog1" ).dialog({dialogClass: 'transparent',});
-	$('#pastdialog1').dialog({ dialogClass:'transparent',   width:350, height:300/* insert your options */ }).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
+	$('#pastdialog1').dialog({ dialogClass:'transparent',   width:350, height:300/* insert your options */ , buttons: {"Background On/Off": function() { switchBG(); } }}).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
 	callback();
 }
 function runGraph(){
@@ -314,6 +315,16 @@ function runGraph(){
 	$('.transparent').css('background-color','transparent');
 	$('.transparent').css('overflow', 'hidden');
 
+}
+
+function switchBG(){
+//	console.log($('.transparent').css('background-color'));
+	if($('.transparent').css('background-color')=='rgba(0, 0, 0, 0)'){
+		$('.transparent').css('background-color','white');
+	}
+	else{
+		$('.transparent').css('background-color','transparent');
+	}
 }
 
 $(document).ready(function() {
@@ -449,7 +460,7 @@ function appliedGetter(){
 
 		
 
-	}, "apply sum($1, 900, .1, .1) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ NEW_QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'");
+	}, "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ NEW_QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'");
 }
 
 
@@ -479,7 +490,7 @@ if (endtime-starttime<=1209600000){
 		setAllTheGauges(inp[numMod][0]['Readings'][inp[numMod][0]['Readings'].length-1], inp[Math.abs(1-numMod)][0]['Readings'][inp[Math.abs(1-numMod)][0]['Readings'].length-1]);
 		runStats(inp, inptype, avgArr);
 
-}, "apply sum($1, 900, .1, .1) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ NEW_QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'", latest, typeOrder, numMod);
+}, "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ NEW_QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'", latest, typeOrder, numMod);
 }
 
 
@@ -551,7 +562,7 @@ function getLatestWholeCampus(callback, lastActualkW) {
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply sum($1, 900, .1, .1) to  data in (" + (tempendtime-3000000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=15)  to  data in (" + (tempendtime-3000000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response, lastActualkW);
 		}

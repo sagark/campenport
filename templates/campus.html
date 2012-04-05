@@ -136,6 +136,7 @@ function environmentData(){
 }
 
 function sendTodrawGraph(response){
+	console.log(response);
 	drawGraph(response);
 }
 
@@ -150,7 +151,7 @@ function getLatestWholeCampus(callback) {
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply sum($1, 900, 2, .1) to  data in (" + (tempendtime-86400000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + (tempendtime-86400000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response);
 		}
@@ -158,7 +159,7 @@ function getLatestWholeCampus(callback) {
 }
 
 function drawGraph(inputData, typeData, flatlineAvg){
-	//console.log(inputData);
+	console.log(inputData);
 	//console.log(typeData);
 //	if (typeData[0] == "subsampled sum"){
 //	}

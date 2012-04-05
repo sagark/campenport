@@ -36,7 +36,6 @@ for testbuilding in profiles:
 	#print testbuilding['FINALidA']
 	#print testbuilding['FINALidB']
 
-
 	#start subsample/baseline querying
 	firsturl = 'http://berkeley.openbms.org/ARDgetData/api/query?'
 	tagQ = "select * where Metadata/Location/Building = '" + testbuilding['FINALidA'] + "' and (Metadata/Extra/Operator like 'baseline-%' or (Metadata/Extra/Operator = 'subsampled sum')) and not (Metadata/Path like '1-hr') and not (Metadata/Extra/Resample like 'subsample-mean-3600') and not (Metadata/Extra/Type like 'steam baseline')"
@@ -74,7 +73,7 @@ for building in buildings.keys():
 for building in buildings.keys():
 	if 'subsampled sum' not in buildings[building].keys() or buildings[building]['subsampled sum']==[]:
 		print "WARNING: " + building
-		applySumdata = "apply sum($1, 900, .1, .1) to  data in (" + str(starttime) + ", " + str(currenttime) + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + buildings[building]['origtag'] + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'"
+		applySumdata = "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + str(starttime) + ", " + str(currenttime) + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + buildings[building]['origtag'] + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'"
 		applySumURL = 'http://berkeley.openbms.org/ARDgetData/api/query?'
 		result3 = eval(urllib2.urlopen(applySumURL, applySumdata).read())
 		result3 = result3[0]['Readings']
