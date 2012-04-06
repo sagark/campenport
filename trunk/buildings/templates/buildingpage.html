@@ -423,7 +423,7 @@ function runHttpGetTags() {
 				}
 			runHttpGetData(output);
 		}
-	}, "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and (Metadata/Extra/Operator like 'baseline-%' or (Metadata/Extra/Operator = 'subsampled sum')) and not (Metadata/Path like '1-hr') and not (Metadata/Extra/Resample like 'subsample-mean-3600') and not (Metadata/Extra/Type like 'steam baseline')");
+	}, "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and (Metadata/Extra/Operator like 'baseline-%') and not (Metadata/Path like '1-hr') and not (Metadata/Extra/Resample like 'subsample-mean-3600') and not (Metadata/Extra/Type like 'steam baseline')");
 }
 
 function appliedGetter(){
