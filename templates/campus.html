@@ -62,7 +62,7 @@ Drag on the graph to zoom in.
     </div> 
 </div>
 </div>
-<div id="row"><h3>About our Data:</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;We currently provide data for {{ BUILDING_COUNT }} out of {{ ACTUAL_BUILDING_COUNT }} buildings on the Berkeley campus or {{ BUILD_PERCENT}}% of buildings on campus.</p><br><h3>Want More Data?</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You can find a much larger quantity of data at <a href="http://new.openbms.org">new.openbms.org</a></p><br><h3>Found a problem with the site?</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Let us know by clicking the green icon at the lower right. If you have a specific bug report, post an issue on the project's repository at <a href="http://code.google.com/p/campenport">code.google.com</a></p><br></div>
+<div id="row"><h3>About our Data:</h3><div class="hero-unit"><p>We provide data for <b>{{ BUILDING_COUNT }} out of {{ ACTUAL_BUILDING_COUNT }}</b> buildings on the Berkeley campus or <b>{{ BUILD_PERCENT}}%</b> of buildings.</p></div><br><h3>Want More Data?</h3><div class="hero-unit"><p>You can find a much larger quantity of data at <a href="http://new.openbms.org">new.openbms.org</a></p></div><br><h3>Found a problem with the site?</h3><div class="hero-unit"><p>Let us know by clicking the green icon at the lower right. If you have a specific bug report, post an issue on the project's repository at <a href="http://code.google.com/p/campenport">code.google.com</a></p></div></div>
 {% endblock %}
 {% block extend_contact_url %}{{ A_SHORT_NAME }}{% endblock %}
 {% block random_extras %}
@@ -113,7 +113,7 @@ $(document).ready(function() {
 $("#refresh").click(function() {
 	$("#placeholder").empty();
 	$("#loading").show();
-	runHttpGetTags();
+	callgetLatestWholeCampus(1);
 	//environmentData(); //no need to refresh environment data
 });
 
@@ -146,13 +146,18 @@ function callgetLatestWholeCampus(lastActualkW){
 }
 
 function getLatestWholeCampus(callback) {
-	tempendtime = (new Date()).getTime();
+	//tempendtime = (new Date()).getTime();
+	var converter = new AnyTime.Converter( { format: datefmt });
+	var endtime = converter.parse($("#date").val()).getTime();
+	//var starttime = converter.parse($("#date2").val()).getTime();
+	var starttime = endtime - 86400000;
 	$.ajax({
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + (tempendtime-86400000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply units < nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + (starttime) + " ," + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and Metadata/Location/Building like '%' and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
+			Console.log(response);
 			callback(response);
 		}
 	});
