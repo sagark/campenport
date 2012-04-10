@@ -262,18 +262,10 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 {% block extend_contact_url %}{{ A_SHORT_NAME }}{% endblock %}
 {% block random_extras %}
 <script type="text/javascript">
-//time setup
-var datefmt = "%W %M %e, %Y %H:%i"; //the format used by AnyTime
-var converter = new AnyTime.Converter( { format: datefmt }); //create a converter
-var nowDate = new Date();
-$("#date").val(converter.format(nowDate));
-var startDate = new Date();
-startDate.setTime(nowDate - 86400000);
-$("#date2").val(converter.format(startDate));
-AnyTime.picker( "date", { format: datefmt, firstDOW: 0 } );
-AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
-//end time setup
 
+/*
+ * the following two functions are helpers for smooth anchor-scrolling
+ */
 function scrollDownTo(itemID){
      	$('html,body').animate({scrollTop: $("#"+itemID).offset().top-40},'slow');
 }
@@ -333,6 +325,22 @@ function switchBG(){
 }
 
 $(document).ready(function() {
+	//time setup
+	window.datefmt = "%W %M %e, %Y %H:%i"; //the format used by AnyTime, shared everywhere
+	window.converter = new AnyTime.Converter( { format: window.datefmt }); //create a converter
+	//create two time periods to set defaults
+	nowDate = new Date();
+	startDate = new Date(); 
+	startDate.setTime(nowDate - 86400000);
+	//Set values of user time-fields
+	$("#date").val(converter.format(nowDate)); 
+	$("#date2").val(converter.format(startDate));
+	//Create pickers for each time-field
+	AnyTime.picker( "date", { format: datefmt, firstDOW: 0 } );
+	AnyTime.picker( "date2", { format: datefmt, firstDOW: 0 } );
+	//end time setup
+
+
 	//Initialize gauges
 	kWvsBaselineG.init();
 	gaugeTwo.init();
@@ -343,6 +351,10 @@ $(document).ready(function() {
 	gaugeThree.setValue(000);
 	//Start Fetching Data, displaying things
 	environmentData(); //Gets environment data, independent of other data gets
+
+	//setup global variable replacements for passing along kW Timeseries data
+	window.mainFlotTimeseries = {} //A dictionary for the data for the flot chart
+	window.retrievedStatistics = {} //A dictionary to hold computed/retrieved data
 
 
 //UNCOMMENT THIS TO KEEP WORKING ON TRANSPARENT GRAPH	pastDialog1(runGraph);
@@ -356,7 +368,6 @@ $("#refresh").click(function() {
 	$("#placeholder").empty();
 	$("#loading").show();
 	getKWflotData();
-	//environmentData(); //no need to refresh environment data
 });
 
 
@@ -367,8 +378,8 @@ $("#refresh").click(function() {
  * Runs independently of other queries.
  */
 function environmentData(){
-	var converter = new AnyTime.Converter( { format: datefmt });
-	var endtime = converter.parse($("#date").val()).getTime();
+	//var converter = new AnyTime.Converter( { format: datefmt });
+	var endtime = window.converter.parse($("#date").val()).getTime();
 	var starttime = endtime - 86400000;
 	httpGetData(function(resp){
 		//callback
@@ -382,7 +393,7 @@ function environmentData(){
 		}, 0, "d0ba5233-7c44-52a9-9bf9-5c55e5084fcf", starttime, endtime, 0, 0);
 
 
-httpGetData(function(resp){
+	httpGetData(function(resp){
 	//callback
 		var passtoSparkHum = resp[0]['Readings'];
 		var passfinalHum = [];
@@ -395,7 +406,7 @@ httpGetData(function(resp){
 		}, 0, "416b7328-bf5f-56e6-adf4-f3eeaba4cf8a", starttime, endtime, 0, 0);
 
 
-httpGetData(function(resp){
+	httpGetData(function(resp){
 	//callback
 		var passtoSparkPress = resp[0]['Readings'];
 		var passfinalPress = [];
@@ -418,44 +429,47 @@ httpGetData(function(resp){
 function autoUpdater(){
 	if ($('input[name=autoup]').is(':checked')){
 	var nowDate = new Date();
-	$("#date").val(converter.format(nowDate));
+	$("#date").val(window.converter.format(nowDate));
 	getKWflotData();
 	environmentData();
 	}
 }
 
 
-
+/*
+ * Starts chain to fetch data for main flot chart
+ */
 function getKWflotData() {
-	httpGetTags(function(respo){
+	getBaselineTags(function(resp){
 		output = [];
-		assocOutput = {};
 		sendUUIDcount = document.getElementById('UUIDcount');
-		sendUUIDcount.innerHTML = respo.length;
-		if (respo.length==0){
+		sendUUIDcount.innerHTML = resp.length;
+		if (resp.length==0){ //continues the fetch chain for buildings without a baseline
 			appliedGetter();  //buildings getting data the new way launch into appliedGetter()
 		}
-		else{ //buildings that get data the old way ------->keep going here
-			for (ind = 0; ind < respo.length; ind++) {
-					output.push([respo[ind]["uuid"],respo[ind]["Metadata"]["Extra"]["Operator"]]);
-					//console.log(output);
-					assocOutput[respo[ind]["Metadata"]["Extra"]["Operator"]] = respo[ind]["uuid"]; //for autoupdater use, at somepoint, rewrite the rest to make this replace output
+		else{ //continues the fetch chain for buildings with a baseline
+			for (ind = 0; ind < resp.length; ind++) { //need the for loop in case no baseline
+					output.push([resp[ind]["uuid"],resp[ind]["Metadata"]["Extra"]["Operator"]]); //REMOVE THIS
+					window.mainFlotTimeseries[resp[ind]["Metadata"]["Extra"]["Operator"]] = resp[ind]["uuid"]; //for autoupdater use, at somepoint, rewrite the rest to make this replace output
 				
 				}
 			runHttpGetData(output);
 		}
-	}, "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and (Metadata/Extra/Operator like 'baseline-%') and not (Metadata/Path like '1-hr') and not (Metadata/Extra/Resample like 'subsample-mean-3600') and not (Metadata/Extra/Type like 'steam baseline')");
+	}, "{{ QUERY_ID }}");
 }
 
 
 
 function appliedGetter(){
-	var converter = new AnyTime.Converter( { format: datefmt });
-	var endtime = converter.parse($("#date").val()).getTime();
-	var starttime = converter.parse($("#date2").val()).getTime();
+	//converter = new AnyTime.Converter( { format: datefmt });
+	console.log("applied getter called");
+	var endtime = window.converter.parse($("#date").val()).getTime();
+	var starttime = window.converter.parse($("#date2").val()).getTime();
 
-	httpGetTags(function(resp){
+	getBuildingNansum(function(resp){
 		passalong = [resp, [{"uuid": "BLANK", "Readings": []}]];
+		console.log(resp);
+		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings']
 		var needToavg = [];
 
 		
@@ -481,7 +495,7 @@ function appliedGetter(){
 
 		
 
-	}, "apply units < nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ NEW_QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'");
+	}, "{{ NEW_QUERY_ID }}", starttime, endtime);
 }
 
 
@@ -506,7 +520,7 @@ if (endtime-starttime<=1209600000){
 			else {var avgArr = 0; }
 
 
-
+		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings'];
 		drawGraph(inp, inptype, avgArr);
 		setAllTheGauges(inp[numMod][0]['Readings'][inp[numMod][0]['Readings'].length-1], inp[Math.abs(1-numMod)][0]['Readings'][inp[Math.abs(1-numMod)][0]['Readings'].length-1]);
 		runStats(inp, inptype, avgArr);
@@ -530,6 +544,7 @@ function runHttpGetData(output) {
 	httpGetData(function(resp, typeInput){
 		typeOrder.push(typeInput);
 		latest.push(eval(resp));
+		window.mainFlotTimeseries['baselineData'] = eval(resp)[0]['Readings'];
 		if (output.length==latest.length){
 			if (endtime-starttime<=1209600000){
 			for (x in latest[0][0]['Readings']){
@@ -606,6 +621,22 @@ function setMiddleGauge(response, lastActualkW){
 function drawGraph(inputData, typeData, flatlineAvg){
 	//console.log(inputData);
 	//console.log(typeData);
+	var buildupData = [];
+	var labels = [];
+	//console.log();//=='undefined');
+	if(typeof mainFlotTimeseries['actualkW']=='object'){
+		//buildupData.push(mainFlotTimeseries['actualkW']);
+		buildupData.push({label:"Actual Usage", "data":mainFlotTimeseries['actualkW']});
+		//labels.push("Actual Usage");
+	}
+	if(typeof mainFlotTimeseries['baselineData']=='object'){
+		//buildupData.push(mainFlotTimeseries['actualkW']);
+		buildupData.push({label:"Predicted Usage", "data":mainFlotTimeseries['baselineData']});
+		//labels.push("Actual Usage");
+	}
+
+	//console.log(buildupData);
+	/*
 	if (typeData[0] == "subsampled sum"){
 	}
 	else {
@@ -619,9 +650,10 @@ function drawGraph(inputData, typeData, flatlineAvg){
 		else if (typeData[val] =="subsampled sum"){
 			typeData[val] = "Actual Usage";
 		}
-	}
+	} */
 	//Now fix timezone offset for flot
 
+	////Figure out what to do here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	needTzOffset = new Date();
 	tzOffset = needTzOffset.getTimezoneOffset()*60000
 	for (x=0; x<inputData.length; x++){
@@ -634,13 +666,16 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	flatlineAvg[1][0] -= tzOffset;
 	}
 	//end fix timezone offset for flot
+
+
+/*
 	var data = [];
 	for (ind3 = 0; ind3 < inputData.length; ind3++) {
 		data.push({label:typeData[ind3], "data":inputData[ind3][0]['Readings']});
 	}
 	if (flatlineAvg != 0 && flatlineAvg[0][1]!=0){
 	data.push({label:"Constant Average", "data":flatlineAvg});
-	}
+	} */
 	var options = {
 			colors: ["blue", "black"],
         	legend: { noColumns: 2 },
@@ -703,7 +738,9 @@ function drawGraph(inputData, typeData, flatlineAvg){
     });
 
 	$("#loading").hide()
-	var plot = $.plot(placeholder, data, options);
+	//console.log(data);
+//	console.log(buildupData);
+	var plot = $.plot(placeholder, buildupData, options);
 	return inputData;
 }
 
