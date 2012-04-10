@@ -10,6 +10,37 @@ function httpGetTags(callback, querystring) {
 	});
 }
 
+function getBaselineTags(callback, query_id){
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "select * where Metadata/Location/Building = '" + query_id +"' and (Metadata/Extra/Operator like 'baseline-%') and not (Metadata/Path like '1-hr') and not (Metadata/Extra/Resample like 'subsample-mean-3600') and not (Metadata/Extra/Type like 'steam baseline')",
+		success: function(response) {
+			callback(response);
+		}
+	});
+}
+
+function getBuildingNansum(callback, query_id, starttime, endtime){
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: "apply units < nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + query_id + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		success: function(response) {
+			callback(response);
+		}
+	});
+}
+
+
+
+
+
+
+
+
 function httpGetTagsWINP(callback, querystring, inp, inptype, numMod) {
 	$.ajax({
 		async: true,
