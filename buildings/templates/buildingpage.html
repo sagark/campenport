@@ -263,8 +263,8 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 {% block random_extras %}
 <script type="text/javascript">
 //time setup
-var datefmt = "%W %M %e, %Y %H:%i";
-var converter = new AnyTime.Converter( { format: datefmt });
+var datefmt = "%W %M %e, %Y %H:%i"; //the format used by AnyTime
+var converter = new AnyTime.Converter( { format: datefmt }); //create a converter
 var nowDate = new Date();
 $("#date").val(converter.format(nowDate));
 var startDate = new Date();
@@ -282,6 +282,9 @@ function scrollToTop(){
 }
 
 
+/*
+ * Handler function for Bootstrap Popovers
+ */
 $(function () {
               $("a[rel=popover]")
                 .popover({
@@ -291,6 +294,9 @@ $(function () {
                   e.preventDefault()
                 })
             })
+
+
+
 function pastDialog1(callback){
 	$( "#pastdialog1" ).dialog({dialogClass: 'transparent',});
 	$('#pastdialog1').dialog({ dialogClass:'transparent',   width:350, height:300/* insert your options */ , buttons: {"Background On/Off": function() { switchBG(); } }}).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
@@ -314,11 +320,10 @@ function runGraph(){
     	});
 	$('.transparent').css('background-color','transparent');
 	$('.transparent').css('overflow', 'hidden');
-
 }
 
 function switchBG(){
-//	console.log($('.transparent').css('background-color'));
+	//switches background of transparent dialog
 	if($('.transparent').css('background-color')=='rgba(0, 0, 0, 0)'){
 		$('.transparent').css('background-color','white');
 	}
@@ -328,34 +333,45 @@ function switchBG(){
 }
 
 $(document).ready(function() {
-//UNCOMMENT THIS TO KEEP WORKING ON TRANSPARENT GRAPH	pastDialog1(runGraph);
-//	$( "#pastdialog1" ).dialog();
-//	$('#pastdialog1').dialog({ width: 350, height: 300 /* insert your options */ }).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
-		runHttpGetTags();
-	environmentData();
+	//Initialize gauges
 	kWvsBaselineG.init();
 	gaugeTwo.init();
 	gaugeThree.init();
+	//Set defaults
 	kWvsBaselineG.setValue(000);
 	gaugeTwo.setValue(000);
 	gaugeThree.setValue(000);
-	setInterval("autoUpdateGauges()", 900000);
+	//Start Fetching Data, displaying things
+	environmentData(); //Gets environment data, independent of other data gets
+
+
+//UNCOMMENT THIS TO KEEP WORKING ON TRANSPARENT GRAPH	pastDialog1(runGraph);
+//	$( "#pastdialog1" ).dialog();
+//	$('#pastdialog1').dialog({ width: 350, height: 300 /* insert your options */ }).dialog('widget').position({ my: 'left top', at: 'left top', of: $("#dialogGoesHere") });
+	getKWflotData();
+	setInterval("autoUpdater()", 900000);
 });
 
 $("#refresh").click(function() {
 	$("#placeholder").empty();
 	$("#loading").show();
-	runHttpGetTags();
+	getKWflotData();
 	//environmentData(); //no need to refresh environment data
 });
 
+
+
+/* 
+ * Fetches environmentData for past 24 hours, regardless of user's time input
+ * This is due to a restriction on the part of sparklines
+ * Runs independently of other queries.
+ */
 function environmentData(){
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
-	//var starttime = converter.parse($("#date2").val()).getTime();
 	var starttime = endtime - 86400000;
 	httpGetData(function(resp){
-	//callback
+		//callback
 		var passtoSpark = resp[0]['Readings'];
 		var passfinal = [];
 		for (x=0; x<passtoSpark.length; x++){
@@ -363,7 +379,6 @@ function environmentData(){
 		}
 		$('.dynamicsparkline').sparkline(passfinal);
 		$('.tempBox').html("<strong>" + passfinal[passfinal.length-1] + "&ordm;F" + "</strong>");
-		//console.log(passfinal);
 		}, 0, "d0ba5233-7c44-52a9-9bf9-5c55e5084fcf", starttime, endtime, 0, 0);
 
 
@@ -395,17 +410,23 @@ httpGetData(function(resp){
 }
 
 
-function autoUpdateGauges(){
+/*
+ * 15 minute AutoUpdater
+ * Refreshes (User-Time) based data 
+ * 15 min interval is based on 15 min interval of sMAP apply nansum
+ */
+function autoUpdater(){
 	if ($('input[name=autoup]').is(':checked')){
 	var nowDate = new Date();
 	$("#date").val(converter.format(nowDate));
-	runHttpGetTags();
+	getKWflotData();
 	environmentData();
 	}
 }
 
-function runHttpGetTags() {
-	
+
+
+function getKWflotData() {
 	httpGetTags(function(respo){
 		output = [];
 		assocOutput = {};
@@ -426,14 +447,14 @@ function runHttpGetTags() {
 	}, "select * where Metadata/Location/Building = '{{ QUERY_ID }}' and (Metadata/Extra/Operator like 'baseline-%') and not (Metadata/Path like '1-hr') and not (Metadata/Extra/Resample like 'subsample-mean-3600') and not (Metadata/Extra/Type like 'steam baseline')");
 }
 
+
+
 function appliedGetter(){
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
 	var starttime = converter.parse($("#date2").val()).getTime();
 
-	//console.log("appliedGetter ran!");
 	httpGetTags(function(resp){
-		//console.log(resp);
 		passalong = [resp, [{"uuid": "BLANK", "Readings": []}]];
 		var needToavg = [];
 
@@ -578,6 +599,10 @@ function setMiddleGauge(response, lastActualkW){
 	gaugeTwo.setValue(thisbuildkW/wholecamp*100);
 }
 
+/*
+ * Draws the main (top-centered) flot chart on each page
+ * Runs after all necessary data is collected
+ */
 function drawGraph(inputData, typeData, flatlineAvg){
 	//console.log(inputData);
 	//console.log(typeData);
@@ -644,7 +669,7 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	});
 
 
-var previousPoint = null;
+	var previousPoint = null;
     $("#placeholder").bind("plothover", function (event, pos, item) {
         $("#x").text(pos.x.toFixed(2));
         $("#y").text(pos.y.toFixed(2));
@@ -682,6 +707,9 @@ var previousPoint = null;
 	return inputData;
 }
 
+/*
+ * Helper for showing tooltips on flot chart
+ */
 function showTooltip(x, y, contents) {
 		if (x<800){
 			x = x;
