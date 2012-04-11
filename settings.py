@@ -26,6 +26,7 @@ DATABASES = {
 # below; you can use it if you have an API key; even without it, you
 # can query public streams.
 ARD_URL = 'http://smote.cs.berkeley.edu:8079'
+#ARD_URL = 'http://new.openbms.org/backend'
 
 # with the reverse proxy, you can query for data in the following manner:
 # 	original query: http://smote.cs.berkeley.edu:8079/backend/api/ ... etc
