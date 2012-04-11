@@ -1,8 +1,8 @@
+//function runStats(actual, baseline, avgArr){
 function runStats(data, tags, avgArr){
 	//do stuff
 	//console.log(data);
 //	console.log(tags);
-
 	if(tags[0]=="Actual Usage"){
 		actualData = data[0][0]['Readings'].slice(0);
 		predData = data[1][0]['Readings'].slice(0);
@@ -11,7 +11,9 @@ function runStats(data, tags, avgArr){
 		actualData = data[1][0]['Readings'].slice(0);
 		predData = data[0][0]['Readings'].slice(0);
 	}
-	
+	console.log(predData);
+	//actualData = actual.slice(0);
+//	predData = baseline.slice(0);
 	bucketsize = 5*60*1000;
 
 	starttime = predData[0][0];
@@ -27,6 +29,45 @@ function runStats(data, tags, avgArr){
 		//console.log(avgArr[0][1]);
 	}
 }
+
+
+function runStats2(actual, baseline, avgArr){
+	//do stuff
+	//console.log(data);
+//	console.log(tags);
+/*
+	if(tags[0]=="Actual Usage"){
+		actualData = data[0][0]['Readings'].slice(0);
+		predData = data[1][0]['Readings'].slice(0);
+	}
+	else{
+		actualData = data[1][0]['Readings'].slice(0);
+		predData = data[0][0]['Readings'].slice(0);
+	}
+*/	
+	actualData = actual.slice(0);
+    predData = baseline.slice(0);
+	bucketsize = 5*60*1000;
+//	actualData = actual;
+	console.log(actualData);
+//	console.log(actual);
+
+	starttime = predData[0][0];
+	endtime = predData[predData.length-1][0];
+	cleaned = cleanEdges(buildAverages(predData, endtime, starttime), buildAverages(actualData, endtime, starttime));
+	predBucketed = cleaned[0];
+	actBucketed = cleaned[1];
+	rms = Math.round(rmsDev(actBucketed, predBucketed)*100)/100;
+	$('.stats1').html("<strong>" + rms + " kW</strong>");
+	if(avgArr!=0){
+		rmsPercent = Math.round((rms/avgArr[0][1])*10000)/100
+		$('.stats2').html("<strong>" + rmsPercent + "%</strong>");
+		//console.log(avgArr[0][1]);
+	}
+}
+
+
+
 
 function buildAverages(inputdata, endtime, starttime){
 		//build up aligned average buckets
@@ -74,6 +115,7 @@ function cleanEdges(averaged1, averaged2){
 			averaged2 = avgtemp;
 			flipped = true;
 		}
+	
 		while(averaged1[0][0]!=averaged2[0][0]){
 			averaged1.shift();
 		}
