@@ -402,7 +402,6 @@ function environmentData(){
 		}
 		$('.dynamicsparklineHum').sparkline(passfinalHum);
 		$('.humBox').html("<strong>" + passfinalHum[passfinalHum.length-1] + "% (rh)</strong>");
-		//console.log(passfinal);
 		}, 0, "416b7328-bf5f-56e6-adf4-f3eeaba4cf8a", starttime, endtime, 0, 0);
 
 
@@ -415,7 +414,6 @@ function environmentData(){
 		}
 		$('.dynamicsparklinePress').sparkline(passfinalPress);
 		$('.pressBox').html("<strong>" + passfinalPress[passfinalPress.length-1] + " mbar</strong>");
-		//console.log(passfinal);
 		}, 0, "899f414d-6e01-5840-84e9-351fe41bb175", starttime, endtime, 0, 0);
 
 }
@@ -461,14 +459,11 @@ function getKWflotData() {
 
 
 function appliedGetter(){
-	//converter = new AnyTime.Converter( { format: datefmt });
-	console.log("applied getter called");
 	var endtime = window.converter.parse($("#date").val()).getTime();
 	var starttime = window.converter.parse($("#date2").val()).getTime();
 
 	getBuildingNansum(function(resp){
 		passalong = [resp, [{"uuid": "BLANK", "Readings": []}]];
-		console.log(resp);
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings']
 		var needToavg = [];
 
@@ -492,7 +487,7 @@ function appliedGetter(){
 		drawGraph(passalong, types , avgArr);
 		setAllTheGauges(resp[0]['Readings'][resp[0]['Readings'].length-1], resp[0]['Readings'][resp[0]['Readings'].length-1]);
 		//runStats(passalong, types, avgArr);
-		runStats2(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
+		runStats(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
 
 		
 
@@ -506,7 +501,6 @@ function intermedAppliedGetter(latest, numMod, typeOrder){
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
 	var starttime = converter.parse($("#date2").val()).getTime();
-	//console.log("appliedGetter ran!");
 	httpGetTagsWINP(function(resp, inp, inptype, numMod){
 		inp[numMod] = resp;
 
@@ -522,11 +516,10 @@ if (endtime-starttime<=1209600000){
 
 
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings'];
-		console.log(mainFlotTimeseries);
 		drawGraph(inp, inptype, avgArr);
 		setAllTheGauges(inp[numMod][0]['Readings'][inp[numMod][0]['Readings'].length-1], inp[Math.abs(1-numMod)][0]['Readings'][inp[Math.abs(1-numMod)][0]['Readings'].length-1]);
 		//runStats(inp, inptype, avgArr);
-		runStats2(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
+		runStats(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
 
 
 }, "apply units < nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ NEW_QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'", latest, typeOrder, numMod);
@@ -610,11 +603,9 @@ function getLatestWholeCampus(callback, lastActualkW) {
 }
 
 function setMiddleGauge(response, lastActualkW){
-	//console.log(response);
 	wholecamp = response[0]['Readings'][response[0]['Readings'].length-1][1];
 	//wholecamp = response[0]['Readings'][0][1];
 	thisbuildkW = lastActualkW[1];
-	//console.log(thisbuildkW/wholecamp*100);
 	gaugeTwo.setValue(thisbuildkW/wholecamp*100);
 }
 
@@ -623,13 +614,8 @@ function setMiddleGauge(response, lastActualkW){
  * Runs after all necessary data is collected
  */
 function drawGraph(inputData, typeData, flatlineAvg){
-	//console.log(inputData);
-	//console.log(typeData);
-	//runStats2(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], flatlineAvg);
-
 	var buildupData = [];
 	var labels = [];
-	//console.log();//=='undefined');
 	if(typeof mainFlotTimeseries['actualkW']=='object'){
 		//buildupData.push(mainFlotTimeseries['actualkW']);
 		buildupData.push({label:"Actual Usage", "data":mainFlotTimeseries['actualkW']});
@@ -641,22 +627,6 @@ function drawGraph(inputData, typeData, flatlineAvg){
 		//labels.push("Actual Usage");
 	}
 
-	//console.log(buildupData);
-	/*
-	if (typeData[0] == "subsampled sum"){
-	}
-	else {
-		inputData = [inputData[1], inputData[0]]; //fixes ordering for passing on 
-		typeData = [typeData[1], typeData[0]];
-	}
-	for (val in typeData){
-		if (typeData[val]=="baseline-01"){
-			typeData[val] = "Predicted Usage";
-		}
-		else if (typeData[val] =="subsampled sum"){
-			typeData[val] = "Actual Usage";
-		}
-	} */
 	//Now fix timezone offset for flot
 
 	////Figure out what to do here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -744,8 +714,6 @@ function drawGraph(inputData, typeData, flatlineAvg){
     });
 
 	$("#loading").hide()
-	//console.log(data);
-//	console.log(buildupData);
 	var plot = $.plot(placeholder, buildupData, options);
 	return inputData;
 }
