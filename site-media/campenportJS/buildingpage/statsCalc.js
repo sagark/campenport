@@ -1,56 +1,21 @@
-//function runStats(actual, baseline, avgArr){
-function runStats(data, tags, avgArr){
-	//do stuff
-	//console.log(data);
-//	console.log(tags);
-	if(tags[0]=="Actual Usage"){
-		actualData = data[0][0]['Readings'].slice(0);
-		predData = data[1][0]['Readings'].slice(0);
-	}
-	else{
-		actualData = data[1][0]['Readings'].slice(0);
-		predData = data[0][0]['Readings'].slice(0);
-	}
-	console.log(predData);
-	//actualData = actual.slice(0);
-//	predData = baseline.slice(0);
-	bucketsize = 5*60*1000;
-
-	starttime = predData[0][0];
-	endtime = predData[predData.length-1][0];
-	cleaned = cleanEdges(buildAverages(predData, endtime, starttime), buildAverages(actualData, endtime, starttime));
-	predBucketed = cleaned[0];
-	actBucketed = cleaned[1];
-	rms = Math.round(rmsDev(actBucketed, predBucketed)*100)/100;
-	$('.stats1').html("<strong>" + rms + " kW</strong>");
-	if(avgArr!=0){
-		rmsPercent = Math.round((rms/avgArr[0][1])*10000)/100
-		$('.stats2').html("<strong>" + rmsPercent + "%</strong>");
-		//console.log(avgArr[0][1]);
-	}
-}
+/* 
+ *  Scripts for statistical calculations for campenport buildingpages 
+ */
 
 
-function runStats2(actual, baseline, avgArr){
-	//do stuff
-	//console.log(data);
-//	console.log(tags);
 /*
-	if(tags[0]=="Actual Usage"){
-		actualData = data[0][0]['Readings'].slice(0);
-		predData = data[1][0]['Readings'].slice(0);
+ * @params: actual - actual incoming array of data, in reverse-time order
+ *          baseline - baseline data, incoming array in reverse-time order
+ *          avgArr - array of average values used to calculate deviation percent
+ * @returns: nothing, sets innerHTML of divs with rms dev and rms dev percent
+ */
+function runStats(actual, baseline, avgArr){
+	if((typeof baseline)=='undefined'){
+		return;
 	}
-	else{
-		actualData = data[1][0]['Readings'].slice(0);
-		predData = data[0][0]['Readings'].slice(0);
-	}
-*/	
 	actualData = actual.slice(0);
     predData = baseline.slice(0);
 	bucketsize = 5*60*1000;
-//	actualData = actual;
-	console.log(actualData);
-//	console.log(actual);
 
 	starttime = predData[0][0];
 	endtime = predData[predData.length-1][0];
@@ -62,12 +27,8 @@ function runStats2(actual, baseline, avgArr){
 	if(avgArr!=0){
 		rmsPercent = Math.round((rms/avgArr[0][1])*10000)/100
 		$('.stats2').html("<strong>" + rmsPercent + "%</strong>");
-		//console.log(avgArr[0][1]);
 	}
 }
-
-
-
 
 function buildAverages(inputdata, endtime, starttime){
 		//build up aligned average buckets
@@ -76,9 +37,7 @@ function buildAverages(inputdata, endtime, starttime){
         var averaged = [];
         newendtime = endtime - endtime%avgbucketSize; //rounds endtime down
         newstarttime = starttime + (avgbucketSize - starttime%avgbucketSize); //rounds starttime up
-       // for (var nums2 = 0; nums2<Object.customlen(saveddata); nums2++){ //for each UUID
                 var thisUUIDoutput = [];
-                //var currentUUID = dcent_uuids[nums2];
                 var thisUUIDdata = inputdata;
                 var upperbound = newendtime;
                 var lowerbound = newendtime - avgbucketSize;
@@ -98,43 +57,40 @@ function buildAverages(inputdata, endtime, starttime){
                         lowerbound = upperbound - avgbucketSize;
                 }
                 averaged = thisUUIDoutput;
-        //}
-        //console.log(averaged);
         return averaged;
 }
 
 function cleanEdges(averaged1, averaged2){
-		//cut off extras from either array
-		if(averaged1.length>averaged2.length){
-			//do nothing
-			flipped = false;
-		}
-		else{
-			avgtemp = averaged1;
-			averaged1 = averaged2;
-			averaged2 = avgtemp;
-			flipped = true;
-		}
-	
-		while(averaged1[0][0]!=averaged2[0][0]){
+		//FOR FUTURE REFERENCE: Incoming Timeseries data will be in reverse-time order.!!!!
+
+		while(averaged1[0][0]<averaged2[0][0]){
+			//case where averaged1 starts after averaged2
+			//prune start pieces off of averaged2
+			averaged2.shift();
+		} 
+		while(averaged1[0][0]>averaged2[0][0]){
+			//case where averaged1 starts before averaged2
+			//prune start pieces off of averaged1
 			averaged1.shift();
 		}
-		while(averaged1[averaged1.length-1][0]!=averaged2[averaged2.length-1][0]){
+		while(averaged1[averaged1.length-1][0]<averaged2[averaged2.length-1][0]){
+			//case where averaged2 ends before averaged1
+			//prune end off of averaged 1
 			averaged1.pop();
+		} 
+		while (averaged1[averaged1.length-1][0]>averaged2[averaged2.length-1][0]){
+			//case where averaged1 ends before averaged2
+			//prune end off of averaged 2
+			averaged2.pop();
 		}
-		if(flipped){
-			return [averaged2, averaged1];
-		}
-		else{
-			return [averaged1, averaged2];
-		}
+		return[averaged1, averaged2];  
+		
 }
 
 function rmsDev(actual, predicted){
 	//calculates RMS deviation for two arrays that are matched/aligned
 	var sum = 0;
 	for(x = 0; x<actual.length; x++){
-//err=sqrt(sum((regVals-y)**2)/len(y))
 		sum += Math.pow((predicted[x][1]-actual[x][1]), 2);	
 	}
 	sum = sum/actual.length;
