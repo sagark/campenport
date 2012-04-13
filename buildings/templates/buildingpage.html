@@ -443,14 +443,11 @@ function getKWflotData() {
 		sendUUIDcount = document.getElementById('UUIDcount');
 		sendUUIDcount.innerHTML = resp.length;
 		if (resp.length==0){ //continues the fetch chain for buildings without a baseline
-			appliedGetter();  //buildings getting data the new way launch into appliedGetter()
+			noBaselineHandler();  //buildings getting data the new way launch into noBaselineHandler()
 		}
 		else{ //continues the fetch chain for buildings with a baseline
-			for (ind = 0; ind < resp.length; ind++) { //need the for loop in case no baseline
-					output.push([resp[ind]["uuid"],resp[ind]["Metadata"]["Extra"]["Operator"]]); //REMOVE THIS
-					window.mainFlotTimeseries[resp[ind]["Metadata"]["Extra"]["Operator"]] = resp[ind]["uuid"]; //for autoupdater use, at somepoint, rewrite the rest to make this replace output
-				
-				}
+					output.push([resp[0]["uuid"],resp[0]["Metadata"]["Extra"]["Operator"]]); //REMOVE THIS
+					window.mainFlotTimeseries[resp[0]["Metadata"]["Extra"]["Operator"]] = resp[0]["uuid"]; //for autoupdater use, at somepoint, rewrite the rest to make this replace output
 			runHttpGetData(output);
 		}
 	}, "{{ QUERY_ID }}");
@@ -458,7 +455,7 @@ function getKWflotData() {
 
 
 
-function appliedGetter(){
+function noBaselineHandler(){
 	var endtime = window.converter.parse($("#date").val()).getTime();
 	var starttime = window.converter.parse($("#date2").val()).getTime();
 
@@ -497,7 +494,7 @@ function appliedGetter(){
 
 
 
-function intermedAppliedGetter(latest, numMod, typeOrder){
+function baselineHandler(latest, numMod, typeOrder){
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
 	var starttime = converter.parse($("#date2").val()).getTime();
@@ -554,7 +551,7 @@ function runHttpGetData(output) {
 			else {var avgArr = 0; }
 ///FIX it up code here
 			if(typeOrder[0]=="subsampled sum" && latest[0][0]['Readings'].length == 0 ){
-				intermedAppliedGetter(latest, 0, typeOrder);
+				baselineHandler(latest, 0, typeOrder);
 				return;
 			}
 			else if((typeOrder[0] == "baseline-01" && typeOrder.length==1) || (typeOrder[1]=="subsampled sum" && latest[1][0]['Readings'].length == 0)){
@@ -562,7 +559,7 @@ function runHttpGetData(output) {
 				if(typeOrder.length==1){
 					typeOrder[1] = "subsampled sum";
 				}
-				intermedAppliedGetter(latest, 1, typeOrder);
+				baselineHandler(latest, 1, typeOrder);
 				return;
 			}
 
@@ -617,14 +614,10 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	var buildupData = [];
 	var labels = [];
 	if(typeof mainFlotTimeseries['actualkW']=='object'){
-		//buildupData.push(mainFlotTimeseries['actualkW']);
 		buildupData.push({label:"Actual Usage", "data":mainFlotTimeseries['actualkW']});
-		//labels.push("Actual Usage");
 	}
 	if(typeof mainFlotTimeseries['baselineData']=='object'){
-		//buildupData.push(mainFlotTimeseries['actualkW']);
 		buildupData.push({label:"Predicted Usage", "data":mainFlotTimeseries['baselineData']});
-		//labels.push("Actual Usage");
 	}
 
 	//Now fix timezone offset for flot
@@ -642,16 +635,6 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	flatlineAvg[1][0] -= tzOffset;
 	}
 	//end fix timezone offset for flot
-
-
-/*
-	var data = [];
-	for (ind3 = 0; ind3 < inputData.length; ind3++) {
-		data.push({label:typeData[ind3], "data":inputData[ind3][0]['Readings']});
-	}
-	if (flatlineAvg != 0 && flatlineAvg[0][1]!=0){
-	data.push({label:"Constant Average", "data":flatlineAvg});
-	} */
 	var options = {
 			colors: ["blue", "black"],
         	legend: { noColumns: 2 },
