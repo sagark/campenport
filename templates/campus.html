@@ -155,32 +155,28 @@ function getLatestWholeCampus(callback) {
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply units < nansum(axis=1) < paste < window(first, field='minute', increment=15) to  data in (" + (starttime) + " ," + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and Metadata/Location/Building like '%' and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		timeout: 10000,
+		error: function(response) {
+			//console.log(response);
+			//start hacky fix for streaming
+			a = response.responseText.split("}}}]");
+			a[0] += "}}}]";
+			a[1] += "}}}]";
+			a.pop();
+			a[0] = $.parseJSON(a[0]);
+			a[1] = $.parseJSON(a[1]);
+			a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[1][0]['Readings']);
+			//end hacky fix for streaming
+			drawGraph(a[0]);
+				},
+		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) < units to data in (" + (starttime) + " ," + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and Metadata/Location/Building like '%' and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
-			Console.log(response);
 			callback(response);
 		}
 	});
 }
 
 function drawGraph(inputData, typeData, flatlineAvg){
-	console.log(inputData);
-	//console.log(typeData);
-//	if (typeData[0] == "subsampled sum"){
-//	}
-//	else {
-//		inputData = [inputData[1], inputData[0]]; //fixes ordering for passing on 
-//		typeData = [typeData[1], typeData[0]];
-//	}
-//	for (val in typeData){
-//		if (typeData[val]=="baseline-01"){
-//			typeData[val] = "Predicted Usage";
-//		}
-//		else if (typeData[val] =="subsampled sum"){
-//			typeData[val] = "Actual Usage";
-//		}
-//	}
-//	//Now fix timezone offset for flot
 
 	needTzOffset = new Date();
 	tzOffset = needTzOffset.getTimezoneOffset()*60000
