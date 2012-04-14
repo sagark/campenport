@@ -63,3 +63,7 @@ def comparebuildings(request):
 			
 	
 	return render_to_response('compare.html', locals())
+
+def versus(request):
+	buildings = Building.objects.all()
+	return render_to_response('versus.html', locals())
