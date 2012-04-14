@@ -125,11 +125,11 @@ $(function() {
 			source: availableTags,
 //	$("#placeholder").empty();
 
-			select: function(event, ui) { $("#enter").hide(); $("#loading").show(); $("#placeholder").empty(); console.log(ui.item['label']); window.bOne = [ui.item['label'], "left"];  window.side = "left"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
+			select: function(event, ui) { window.mainFlotTimeseries = {}; $("#enter").hide(); $("#loading").show(); $("#placeholder").empty(); console.log(ui.item['label']); window.bOne = [ui.item['label'], "left"];  window.side = "left"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
 		});
 		$( "#searchbox3" ).autocomplete({
 			source: availableTags,
-			select: function(event, ui) { $("#enter2").hide(); $("#loading2").show(); $("#placeholder2").empty(); console.log(ui.item['label']); window.bTwo = [ui.item['label'], "right"]; window.side = "right"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
+			select: function(event, ui) { window.mainFlotTimeseries = {}; $("#enter2").hide(); $("#loading2").show(); $("#placeholder2").empty(); console.log(ui.item['label']); window.bTwo = [ui.item['label'], "right"]; window.side = "right"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
 		});
 
 	});
