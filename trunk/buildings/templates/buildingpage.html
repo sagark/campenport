@@ -31,10 +31,7 @@
 		padding-bottom: 20px;
 		padding-right: 20px;
 		padding-left: 20px;
-
-
 	}
-
 	footer {
 		 margin-top: 0px; 
 	}
@@ -175,46 +172,39 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 </div>
 
 <div class="row">
-<div class="span8">
-<h2>Building Stats:</h2> 
-<h4>
-<ul>
-<li>Square Footage: {{ STATS_SQFT }} </li>
-<li>Year Built: {{ STATS_YEAR }} </li>
-<li>Available Data Sources: <span id="UUIDcount"></span> </li>
-</ul>
-</h4>
+	<div class="span8">
+		<h2>Building Stats:</h2> 
+		<h4>
+			<ul>
+			<li>Square Footage: {{ STATS_SQFT }} </li>
+			<li>Year Built: {{ STATS_YEAR }} </li>
+			<li>Available Data Sources: <span id="UUIDcount"></span> </li>
+			</ul>
+		</h4>
+	</div>
+	<div class="span8">
+		<h2>Location:</h2>
+		<div class="mapboxdisp" style="padding-top:10px;overflow:hidden;height:{{ desired_height }}px;width:{{ desired_width }}px;">
+			<div style="margin-left:-{{ x_min }}px;margin-top:-{{ y_min }}px;">
+				<img src="/site-media/campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
+							<map id="map" name="map">
+							<!-- coordinates stored in the db were obtained using the following: -->
+								<!-- #$-:Image map file created by GIMP Image Map plug-in -->
+								<!-- #$-:GIMP Image Map plug-in by Maurits Rijk -->
+								<!-- #$-:Please do not edit lines starting with "#$" -->
+								<!-- #$VERSION:2.3 -->
+								<!-- #$AUTHOR:sagark  -->
+							<!-- end cooordinates were obtained -->
+							<!-- generates imagemap from coordinates stored in database -->
+							{% for building in buildings|dictsort:"longname" %}
+<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}/" alt="{{ building.shortname }}"   />{% endfor %}
+							</map>
+			</div>
+		</div>
+	</div>
 </div>
-<div class="span8">
-	<h2>Location:</h2>
-	<div class="mapboxdisp" style="padding-top:10px;overflow:hidden;height:{{ desired_height }}px;width:{{ desired_width }}px;"><div style="margin-left:-{{ x_min }}px;margin-top:-{{ y_min }}px;">
-
-<img src="/site-media/campusmap.png" width="1232" height="1067" style="border:0;" alt="campusmap" usemap="#map" id="image" />
-						<map id="map" name="map">
-						<!-- coordinates stored in the db were obtained using the following: -->
-							<!-- #$-:Image map file created by GIMP Image Map plug-in -->
-							<!-- #$-:GIMP Image Map plug-in by Maurits Rijk -->
-							<!-- #$-:Please do not edit lines starting with "#$" -->
-							<!-- #$VERSION:2.3 -->
-							<!-- #$AUTHOR:sagark  -->
-						<!-- end cooordinates were obtained -->
-
-						<!-- generates imagemap from coordinates stored in database -->
-						
-						{% for building in buildings|dictsort:"longname" %}
-							<area shape="poly" coords="{{ building.map_coords }}" href="/buildings/{{ building.shortname }}/" alt="{{ building.shortname }}"   />
-						{% endfor %}
-
-						</map>
-
-
-</div>
-
-
-</div>
-</div>
-</div>
-<div class="hero-unit" style="height:40px;padding:0px;margin-top:15px;margin-bottom:0px;text-align:center;" ><div style="margin:0px auto; width:80%">
+<div class="hero-unit" style="height:40px;padding:0px;margin-top:15px;margin-bottom:0px;text-align:center;" >
+	<div style="margin:0px auto; width:80%">
     <ul class="pills">
     <li class="active"><a href="#">Jump Up:</a></li>
     <li><a href="#" onclick="scrollDownTo('graphMain')">Graph &#9650;</a></li>
@@ -225,7 +215,6 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 	<li><a href="#" onclick="scrollToTop()">Top &#9650;</a></li>
     </ul></div>
 </div>
-
 <div id="modal-from-dom" class="modal hide fade">
 	<div class="modal-header">
     	<a href="#" class="close">&times;</a>
@@ -239,7 +228,6 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
         <a onClick="$('#modal-from-dom').modal('hide')" class="btn secondary">Go Back</a>
 	</div>
 </div>
-
 <div id="modal-from-dom2" class="modal hide fade">
 	<div class="modal-header">
     	<a href="#" class="close">&times;</a>
@@ -262,7 +250,6 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 {% block extend_contact_url %}{{ A_SHORT_NAME }}{% endblock %}
 {% block random_extras %}
 <script type="text/javascript">
-
 /*
  * the following two functions are helpers for smooth anchor-scrolling
  */
@@ -463,8 +450,7 @@ function noBaselineHandler(){
 		passalong = [resp, [{"uuid": "BLANK", "Readings": []}]];
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings']
 		var needToavg = [];
-
-		
+	
 		if (endtime-starttime<=1209600000){
 			for (x in passalong[0][0]['Readings']){
 				needToavg.push(passalong[0][0]['Readings'][x][1]);
@@ -477,16 +463,10 @@ function noBaselineHandler(){
 				var avgArr = 0; 
 		}
 
-
-
-
 		types = ["subsampled sum", "baseline-01"];
-		drawGraph(passalong, types , avgArr);
+		drawGraph(avgArr);
 		setAllTheGauges(resp[0]['Readings'][resp[0]['Readings'].length-1], resp[0]['Readings'][resp[0]['Readings'].length-1]);
-		//runStats(passalong, types, avgArr);
 		runStats(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
-
-		
 
 	}, "{{ NEW_QUERY_ID }}", starttime, endtime);
 }
@@ -501,7 +481,7 @@ function baselineHandler(latest, numMod, typeOrder){
 	httpGetTagsWINP(function(resp, inp, inptype, numMod){
 		inp[numMod] = resp;
 
-if (endtime-starttime<=1209600000){
+		if (endtime-starttime<=1209600000){
 			for (x in inp[numMod][0]['Readings']){
 				needToavg.push(inp[0][0]['Readings'][x][1]);
 			}
@@ -511,19 +491,13 @@ if (endtime-starttime<=1209600000){
 			}
 			else {var avgArr = 0; }
 
-
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings'];
-		drawGraph(inp, inptype, avgArr);
+		drawGraph(avgArr);
 		setAllTheGauges(inp[numMod][0]['Readings'][inp[numMod][0]['Readings'].length-1], inp[Math.abs(1-numMod)][0]['Readings'][inp[Math.abs(1-numMod)][0]['Readings'].length-1]);
-		//runStats(inp, inptype, avgArr);
 		runStats(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
-
 
 }, "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) < units to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '{{ NEW_QUERY_ID }}%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'", latest, typeOrder, numMod);
 }
-
-
-
 
 
 function runHttpGetData(output) {
@@ -566,7 +540,7 @@ function runHttpGetData(output) {
 
 
 ///END Fix it up code
-			latest = drawGraph(latest, typeOrder, avgArr);
+			latest = drawGraph(avgArr);
 			setAllTheGauges(latest[0][0]['Readings'][latest[0][0]['Readings'].length-1], latest[1][0]['Readings'][latest[1][0]['Readings'].length-1]);
 			runStats(latest, typeOrder, avgArr);
 
@@ -592,7 +566,7 @@ function getLatestWholeCampus(callback, lastActualkW) {
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply units < nansum(axis=1) < paste < window(first, field='minute', increment=15)  to  data in (" + (tempendtime-3000000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=15) < units to  data in (" + (tempendtime-3000000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response, lastActualkW);
 		}
@@ -601,7 +575,6 @@ function getLatestWholeCampus(callback, lastActualkW) {
 
 function setMiddleGauge(response, lastActualkW){
 	wholecamp = response[0]['Readings'][response[0]['Readings'].length-1][1];
-	//wholecamp = response[0]['Readings'][0][1];
 	thisbuildkW = lastActualkW[1];
 	gaugeTwo.setValue(thisbuildkW/wholecamp*100);
 }
@@ -610,7 +583,7 @@ function setMiddleGauge(response, lastActualkW){
  * Draws the main (top-centered) flot chart on each page
  * Runs after all necessary data is collected
  */
-function drawGraph(inputData, typeData, flatlineAvg){
+function drawGraph(flatlineAvg){
 	var buildupData = [];
 	var labels = [];
 	if(typeof mainFlotTimeseries['actualkW']=='object'){
@@ -621,10 +594,11 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	}
 
 	//Now fix timezone offset for flot
-
+	
 	////Figure out what to do here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	needTzOffset = new Date();
 	tzOffset = needTzOffset.getTimezoneOffset()*60000
+	/*
 	for (x=0; x<inputData.length; x++){
 		for (y=0; y<inputData[x][0]['Readings'].length; y++){
 			inputData[x][0]['Readings'][y][0] = inputData[x][0]['Readings'][y][0]-tzOffset;
@@ -634,6 +608,7 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	flatlineAvg[0][0] -= tzOffset;
 	flatlineAvg[1][0] -= tzOffset;
 	}
+	*/
 	//end fix timezone offset for flot
 	var options = {
 			colors: ["blue", "black"],
@@ -661,7 +636,6 @@ function drawGraph(inputData, typeData, flatlineAvg){
 	placeholder.bind("plotunselected", function (event) {
 		$("#selection").text("");
 	});
-
 
 	var previousPoint = null;
     $("#placeholder").bind("plothover", function (event, pos, item) {
@@ -698,7 +672,6 @@ function drawGraph(inputData, typeData, flatlineAvg){
 
 	$("#loading").hide()
 	var plot = $.plot(placeholder, buildupData, options);
-	return inputData;
 }
 
 /*
@@ -707,11 +680,9 @@ function drawGraph(inputData, typeData, flatlineAvg){
 function showTooltip(x, y, contents) {
 		if (x<800){
 			x = x;
-		}
-		else if (x<1100){
+		} else if (x<1100){
 			x = x-300;
-		}
-		else{
+		} else{
 			x = x-560;
 		}
         $('<div id="tooltip">' + contents + '</div>').css( {
@@ -727,9 +698,5 @@ function showTooltip(x, y, contents) {
 			'font-size': '140%',
         }).appendTo("body").fadeIn(200);
 }
-
-
-
-
 </script>
 {% endblock %}
