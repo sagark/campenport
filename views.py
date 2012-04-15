@@ -9,6 +9,9 @@ def homemap(request):
 	buildings = Building.objects.all()	
 	return render_to_response('campusmap.html', locals())
 
+def robots(request):
+	return render_to_response('robots.txt', locals())
+
 def passhome(request):
 	return redirect('/map/')
 
