@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from campenport.views import homemap, buildinglist, search, comparebuildings, campus, versus
+from campenport.views import homemap, buildinglist, search, comparebuildings, campus, versus, robots
 from campenport.contact.views import contact, contactThanks, contact2
 import campenport.settings as settings
 
@@ -20,6 +20,7 @@ urlpatterns = patterns('',
 	(r'^ARDgetData/', include('campenport.ARDgetData.urls')),
 	(r'^site-media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA + '/site-media/'}),
 	(r'^admin/', include(admin.site.urls)),
+	(r'^robots.txt', robots),
 	(r'contact/thanks/', contactThanks),
 	(r'^contact/in/(?P<buildnameC>[a-zA-Z0-9_.-]+)/$', contact),
 	(r'^contact/in/', contact2),
