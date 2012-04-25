@@ -70,3 +70,10 @@ def comparebuildings(request):
 def versus(request):
 	buildings = Building.objects.all()
 	return render_to_response('versus.html', locals())
+
+def versus2(request, buildname1, buildname2):
+	buildings = Building.objects.all()
+	BUILD1 = Building.objects.filter(shortname=buildname1)[0].longname
+	BUILD2 = Building.objects.filter(shortname=buildname2)[0].longname
+	#BUILD2 = buildname2
+	return render_to_response('versus.html', locals())
