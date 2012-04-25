@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from campenport.views import homemap, buildinglist, search, comparebuildings, campus, versus, robots
+from campenport.views import homemap, buildinglist, search, comparebuildings, campus, versus, robots, versus2
 from campenport.contact.views import contact, contactThanks, contact2
 import campenport.settings as settings
 
@@ -15,8 +15,9 @@ urlpatterns = patterns('',
 	(r'^compare/$', comparebuildings),
 	(r'^campus/$', campus),
 	(r'^buildings/(?P<buildname>[a-zA-Z0-9_.-]+)/$', 'campenport.buildings.views.buildings'),
+	(r'^versus/(?P<buildname1>[a-zA-Z0-9_.-]+)/(?P<buildname2>[a-zA-Z0-9_.-]+)/$', versus2),
 	(r'^search/$', search),
-	(r'^versus/$', versus),
+#	(r'^versus/$', versus),
 	(r'^ARDgetData/', include('campenport.ARDgetData.urls')),
 	(r'^site-media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.SITE_MEDIA + '/site-media/'}),
 	(r'^admin/', include(admin.site.urls)),

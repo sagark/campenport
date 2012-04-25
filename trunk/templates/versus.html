@@ -98,6 +98,7 @@ function scrollToTop(){
 }
 
 
+
 /*
  * Handler function for Bootstrap Popovers
  */
@@ -198,11 +199,44 @@ $(document).ready(function() {
 	//setup global variable replacements for passing along kW Timeseries data
 	window.mainFlotTimeseries = {} //A dictionary for the data for the flot chart
 	window.retrievedStatistics = {} //A dictionary to hold computed/retrieved data
+console.log("{{ BUILD1 }}");
+console.log("{{ BUILD2 }}");
+
+if(("{{ BUILD1 }}" != "") && ("{{ BUILD2 }}" != "")){
+	$( "#searchbox2" ).val("{{ BUILD1 }}");
+	$( "#searchbox3" ).val("{{ BUILD2 }}");
+	window.mainFlotTimeseries = {}; 
+$("#enter").hide(); 
+$("#loading").show(); 
+$("#placeholder").empty(); 
+//console.log(""); 
+console.log("{{ buildings }}");
+window.bOne = ["{{ BUILD1 }}", "left"];  
+window.side = "left"; 
+getKWflotData();
+	setTimeout("initializer()", 3000);
+
+
+	/*window.bOne = "{{ BUILD1 }}";
+	window.bTwo = "{{ BUILD2 }}";
+		$("#placeholder").empty();
+	$("#placeholder2").empty();
+	$("#loading").show();
+	$("#loading2").show();
+	window.side = "left";
+	getKWflotData();
+	setTimeout("refRight()", 3000);*/
+}
+
 
 
 	//getKWflotData();
 	//setInterval("autoUpdater()", 900000);
 });
+
+function initializer(){
+window.mainFlotTimeseries = {}; $("#enter2").hide(); $("#loading2").show(); $("#placeholder2").empty();  window.bTwo = ["{{ BUILD2 }}", "right"]; window.side = "right"; getKWflotData(); 
+}
 
 $("#refresh").click(function() {
 	$("#placeholder").empty();
