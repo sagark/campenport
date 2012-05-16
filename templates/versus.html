@@ -126,11 +126,11 @@ $(function() {
 			source: availableTags,
 //	$("#placeholder").empty();
 
-			select: function(event, ui) { window.mainFlotTimeseries = {}; $("#enter").hide(); $("#loading").show(); $("#placeholder").empty(); console.log(ui.item['label']); window.bOne = [ui.item['label'], "left"];  window.side = "left"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
+			select: function(event, ui) { window.mainFlotTimeseries = {}; $("#searchbox2").attr('disabled', true); $("#searchbox3").attr('disabled', true); $("#enter").hide(); $("#loading").show(); $("#placeholder").empty(); console.log(ui.item['label']); window.bOne = [ui.item['label'], "left"];  window.side = "left"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
 		});
 		$( "#searchbox3" ).autocomplete({
 			source: availableTags,
-			select: function(event, ui) { window.mainFlotTimeseries = {}; $("#enter2").hide(); $("#loading2").show(); $("#placeholder2").empty(); console.log(ui.item['label']); window.bTwo = [ui.item['label'], "right"]; window.side = "right"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
+			select: function(event, ui) { window.mainFlotTimeseries = {}; $("#searchbox2").attr('disabled', true); $("#searchbox3").attr('disabled', true); $("#enter2").hide(); $("#loading2").show(); $("#placeholder2").empty(); console.log(ui.item['label']); window.bTwo = [ui.item['label'], "right"]; window.side = "right"; getKWflotData(); /*location.href=getURLbuild[ui.item['label']];*/ }
 		});
 
 	});
@@ -215,23 +215,7 @@ window.bOne = ["{{ BUILD1 }}", "left"];
 window.side = "left"; 
 getKWflotData();
 	setTimeout("initializer()", 3000);
-
-
-	/*window.bOne = "{{ BUILD1 }}";
-	window.bTwo = "{{ BUILD2 }}";
-		$("#placeholder").empty();
-	$("#placeholder2").empty();
-	$("#loading").show();
-	$("#loading2").show();
-	window.side = "left";
-	getKWflotData();
-	setTimeout("refRight()", 3000);*/
 }
-
-
-
-	//getKWflotData();
-	//setInterval("autoUpdater()", 900000);
 });
 
 function initializer(){
@@ -326,8 +310,6 @@ function noBaselineHandler(){
 
 		types = ["subsampled sum", "baseline-01"];
 		drawGraph(avgArr);
-		setAllTheGauges(resp[0]['Readings'][resp[0]['Readings'].length-1], resp[0]['Readings'][resp[0]['Readings'].length-1]);
-		runStats(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
 
 	}, selection[0], starttime, endtime);
 }
@@ -350,7 +332,7 @@ function baselineHandler(latest, numMod, typeOrder){
 
 		if (endtime-starttime<=1209600000){
 			for (x in inp[numMod][0]['Readings']){
-				needToavg.push(inp[0][0]['Readings'][x][1]);
+				needToavg.push(inp[numMod][0]['Readings'][x][1]);
 			}
 			var psArray = new ps.array(needToavg);
 			var avg = psArray.mean();
@@ -360,9 +342,6 @@ function baselineHandler(latest, numMod, typeOrder){
 
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings'];
 		drawGraph(avgArr);
-		setAllTheGauges(inp[numMod][0]['Readings'][inp[numMod][0]['Readings'].length-1], inp[Math.abs(1-numMod)][0]['Readings'][inp[Math.abs(1-numMod)][0]['Readings'].length-1]);
-		runStats(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
-
 }, "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + selection[0] + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'", latest, typeOrder, numMod);
 }
 
@@ -416,35 +395,6 @@ function runHttpGetData(output) {
 	}
 }
 
-function setAllTheGauges(lastActualkW, lastActualBaseline) {
-	percent = Math.round((lastActualkW[1]-lastActualBaseline[1])/lastActualBaseline[1]*100);
-	kWvsBaselineG.setValue(percent);
-	callgetLatestWholeCampus(lastActualkW);
-	gaugeThree.setValue({{ sqftPercent }});	
-}
-
-function callgetLatestWholeCampus(lastActualkW){
-	getLatestWholeCampus(setMiddleGauge, lastActualkW);
-}
-
-function getLatestWholeCampus(callback, lastActualkW) {
-	tempendtime = (new Date()).getTime();
-	$.ajax({
-		async: true,
-		type: 'POST',
-		url: '/ARDgetData/api/query?',
-		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to  data in (" + (tempendtime-3000000) + " ," + tempendtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
-		success: function(response) {
-			callback(response, lastActualkW);
-		}
-	});
-}
-
-function setMiddleGauge(response, lastActualkW){
-	wholecamp = response[0]['Readings'][response[0]['Readings'].length-1][1];
-	thisbuildkW = lastActualkW[1];
-	gaugeTwo.setValue(thisbuildkW/wholecamp*100);
-}
 
 /*
  * Draws the main (top-centered) flot chart on each page
@@ -557,6 +507,7 @@ function drawGraph(flatlineAvg){
 	}
 
 	var plot = $.plot(placeholder, buildupData, options);
+	$("#searchbox2").attr('disabled', false); $("#searchbox3").attr('disabled', false);
 }
 
 /*
