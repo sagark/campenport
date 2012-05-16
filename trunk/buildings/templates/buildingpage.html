@@ -467,12 +467,26 @@ function noBaselineHandler(){
 	var starttime = window.converter.parse($("#date2").val()).getTime();
 	loadingwindow = document.getElementById('loading_inside');
 	loadingwindow.innerHTML = "No Baseline Found, Fetching Real Data";
+	if((endtime-starttime)<86400010){
+		// less than or equal to a day + error
+		fieldsize = 'minute';
+		inc = '1';
+	} else if((endtime-starttime)<604800020*8){
+		// less than or equal to 3 weeks + error
+		fieldsize = 'hour';
+		inc = '1';
+	} else {
+		// greater than 3 weeks + error
+		fieldsize = 'day';
+		inc = '1';
+	}
 
 	getBuildingNansum(function(resp){
 		passalong = [resp, [{"uuid": "BLANK", "Readings": []}]];
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings']
 		var needToavg = [];
 	
+
 		if (endtime-starttime<=1209600000){
 			for (x in passalong[0][0]['Readings']){
 				needToavg.push(passalong[0][0]['Readings'][x][1]);
@@ -490,7 +504,7 @@ function noBaselineHandler(){
 		setAllTheGauges(resp[0]['Readings'][resp[0]['Readings'].length-1], resp[0]['Readings'][resp[0]['Readings'].length-1]);
 		runStats(window.mainFlotTimeseries['actualkW'], window.mainFlotTimeseries['baselineData'], avgArr);
 
-	}, "{{ NEW_QUERY_ID }}", starttime, endtime);
+	}, "{{ NEW_QUERY_ID }}", starttime, endtime, fieldsize, inc);
 }
 
 

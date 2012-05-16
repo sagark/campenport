@@ -22,15 +22,35 @@ function getBaselineTags(callback, query_id){
 	});
 }
 
-function getBuildingNansum(callback, query_id, starttime, endtime){
+function getBuildingNansum(callback, query_id, starttime, endtime, fieldsize, inc){
 	$.ajax({
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + query_id + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply nansum(axis=1) < paste < window(first, field='" + fieldsize + "', increment=" + inc + ") < units to data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + query_id + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response);
+		},
+		error: function(response) {
+			///process stream and call callback here
+			//start hacky fix for streaming
+			a = response.responseText.split("}}}]");
+			//console.log(a);
+			for(x = 0; x<a.length; x++){
+				a[x] += "}}}]";
+			}
+			a.pop();
+			for(x = 0; x<a.length; x++){
+				a[x] = $.parseJSON(a[x]);
+			}
+			for(x = 1; x<a.length; x++){
+				a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[x][0]['Readings']);
+			}
+			//end hacky fix for streaming
+			respMod =  a[0] ;
+			callback(respMod);
 		}
+
 	});
 }
 
