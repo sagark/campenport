@@ -99,22 +99,12 @@ $(function () {
 
 $(document).ready(function() {
 	callgetLatestWholeCampus(1);
-//	runHttpGetTags();
-//	environmentData();
-//	kWvsBaselineG.init();
-//	gaugeTwo.init();
-//	gaugeThree.init();
-//	kWvsBaselineG.setValue(000);
-//	gaugeTwo.setValue(000);
-//	gaugeThree.setValue(000);
-//	setInterval("autoUpdateGauges()", 900000);
 });
 
 $("#refresh").click(function() {
 	$("#placeholder").empty();
 	$("#loading").show();
 	callgetLatestWholeCampus(1);
-	//environmentData(); //no need to refresh environment data
 });
 
 
@@ -129,32 +119,24 @@ function callgetLatestWholeCampus(lastActualkW){
 }
 
 function getLatestWholeCampus(callback) {
-	//tempendtime = (new Date()).getTime();
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
 	var starttime = converter.parse($("#date2").val()).getTime();
-	//var starttime = endtime - 86400000;
 	$.ajax({
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		//timeout: 10000,
 		error: function(response) {
-			//console.log(response);
 			//start hacky fix for streaming
 			a = response.responseText.split("}}}]");
 			//console.log(a);
 			for(x = 0; x<a.length; x++){
 				a[x] += "}}}]";
 			}
-			//a[0] += "}}}]";
-			//a[1] += "}}}]";
 			a.pop();
 			for(x = 0; x<a.length; x++){
 				a[x] = $.parseJSON(a[x]);
 			}
-			//a[0] = $.parseJSON(a[0]);
-			//a[1] = $.parseJSON(a[1]);
 			for(x = 1; x<a.length; x++){
 				a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[x][0]['Readings']);
 			}

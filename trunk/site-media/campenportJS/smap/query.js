@@ -55,6 +55,37 @@ function httpGetTagsWINP(callback, querystring, inp, inptype, numMod) {
 
 
 
+function httpGetTagsStreamHandler(callback, querystring, inp, inptype, numMod) {
+	$.ajax({
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		data: querystring,
+		success: function(response) {
+			callback(response, inp, inptype, numMod);
+		},
+		error: function(response) {
+			///process stream and call callback here
+			//start hacky fix for streaming
+			a = response.responseText.split("}}}]");
+			//console.log(a);
+			for(x = 0; x<a.length; x++){
+				a[x] += "}}}]";
+			}
+			a.pop();
+			for(x = 0; x<a.length; x++){
+				a[x] = $.parseJSON(a[x]);
+			}
+			for(x = 1; x<a.length; x++){
+				a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[x][0]['Readings']);
+			}
+			//end hacky fix for streaming
+			respMod =  a[0] ;
+			callback(respMod, inp, inptype, numMod);
+		}
+	});
+}
+
 
 function httpGetData(callback, latest, inputUUID, starttime, endtime, output, typeInput) {
 	$.ajax({ 
