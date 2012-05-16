@@ -117,23 +117,6 @@ $("#refresh").click(function() {
 	//environmentData(); //no need to refresh environment data
 });
 
-function environmentData(){
-	var converter = new AnyTime.Converter( { format: datefmt });
-	var endtime = converter.parse($("#date").val()).getTime();
-	//var starttime = converter.parse($("#date2").val()).getTime();
-	var starttime = endtime - 86400000;
-	httpGetData(function(resp){
-	//callback
-		var passtoSpark = resp[0]['Readings'];
-		var passfinal = [];
-		for (x=0; x<passtoSpark.length; x++){
-			passfinal.push(Math.round(((passtoSpark[x][1]*9/5+32)*1000))/1000);
-		}
-		$('.dynamicsparkline').sparkline(passfinal);
-		$('.tempBox').html("<strong>" + passfinal[passfinal.length-1] + "&ordm;F" + "</strong>");
-		//console.log(passfinal);
-		}, 0, "d0ba5233-7c44-52a9-9bf9-5c55e5084fcf", starttime, endtime, 0, 0);
-}
 
 function sendTodrawGraph(response){
 	console.log(response);
@@ -149,27 +132,36 @@ function getLatestWholeCampus(callback) {
 	//tempendtime = (new Date()).getTime();
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
-	//var starttime = converter.parse($("#date2").val()).getTime();
-	var starttime = endtime - 86400000;
+	var starttime = converter.parse($("#date2").val()).getTime();
+	//var starttime = endtime - 86400000;
 	$.ajax({
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		timeout: 10000,
+		//timeout: 10000,
 		error: function(response) {
 			//console.log(response);
 			//start hacky fix for streaming
 			a = response.responseText.split("}}}]");
-			a[0] += "}}}]";
-			a[1] += "}}}]";
+			//console.log(a);
+			for(x = 0; x<a.length; x++){
+				a[x] += "}}}]";
+			}
+			//a[0] += "}}}]";
+			//a[1] += "}}}]";
 			a.pop();
-			a[0] = $.parseJSON(a[0]);
-			a[1] = $.parseJSON(a[1]);
-			a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[1][0]['Readings']);
+			for(x = 0; x<a.length; x++){
+				a[x] = $.parseJSON(a[x]);
+			}
+			//a[0] = $.parseJSON(a[0]);
+			//a[1] = $.parseJSON(a[1]);
+			for(x = 1; x<a.length; x++){
+				a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[x][0]['Readings']);
+			}
 			//end hacky fix for streaming
 			drawGraph(a[0]);
 				},
-		data: "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to data in (" + (starttime) + " ," + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and Metadata/Location/Building like '%' and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply nansum(axis=1) < paste < window(first, field='hour', increment=1) < units to data in (" + (starttime) + " ," + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and Metadata/Location/Building like '%' and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response);
 		}
