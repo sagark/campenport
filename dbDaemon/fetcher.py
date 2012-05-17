@@ -84,7 +84,7 @@ for building in all_buildings.keys():
 	except:
 		all_buildings[building]['peak_avg'] = 0.0
 		print(all_buildings[building]['subsampled sum'])
-		asdf = raw_input("Press Enter to continue...")
+		#asdf = raw_input("Press Enter to continue...")
 	print("peak to avg: " + str(all_buildings[building]['peak_avg']))
 #
 
