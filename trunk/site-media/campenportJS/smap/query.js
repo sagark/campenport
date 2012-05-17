@@ -27,7 +27,7 @@ function getBuildingNansum(callback, query_id, starttime, endtime, fieldsize, in
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply nansum(axis=1) < paste < window(first, field='" + fieldsize + "', increment=" + inc + ") < units to data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + query_id + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply nansum(axis=1) < paste < window(first, field='" + fieldsize + "', width=" + inc + ") < units to data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + query_id + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response);
 		},
@@ -95,28 +95,37 @@ function httpGetTagsStreamHandler(callback, querystring, inp, inptype, numMod) {
 			a.pop();
 			for(x = 0; x<a.length; x++){
 				a[x] = $.parseJSON(a[x]);
+				//This shift fixes the 1 point overlap
+				a[x][0]['Readings'].shift();
 			}
-			for(x = 1; x<a.length; x++){
-				a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[x][0]['Readings']);
+			for(x = a.length-2; x>=0; x--){
+				a[a.length-1][0]['Readings'] = a[x][0]['Readings'].concat(a[a.length-1][0]['Readings']);
 			}
 			//end hacky fix for streaming
-			respMod =  a[0] ;
+			respMod =  a[a.length-1] ;
 			callback(respMod, inp, inptype, numMod);
 		}
 	});
 }
 
 
+
 function httpGetData(callback, latest, inputUUID, starttime, endtime, output, typeInput) {
 	$.ajax({ 
+	
 			async: true,
 			type: 'GET',
 			url: "/ARDgetData/api/data/uuid/" + escape(inputUUID) + "?starttime=" + escape(starttime) + "&endtime=" + escape(endtime),
 			success: function(resp) {
 				callback(resp, typeInput);
 			}
+	
+		
+
 	});
 }
+
+
 
 function httpGetLatestData(callback, querystring, x, endat) {
     //IMPORTANT NOTE: you can only get 10 UUIDs of data in one call
@@ -128,6 +137,45 @@ function httpGetLatestData(callback, querystring, x, endat) {
 		success: function(response) {
 			callback(response, x, endat);
 		}
+	});
+}
+
+
+function httpGetDataQuick(callback, latest, inputUUID, starttime, endtime, output, typeInput) {
+	$.ajax({ 
+		async: true,
+		type: 'POST',
+		url: '/ARDgetData/api/query?',
+		timeout: 10000,
+		data: "apply nansum(axis=1) < paste < window(first, field='hour', increment=1) < units to data in (" + starttime + " ," + endtime + ") where uuid = '" + inputUUID + "'",
+		success: function(resp){
+			console.log("NORMAL");
+			console.log(resp);
+			callback(resp, typeInput);
+		},
+		error: function(response) {
+			///process stream and call callback here
+			//start hacky fix for streaming
+			//console.log(a);
+			a = response.responseText.split("}}}]");
+			//console.log(a);
+			for(x = 0; x<a.length; x++){
+				a[x] += "}}}]";
+			}
+			//a.pop();
+			for(x = 0; x<a.length; x++){
+				a[x] = $.parseJSON(a[x]);
+				//Shift required to fix 1 point overlap
+				a[x][0]['Readings'].shift();
+			}
+			for(x = 1; x<a.length; x++){
+				a[0][0]['Readings'] = a[0][0]['Readings'].concat(a[x][0]['Readings']);
+			}
+			//end hacky fix for streaming
+			respMod =  a[0] ;
+			callback(respMod, typeInput);
+		}
+
 	});
 }
 
