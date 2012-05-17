@@ -140,14 +140,14 @@ function httpGetLatestData(callback, querystring, x, endat) {
 	});
 }
 
-
+//unused, not sure what the issue is with fetching baselines this way
 function httpGetDataQuick(callback, latest, inputUUID, starttime, endtime, output, typeInput) {
 	$.ajax({ 
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
 		timeout: 10000,
-		data: "apply nansum(axis=1) < paste < window(first, field='hour', increment=1) < units to data in (" + starttime + " ," + endtime + ") where uuid = '" + inputUUID + "'",
+		data: "apply nansum(axis=1) < paste < window(first, field='hour', width=1) < units to data in (" + starttime + " ," + endtime + ") streamlimit 1000000 where uuid = '" + inputUUID + "'",
 		success: function(resp){
 			console.log("NORMAL");
 			console.log(resp);

@@ -471,16 +471,11 @@ function noBaselineHandler(){
 		// less than or equal to a day + error
 		fieldsize = 'minute';
 		inc = '15';
-	} else if((endtime-starttime)<604800020*8){
+	} else {
 		// less than or equal to 3 weeks + error
 		fieldsize = 'hour';
 		inc = '1';
-	} else {
-		// greater than 3 weeks + error
-		fieldsize = 'day';
-		inc = '1';
-	}
-
+	} 
 	getBuildingNansum(function(resp){
 		passalong = [resp, [{"uuid": "BLANK", "Readings": []}]];
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings']
@@ -521,13 +516,9 @@ function baselineHandler(latest, numMod, typeOrder){
 		// use 15 minute intervals
 		fieldsize = 'minute';
 		inc = '15';
-	} else if((endtime-starttime)<604800020*8){
+	} else {
 		// less than or equal to 3 weeks + error
 		fieldsize = 'hour';
-		inc = '1';
-	} else {
-		// greater than 3 weeks + error
-		fieldsize = 'day';
 		inc = '1';
 	}
 
@@ -563,7 +554,7 @@ function runHttpGetData(output) {
 	var starttime = converter.parse($("#date2").val()).getTime();
 
 	for(x=0; x<output.length; x++){
-	httpGetDataQuick(function(resp, typeInput){
+	httpGetData(function(resp, typeInput){
 		typeOrder.push(typeInput);
 		latest.push(eval(resp));
 		window.mainFlotTimeseries['baselineData'] = eval(resp)[0]['Readings'];
