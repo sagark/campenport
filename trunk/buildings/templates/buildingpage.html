@@ -64,7 +64,7 @@ Drag on the graph to zoom in.
     
 </div><div id="loading" style="position:absolute;width:300px;top:450px;left:50%;margin-left:-150px;text-align:center;padding:7px 0 0 0;font:bold 12px Arial, Helvetica, sans-serif;">  
     <div id="loading_inside">Loading data, please wait..  </div>
-    <img src="/site-media/images/ajax-loader.gif" alt="loading.." />  <div style="font:bold 10px Arial, Helvetica, sans-serif;">Stuck here for more than 10 seconds? Try <a href="javascript:location.reload(true);">refreshing</a>.</div>
+    <img src="/site-media/images/ajax-loader.gif" alt="loading.." />  <div id="timewrap" style="font:bold 10px Arial, Helvetica, sans-serif;">Your query should take about <span id="appxtime">3.63</span> seconds. <br> Stuck? Try <a href="javascript:location.reload(true);">refreshing</a>.</div>
     </div> 
 </div>
 </div>
@@ -333,6 +333,17 @@ $(document).ready(function() {
 	//end time setup
 
 
+
+	var endtime = window.converter.parse($("#date").val()).getTime();
+	var starttime = window.converter.parse($("#date2").val()).getTime();
+
+	appxtime = (((endtime-starttime)/(86400000))*0.1069416301 + 3.52531359);
+	appxtime = Math.floor(appxtime*100)/100.00;
+	
+	appxwindow = document.getElementById('appxtime');
+	appxwindow.innerHTML = appxtime;
+
+
 	//Initialize gauges
 	kWvsBaselineG.init();
 	gaugeTwo.init();
@@ -361,8 +372,19 @@ $(document).ready(function() {
 });
 
 $("#refresh").click(function() {
+	var endtime = window.converter.parse($("#date").val()).getTime();
+	var starttime = window.converter.parse($("#date2").val()).getTime();
+
 	loadingwindow = document.getElementById('loading_inside');
 	loadingwindow.innerHTML = "Loading Data, Please Wait...";
+	appxtime = (((endtime-starttime)/(86400000))*0.1069416301 + 3.52531359);
+	appxtime = Math.floor(appxtime*100)/100.00;
+	
+	appxwindow = document.getElementById('appxtime');
+	appxwindow.innerHTML = appxtime;
+	$("#timewrap").show();
+
+
 
 	$("#placeholder").empty();
 	$("#loading").show();
@@ -552,6 +574,7 @@ function runHttpGetData(output) {
 	var converter = new AnyTime.Converter( { format: datefmt });
 	var endtime = converter.parse($("#date").val()).getTime();
 	var starttime = converter.parse($("#date2").val()).getTime();
+	
 
 	for(x=0; x<output.length; x++){
 	httpGetData(function(resp, typeInput){
@@ -722,7 +745,8 @@ function drawGraph(flatlineAvg){
         }
     });
 
-	$("#loading").hide()
+	$("#loading").hide();
+	$("#timewrap").hide();
 	var plot = $.plot(placeholder, buildupData, options);
 }
 
