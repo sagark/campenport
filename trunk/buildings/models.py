@@ -33,6 +33,7 @@ class Building(models.Model):
 	stats_altInfo = models.CharField(max_length=2000, blank=True)
 	rmsDev = models.CharField(max_length=50, default=0)
 	rmsPercentErr = models.CharField(max_length=50, default=0)
+	peak_avg = models.CharField(max_length=50, default=0)
 	
 	def __str__(self):
 		return '%s' % self.longname
