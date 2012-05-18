@@ -66,7 +66,7 @@ for building in buildings.keys():
 	# fetches actual data for all buildings (used later in all_buildings)
 	if 'subsampled sum' not in buildings[building].keys() or buildings[building]['subsampled sum']==[]:
 		print "actual fetch: " + building
-		applySumdata = "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to  data in (" + str(starttime) + ", " + str(currenttime) + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + buildings[building]['origtag'] + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'"
+		applySumdata = "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to  data in (" + str(starttime) + ", " + str(currenttime) + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + buildings[building]['origtag'] + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand' and not Path like '%demand' and not Path like '/Cory_Hall/Electric_5A7/ABC/real_power' and not Path like '/Cory_Hall/Electric_5B7/ABC/real_power'"
 		applySumURL = 'http://berkeley.openbms.org/ARDgetData/api/query?'
 		result3 = eval(urllib2.urlopen(applySumURL, applySumdata).read())
 		result3 = result3[0]['Readings']
