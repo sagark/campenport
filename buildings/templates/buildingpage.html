@@ -137,7 +137,7 @@ Past 24 Hours: <br><span class="dynamicsparklinePress" style="background-color:r
 <div class="row" style="margin-top: -50px;">
 
 <div class="span-one-third">
-	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="Deviation from Baseline is calculated by taking the actual kW usage, subtracting the baseline, and finally dividing this result by the baseline. It is effectively a calculation of error; thus a negative percentage means that the building is using less power than usual, while a positive percentage implies exactly the opposite." style="color:#000000;">Live Baseline Deviation</a></h3><div style="width:180px;margin:0 auto;"><div id="kWvsBaseline" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
+	<div class="hero-unit" style="min-height:200px;text-align:center;"> <h3><a href="#" rel="popover" title="How is this calculated?" data-placement="above" data-content="Deviation from Baseline is calculated by taking the actual kW usage, subtracting the baseline, and finally dividing this result by the baseline. It is effectively a calculation of error; thus a negative percentage means that the building is using less power than usual, while a positive percentage implies exactly the opposite." style="color:#000000;">Current Baseline Deviation</a></h3><div style="width:180px;margin:0 auto;"><div id="kWvsBaseline" class="jgauge" style="width:180px;margin:0 auto;"></div></div></div>
 </div>
 
 <div class="span-one-third">
@@ -630,6 +630,7 @@ function callgetLatestWholeCampus(lastActualkW){
 
 function getLatestWholeCampus(callback, lastActualkW) {
 	tempendtime = (new Date()).getTime();
+    tempendtime -= 4200000;
 	$.ajax({
 		async: true,
 		type: 'POST',
