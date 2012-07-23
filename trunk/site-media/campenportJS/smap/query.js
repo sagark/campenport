@@ -27,7 +27,8 @@ function getBuildingNansum(callback, query_id, starttime, endtime, fieldsize, in
 		async: true,
 		type: 'POST',
 		url: '/ARDgetData/api/query?',
-		data: "apply nansum(axis=1) < paste < window(first, field='" + fieldsize + "', width=" + inc + ") < units to data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'electric'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + query_id + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
+		data: "apply nansum(axis=1) < paste < window(first, field='" + fieldsize
++ "', width=" + inc + ") < units to data in (" + starttime + ", " + endtime + ") streamlimit 10000 where Metadata/Extra/System = 'total'  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + query_id + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'",
 		success: function(response) {
 			callback(response);
 		},
