@@ -342,7 +342,7 @@ function baselineHandler(latest, numMod, typeOrder){
 
 		window.mainFlotTimeseries['actualkW'] = resp[0]['Readings'];
 		drawGraph(avgArr);
-}, "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where (Metadata/Extra/System = 'electric' or Metadata/Electric/System = 'total')  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + selection[0] + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'", latest, typeOrder, numMod);
+}, "apply nansum(axis=1) < paste < window(first, field='minute', increment=1) < units to  data in (" + starttime + ", " + endtime + ") streamlimit 10000 where (Metadata/Extra/System = 'electric' or Metadata/Extra/System = 'total')  and ((Properties/UnitofMeasure = 'kW' or Properties/UnitofMeasure = 'Watts') or Properties/UnitofMeasure = 'W') and Metadata/Location/Building like '" + selection[0] + "%' and not Metadata/Extra/Operator like 'sum%' and not Path like '%demand'", latest, typeOrder, numMod);
 }
 
 
